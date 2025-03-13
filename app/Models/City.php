@@ -4,19 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Country extends Model
+class City extends Model
 {
 
 
     protected $fillable =[
+        'country_id',
         'name',
-        'flag',
         'status'
     ];
 
-    public function cities()
+    public function country()
     {
-        return $this->hasMany(City::class);
+        return $this->belongsTo(Country::class);
     }
 
     public function zones()
@@ -28,5 +28,11 @@ class Country extends Model
         return $this->hasMany(User::class);
     }
 
-    
+    public function trips(){
+        return $this->hasMany(Trip::class);
+    }
+
+    public function stations(){
+        return $this->hasMany(Station::class);
+    }
 }
