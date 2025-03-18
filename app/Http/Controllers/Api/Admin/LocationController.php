@@ -82,10 +82,16 @@ class LocationController extends Controller
 
     public function getCities(){
         $cities = City::all();
-        $data =[
-            'cities' => $cities
-        ];
-        return response()->json($data);
+        $data =$cities->map(function($city){
+            return [
+                'id'=> $city->id,
+                'country_id' => $city->country_id,
+                'country_name' => $city->country->name ?? null,
+                'name'=> $city->name,
+                'status' => $city->status
+            ];
+        });
+        return response()->json(['cities'=>$data]);
     }
 
     public function AddCity(Request $request){
@@ -131,10 +137,18 @@ class LocationController extends Controller
 
     public function getZones(){
         $zones = Zone::all();
-        $data =[
-            'zones' => $zones
-        ];
-        return response()->json($data);
+        $data =$zones->map(function($zone){
+            return [
+                'id'=> $zone->id,
+                'country_id' => $zone->country_id,
+                'country_name' => $zone->country->name ?? null,
+                'city_id' => $zone->city_id,
+                'city_name' => $zone->city->name ?? null,
+                'name' => $zone->name,
+                'status' => $zone->status
+            ];
+        });
+        return response()->json(['zones'=>$data]);
     }
 
     public function addZone(Request $request){
@@ -183,10 +197,23 @@ class LocationController extends Controller
 
     public function getStation (){
         $stations = Station::all();
-        $data = $stations->map(function ($station){
-            
+        $data =$stations->map(function($station){
+            return [
+                'id' => $station->id,
+                'name' => $station->name,
+                'country_id' => $station->country_id,
+                'country_name' => $station->country->name,
+                'city_id' => $station->city_id,
+                'city_name' => $station->city->name,
+                'zone_id' => $station->zone_id,
+                'zone_name' => $station->zone->name,
+                'pickup'=> $station->pickup,
+                'dropoff'=> $station->dropoff,
+                'basic_station'=> $station->basic_station,
+                'status' => $station->status
+            ];
         });
-        return response()->json($data);
+        return response()->json(['stations'=>$data]);
     }
 
     public function addStation(Request $request){
