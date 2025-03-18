@@ -119,6 +119,7 @@ class LocationController extends Controller
             $city->update([
                 'country_id' => $request->country_id ?? $city->country_id,
                 'name' => $request->name ?? $city->name,
+                'flag'=>$request->flag ?? $city->flag,
                 'status' => $request->status ?? $city->status,
             ]);
             return response()->json(['message'=>'City Updated Successfully'],200);
