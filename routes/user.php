@@ -10,6 +10,6 @@ Route::middleware(['auth:sanctum','IsUser'])->group(function () {
     Route::controller(BookingController::class)->prefix('/booking')
     ->group(function(){
         Route::get('/lists', 'lists');
-        Route::get('/', 'filter');
+        Route::post('/', 'filter');
     });
 });
