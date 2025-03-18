@@ -25,7 +25,14 @@ class Trip extends Model
         'to_zone_id',
         'date',
         'price',
-        'status'
+        'status',
+        'agent_id',
+        'max_book_date',
+        'type',
+        'fixed_date',
+        'cancellation_policy',
+        'cancelation_pay_amount',
+        'cancelation_pay_value'
     ];
 
     public function bus(){

@@ -13,7 +13,8 @@ class Station extends Model
         'name',
         'pickup',
         'dropoff',
-        'basic_station'
+        'basic_station',
+        'status'
     ];
 
     public function country(){
