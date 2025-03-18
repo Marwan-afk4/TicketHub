@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
+Route::get('/lists',[AuthController::class,'lists']);
 Route::post('/register',[AuthController::class,'Register']);
 Route::post('/login',[AuthController::class,'login']);
 

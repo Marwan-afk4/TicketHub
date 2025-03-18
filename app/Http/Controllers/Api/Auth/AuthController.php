@@ -6,12 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
 use App\Http\Requests\Auth\SignupUserRequest;
 use App\Models\User;
+use App\Models\Nationality;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 { 
+    public function lists(){
+        // /api/lists
+        $nationality = Nationality::get();
+        return response()->json([
+            'nationality' => $nationality,
+        ]);
+    }
+
     public function Register(SignupUserRequest $request){
         // /api/register
         // keys
