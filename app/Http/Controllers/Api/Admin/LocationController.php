@@ -183,9 +183,9 @@ class LocationController extends Controller
 
     public function getStation (){
         $stations = Station::all();
-        $data =[
-            'stations' => $stations
-        ];
+        $data = $stations->map(function ($station){
+            
+        });
         return response()->json($data);
     }
 
