@@ -12,18 +12,14 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 { 
-    public function Register(AuthRequest $request){
+    public function Register(SignupUserRequest $request){
+        // /api/register
+        // keys
+        // password, email, nationality_id, name, phone, gender => [male,female],
         $validated = $request->validated();
-        $user = User::create([
-            'country_id' => $validated['country_id']??null,
-            'city_id' => $validated['city_id']??null,
-            'zone_id' => $validated['zone_id']??null,
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'password' => Hash::make($validated['password']),
-            'role' => 'user'
-        ]);
+        $validated['password'] = Hash::make($validated['password']);
+        $validated['role'] = 'user';
+        $user = User::create($validated);
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'token' => $token,
