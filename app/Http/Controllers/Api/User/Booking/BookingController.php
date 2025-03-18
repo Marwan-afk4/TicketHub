@@ -43,7 +43,7 @@ class BookingController extends Controller
         }
         
         $buses_trips = $this->trips
-        ->with(['bus:id,bus_number', 'pickup_station:id,name', 'dropoff_station:id,name'])
+        ->with(['bus:id,bus_number,bus_image', 'pickup_station:id,name', 'dropoff_station:id,name'])
         ->where('avalible_seats', '>', 0)
         ->where('status', 'active');
 
@@ -71,7 +71,7 @@ class BookingController extends Controller
         
         if ($request->type === 'round_trip') {
             $buses_back_trips = $this->trips
-            ->with(['bus:id,bus_number', 'pickup_station:id,name', 'dropoff_station:id,name'])
+            ->with(['bus:id,bus_number,bus_image', 'pickup_station:id,name', 'dropoff_station:id,name'])
             ->where('avalible_seats', '>', 0)
             ->where('status', 'active');
 
@@ -102,8 +102,9 @@ class BookingController extends Controller
         }
 
         return response()->json([
-        'buses_trips' => $buses_trips,
+            'buses_trips' => $buses_trips,
         ]);
-
     }
+
+    // public function 
 }

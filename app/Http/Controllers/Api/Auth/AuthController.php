@@ -4,15 +4,14 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
+use App\Http\Requests\Auth\SignupUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
-{
-
-
+{ 
     public function Register(AuthRequest $request){
         $validated = $request->validated();
         $user = User::create([
@@ -34,17 +33,19 @@ class AuthController extends Controller
     }
 
     public function login(Request $request){
+        // /api/login
+        // keys
+        // password,email
         $validation = Validator::make($request->all(),[
-            'email' => 'nullable|email',
+            'email' => 'required|email',
             'password' => 'required',
-            'phone'=>'nullable'
         ]);
         if($validation->fails()){
             return response()->json(['message'=>$validation->errors()],400);
         }
 
         $user=User::where('email', $request->email)
-        ->orWhere('phone', $request->phone)
+        ->orWhere('phone', $request->email)
         ->first();
         if(!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['error' => 'The provided credentials are incorrect'], 401);
