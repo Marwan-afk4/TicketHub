@@ -32,7 +32,8 @@ class BusController extends Controller
                 'bus_type_id' => $bus->bus_type_id,
                 'bus_type_name' => $bus->busType->name ?? null,
                 'capacity' => $bus->capacity,
-                'status' => $bus->status
+                'status' => $bus->status,
+                'type'=>$bus->type
             ];
         });
         return response()->json(['buses' => $data]);
@@ -47,6 +48,7 @@ class BusController extends Controller
             'capacity' => 'required',
             'agent_id' => 'required|exists:users,id',
             'status' => 'required|in:active,inactive',
+            'type'=>'required|in:bus,hiace'
         ]);
 
         if ($validation->fails()) {
@@ -66,6 +68,7 @@ class BusController extends Controller
             'capacity' => $request->capacity,
             'agent_id' => $request->agent_id,
             'status' => $request->status,
+            'type'=>$request->type
         ]);
 
         return response()->json([
@@ -98,6 +101,7 @@ class BusController extends Controller
             'capacity' => $request->capacity ?? $bus->capacity,
             'agent_id' => $request->agent_id ?? $bus->agent_id,
             'status' => $request->status ?? $bus->status,
+            'type'=>$request->type ?? $bus->type
         ]);
 
         if ($request->has('bus_image')) {
