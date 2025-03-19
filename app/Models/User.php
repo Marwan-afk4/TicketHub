@@ -19,7 +19,8 @@ class User extends Model
         'phone',
         'role',
         'gender',
-        'nationality_id'
+        'nationality_id',
+        'code',
     ];
 
     protected $hidden = [

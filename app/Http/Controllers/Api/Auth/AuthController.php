@@ -10,6 +10,8 @@ use App\Models\Nationality;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ForgetPasswordMail;
 
 class AuthController extends Controller
 { 
@@ -60,6 +62,90 @@ class AuthController extends Controller
             'message'=>'Login Successfully',
             'user' => $user,
             'token' => $token,
+        ]);
+    }
+
+    public function forget_password(Request $request){
+        // /api/forget_password
+        // keys
+        // email
+        $validation = Validator::make($request->all(),[
+            'email' => 'required|email',
+        ]);
+        if($validation->fails()){
+            return response()->json(['message'=>$validation->errors()],400);
+        }
+
+        $code = rand(100000, 999999);
+        Mail::to($request->email)->send(new ForgetPasswordMail($code));
+        $user=User::where('email', $request->email)
+        ->update([
+            'code' => $code
+        ]);
+        
+        return response()->json([
+            'success'=>'Code is sent Successfully', 
+        ]);
+    }
+
+    public function check_code(Request $request){
+        // /api/check_code
+        // keys
+        // email, code
+        $validation = Validator::make($request->all(),[
+            'email' => 'required|email',
+            'code' => 'required',
+        ]);
+        if($validation->fails()){
+            return response()->json(['message'=>$validation->errors()],400);
+        }
+
+        $user=User::where('email', $request->email)
+        ->where('code', $request->code)
+        ->whereNotNull('code')
+        ->first();
+
+        if (empty($user)) {
+            return response()->json([
+                'errors' => 'Code or email is wrong'
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => 'Code is true'
+        ]);
+    }
+
+    public function change_password(Request $request){
+        // /api/login
+        // keys
+        // email, code, new_password
+        $validation = Validator::make($request->all(),[
+            'email' => 'required|email',
+            'code' => 'required',
+            'new_password' => 'required|min:7',
+        ]);
+        if($validation->fails()){
+            return response()->json(['message'=>$validation->errors()],400);
+        }
+
+        $user=User::where('email', $request->email)
+        ->where('code', $request->code)
+        ->whereNotNull('code')
+        ->first();
+
+        if (empty($user)) {
+            return response()->json([
+                'errors' => 'Code or email is wrong'
+            ], 400);
+        }
+        $user->update([
+            'code' => null,
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return response()->json([
+            'success' => 'You update data success'
         ]);
     }
 }
