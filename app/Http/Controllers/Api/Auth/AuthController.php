@@ -117,7 +117,7 @@ class AuthController extends Controller
     }
 
     public function change_password(Request $request){
-        // /api/login
+        // /api/change_password
         // keys
         // email, code, new_password
         $validation = Validator::make($request->all(),[

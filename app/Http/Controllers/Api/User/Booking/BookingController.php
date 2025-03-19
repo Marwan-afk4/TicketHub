@@ -106,5 +106,7 @@ class BookingController extends Controller
         ]);
     }
 
-    // public function 
+    public function payment(Request $request){
+
+    }
 }
