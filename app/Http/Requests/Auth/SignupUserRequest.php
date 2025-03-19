@@ -24,7 +24,7 @@ class SignupUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nationality_id' => ['required', 'exists:countries,id'],
+            'nationality_id' => ['required', 'exists:nationalities,id'],
             'name' => ['required', 'string'],
             'email' => ['required','email', 'unique:users,email'],
             'phone' => ['required', 'unique:users,phone'],
