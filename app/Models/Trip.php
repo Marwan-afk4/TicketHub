@@ -33,7 +33,8 @@ class Trip extends Model
         'cancellation_policy',
         'cancelation_pay_amount',
         'cancelation_pay_value',
-        'min_cost'
+        'min_cost',
+        'type'
     ];
 
     public function bus(){

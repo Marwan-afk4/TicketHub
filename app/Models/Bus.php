@@ -12,7 +12,8 @@ class Bus extends Model
         'bus_image',
         'capacity',
         'agent_id',
-        'status'
+        'status',
+        'type'
     ];
     protected $appends = ['image_link'];
 
