@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Bus extends Model
-{ 
+{
     protected $fillable =[
         'bus_number',
         'bus_type_id',
@@ -25,6 +25,6 @@ class Bus extends Model
     }
 
     public function agent(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'agent_id');
     }
 }

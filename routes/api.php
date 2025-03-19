@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\BusController;
 use App\Http\Controllers\Api\Admin\LocationController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
@@ -60,4 +61,14 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::put('/admin/station/update/{id}',[LocationController::class,'updateStation']);
 
     Route::delete('/admin/station/delete/{id}',[LocationController::class,'deleteStation']);
+
+/////////////////////////////////////// Busses ////////////////////////////////////////////
+
+    Route::get('/admin/busses',[BusController::class,'getBus']);
+
+    Route::post('/admin/bus/add',[BusController::class,'addBus']);
+
+    Route::delete('/admin/bus/delete/{id}',[BusController::class,'deleteBus']);
+
+    Route::put('/admin/bus/update/{id}',[BusController::class,'updateBus']);
 });
