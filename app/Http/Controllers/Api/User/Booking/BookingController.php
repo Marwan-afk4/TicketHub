@@ -5,14 +5,19 @@ namespace App\Http\Controllers\Api\User\Booking;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Image;
 
 use App\Models\City;
 use App\Models\Trip;
+use App\Models\PaymentMethod;
+use App\Models\Payment;
 
 class BookingController extends Controller
 {
     public function __construct(private City $cities, 
-    private Trip $trips){}
+    private Trip $trips, private Payment $payments, 
+    private PaymentMethod $payment_methods){}
+    use Image;
 
     public function lists(){
         // user/booking/lists
@@ -20,9 +25,12 @@ class BookingController extends Controller
         ->select('id', 'name')
         ->where('status', 'active')
         ->get();
+        $payment_methods = $this->payment_methods
+        ->get();
 
         return response()->json([
-            'cities' => $cities
+            'cities' => $cities,
+            'payment_methods' => $payment_methods,
         ]);
     }
 
@@ -107,6 +115,25 @@ class BookingController extends Controller
     }
 
     public function payment(Request $request){
+        $validation = Validator::make(request()->all(),[ 
+            'payment_method_id' => 'required|exists:payment_methods,id',
+            'amount' => 'required|numeric',
+            'receipt_image' => 'required',
+        ]);
+        if($validation->fails()){
+            return response()->json(['error'=>$validation->errors()],400);
+        }
+        $paymentRequest = $validation->validated();
+        $paymentRequest['user_id'] = $request->user()->id;
+        if ($request->receipt_image && !is_string($request->receipt_image)) {
+            $image_path = $this->upload($request, 'receipt_image', '/users/payment/receipt_image');
+            $paymentRequest['receipt_image'] = $image_path;
+        }
+        $this->payments
+        ->create($paymentRequest);
 
+        return response()->json([
+            'success' => 'You add data success'
+        ]);
     }
 }
