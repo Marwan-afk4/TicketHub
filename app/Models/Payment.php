@@ -13,6 +13,8 @@ class Payment extends Model
         'user_id',
         'amount',
         'receipt_image',
+        'travelers',
+        'trip_id',
         'status',
     ];
 

@@ -8,7 +8,7 @@ trait Image
 {
     // This Trait Aboute Image
 
-    public function upload(Request $request,$fileName = 'image',$directory){
+    public function upload_image(Request $request,$fileName = 'image',$directory){
         if($request->has($fileName)){// if Request has a Image
             $uploadImage = new request();
             $imagePath = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
@@ -57,7 +57,7 @@ trait Image
 
         return null;
     }
-    
+
     public function storeBase64Image($base64Image, $folderPath = 'admin/unit/images') {
 
         // Validate if the base64 string has a valid image MIME type
