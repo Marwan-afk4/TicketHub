@@ -42,14 +42,14 @@ class ProfileController extends Controller
         }
         $profileRequest = $validation->validated();
         $profileRequest['password'] = Hash::make($request->password);
-        if ($request->image && !is_string($request->image)) {
-            $image_path = $this->uploadFile($request->image, '/users/image');
-            $profileRequest['image'] = $image_path;
-        }
-
         $user = $this->users
         ->where('id', $request->user()->id)
-        ->update($profileRequest);
+        ->first();
+        if ($request->image && !is_string($request->image)) {
+            $image_path = $this->update_image($request, $user->image ,'image', '/users/image');
+            $profileRequest['image'] = $image_path;
+        }
+        $user->update($profileRequest);
 
         return response()->json([
             'success' => 'You update data success'

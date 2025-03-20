@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 trait Image
