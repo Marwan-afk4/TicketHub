@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\BusController;
+use App\Http\Controllers\Api\Admin\BusTypeController;
 use App\Http\Controllers\Api\Admin\LocationController;
+use App\Http\Controllers\Api\Admin\PaymentMethodController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use Illuminate\Http\Request;
@@ -72,7 +74,29 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
     Route::post('/admin/bus/add',[BusController::class,'addBus']);
 
+    Route::get('/admin/agents',[BusController::class,'getAgents']);
+
     Route::delete('/admin/bus/delete/{id}',[BusController::class,'deleteBus']);
 
     Route::put('/admin/bus/update/{id}',[BusController::class,'updateBus']);
+
+//////////////////////////////////////// Bus Type ////////////////////////////////////////////
+
+    Route::get('/admin/bus_types',[BusTypeController::class,'getBusType']);
+
+    Route::post('/admin/bus_type/add',[BusTypeController::class,'addBusType']);
+
+    Route::delete('/admin/bus_type/delete/{id}',[BusTypeController::class,'deleteBusType']);
+
+    Route::put('/admin/bus_type/update/{id}',[BusTypeController::class,'updateBusType']);
+
+/////////////////////////////////////// Payment Method ////////////////////////////////////////////
+
+    Route::get('/admin/payment_methods',[PaymentMethodController::class,'getPaymentMethod']);
+
+    Route::post('/admin/payment_method/add',[PaymentMethodController::class,'addPaymentMethod']);
+
+    Route::delete('/admin/payment_method/delete/{id}',[PaymentMethodController::class,'deletepaymentMethod']);
+
+    Route::put('/admin/payment_method/update/{id}',[PaymentMethodController::class,'updatePaymentMethod']);
 });
