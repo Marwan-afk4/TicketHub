@@ -14,6 +14,7 @@ class ProfileController extends Controller
     public function __construct(private User $users){}
 
     public function view(Request $request){
+        // /profile
         $user = $request->user();
 
         return response()->json([
@@ -22,6 +23,9 @@ class ProfileController extends Controller
     }
 
     public function update(Request $request){
+        // /profile/update
+        // Keys
+        // nationality_id, name, email, phone, gender, password
         $validation = Validator::make($request->all(),[
             'nationality_id' => ['required', 'exists:nationalities,id'],
             'name' => ['required', 'string'],
@@ -33,10 +37,11 @@ class ProfileController extends Controller
         if($validation->fails()){
             return response()->json(['message'=>$validation->errors()],400);
         }
+        $profileRequest = $validation->validated();
 
         $user = $this->users
         ->where('id', $request->user()->id)
-        ->first();
+        ->update($profileRequest);
 
         return response()->json([
             'user' => $user

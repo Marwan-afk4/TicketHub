@@ -12,13 +12,17 @@ use App\Models\Trip;
 use App\Models\PaymentMethod;
 use App\Models\PrivateRequest;
 use App\Models\Payment;
+use App\Models\Commission;
+use App\Models\AgentCommission;
 
 class BookingController extends Controller
 {
     public function __construct(private City $cities, 
     private Trip $trips, private Payment $payments, 
     private PaymentMethod $payment_methods,
-    private PrivateRequest $private_request){}
+    private Commission $commissions,
+    private AgentCommission $agent_commission,
+    private PrivateRequest $private_request,){}
     use Image;
 
     public function lists(){
@@ -142,8 +146,40 @@ class BookingController extends Controller
             $image_path = $this->uploadFile($request->receipt_image, '/users/payment/receipt_image');
             $paymentRequest['receipt_image'] = $image_path;
         }
-        $this->payments
+        $payments = $this->payments
         ->create($paymentRequest);
+        $trip = $this->trips
+        ->where('id', $request->trip_id)
+        ->first();
+        $commission = $this->commissions
+        ->where('agent_id', $agent_id)
+        ->first();
+        if (empty($commission)) {
+            $commission = $this->commissions
+            ->where('type', 'defult')
+            ->first();
+        }
+        if (empty($commission)) {
+            $commission = $this->commissions
+            ->create([
+                'type' => 'defult',
+                'train' => 0,
+                'bus' => 0,
+                'hiace' => 0, 
+            ]);
+        }
+        $commission_precentage = 0;
+        if ($trip->trip_type == 'bus') {
+            $commission_precentage = $commission->bus;
+        }
+        elseif ($trip->trip_type == 'hiace') {
+            $commission_precentage = $commission->hiace;
+        }
+        elseif ($trip->trip_type == 'train') {
+            $commission_precentage = $commission->train;
+        }
+        $commission = $request->amount * $commission_precentage / 100;
+        $receivable = $request->amount - $commission;
 
         return response()->json([
             'success' => 'You add data success'
