@@ -151,7 +151,7 @@ class BookingController extends Controller
         ->where('id', $request->trip_id)
         ->first();
         $commission = $this->commissions
-        ->where('agent_id', $agent_id)
+        ->where('agent_id', $trip->agent_id)
         ->first();
         if (empty($commission)) {
             $commission = $this->commissions
