@@ -135,7 +135,6 @@ class BookingController extends Controller
             'trip_id' => 'required|exists:trips,id',
             'travelers' => 'required|numeric',
             'amount' => 'required|numeric',
-            'receipt_image' => 'required',
         ]);
         if($validation->fails()){
             return response()->json(['error'=>$validation->errors()],400);
@@ -180,6 +179,17 @@ class BookingController extends Controller
         }
         $commission = $request->amount * $commission_precentage / 100;
         $receivable = $request->amount - $commission;
+        $total = $request->amount;
+        $this->agent_commission
+        ->create([
+            'user_id' => $request->user()->id,
+            'agent_id' => $trip->agent_id,
+            'trip_id' => $request->trip_id,
+            'payment_id' => $payments->id,
+            'commission' => $commission,
+            'receivable_to_agent' => $receivable,
+            'total' => $total,
+        ]);
 
         return response()->json([
             'success' => 'You add data success'

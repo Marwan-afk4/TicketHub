@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Image;
 
 use App\Models\User;
 
 class ProfileController extends Controller
 {
     public function __construct(private User $users){}
+    use Image;
 
     public function view(Request $request){
         // /profile
@@ -25,7 +27,7 @@ class ProfileController extends Controller
     public function update(Request $request){
         // /profile/update
         // Keys
-        // nationality_id, name, email, phone, gender, password
+        // nationality_id, name, email, phone, gender, password, image
         $validation = Validator::make($request->all(),[
             'nationality_id' => ['required', 'exists:nationalities,id'],
             'name' => ['required', 'string'],
@@ -37,14 +39,18 @@ class ProfileController extends Controller
         if($validation->fails()){
             return response()->json(['message'=>$validation->errors()],400);
         }
-        $profileRequest = $validation->validated();
+        $profileRequest = $validation->validated();        
+        if ($request->image && !is_string($request->image)) {
+            $image_path = $this->uploadFile($request->image, '/users/image');
+            $profileRequest['image'] = $image_path;
+        }
 
         $user = $this->users
         ->where('id', $request->user()->id)
         ->update($profileRequest);
 
         return response()->json([
-            'user' => $user
+            'success' => 'You update data success'
         ]);
     }
 }
