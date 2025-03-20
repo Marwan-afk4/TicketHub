@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 use App\Image;
 
 use App\Models\User;
@@ -31,15 +32,16 @@ class ProfileController extends Controller
         $validation = Validator::make($request->all(),[
             'nationality_id' => ['required', 'exists:nationalities,id'],
             'name' => ['required', 'string'],
-            'email' => ['required','email', Rule::unique('users')->ignore($user->id)],
-            'phone' => ['required', Rule::unique('users')->ignore($user->id)],
+            'email' => ['required','email', Rule::unique('users')->ignore($request->user()->id)],
+            'phone' => ['required', Rule::unique('users')->ignore($request->user()->id)],
             'gender' => ['required', 'in:male,female'],
             'password' => ['required','min:8'],
         ]);
         if($validation->fails()){
             return response()->json(['message'=>$validation->errors()],400);
         }
-        $profileRequest = $validation->validated();        
+        $profileRequest = $validation->validated();
+        $profileRequest['password'] = Hash::make($request->password);
         if ($request->image && !is_string($request->image)) {
             $image_path = $this->uploadFile($request->image, '/users/image');
             $profileRequest['image'] = $image_path;
