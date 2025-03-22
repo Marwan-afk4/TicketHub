@@ -248,12 +248,15 @@ class BookingController extends Controller
     }
 
     public function history(Request $request){
+        // /user/booking/history
         $payments = $this->payments
         ->select('id', 'amount', 'total', 'status', 'travelers', 'travel_date', 'trip_id')
         ->with(['trip' => function($query){
-            $query->select('id', 'deputre_time', 'arrival_time', 'pickup_station_id', 'dropoff_station_id')
+            $query->select('id', 'deputre_time', 'arrival_time', 'pickup_station_id', 
+            'dropoff_station_id', 'city_id', 'to_city_id')
             ->with([
-                'pickup_station:id,name', 'dropoff_station:id,name'
+                'pickup_station:id,name', 'dropoff_station:id,name',
+                'city:id,name', 'to_city:id,name'
             ]);
         }])
         ->where('user_id', $request->user()->id)
