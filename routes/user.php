@@ -11,6 +11,7 @@ Route::middleware(['auth:sanctum','IsUser'])->group(function () {
     Route::controller(BookingController::class)->prefix('/booking')
     ->group(function(){
         Route::get('/lists', 'lists');
+        Route::get('/history', 'history');
         Route::post('/', 'filter');
         Route::post('/payment', 'payment');
         Route::post('/private_request', 'private_request');

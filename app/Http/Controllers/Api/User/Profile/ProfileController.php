@@ -17,7 +17,7 @@ class ProfileController extends Controller
     use Image;
 
     public function view(Request $request){
-        // /profile
+        // bcknd.ticket-hub.net/user/profile
         $user = $request->user();
 
         return response()->json([
@@ -26,7 +26,7 @@ class ProfileController extends Controller
     }
 
     public function update(Request $request){
-        // /profile/update
+        // bcknd.ticket-hub.net/user/profile/update
         // Keys
         // nationality_id, name, email, phone, gender, password, image
         $validation = Validator::make($request->all(),[
