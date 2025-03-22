@@ -45,6 +45,10 @@ class Trip extends Model
         return $this->belongsTo(City::class);
     }
 
+    public function to_city(){
+        return $this->belongsTo(City::class, 'to_city_id');
+    }
+
     public function zone(){
         return $this->belongsTo(Zone::class);
     }

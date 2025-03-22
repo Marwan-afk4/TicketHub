@@ -21,13 +21,21 @@ class User extends Model
         'gender',
         'nationality_id',
         'code',
+        'image',
     ];
+    protected $appends = ['image_link'];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    public function getImageLinkAttribute(){
+        if (isset($this->attributes['image']) && !empty($this->attributes['image'])) {
+            return url('storage/' . $this->attributes['image']);
+        }
+        return null;
+    }
     public function country()
     {
         return $this->belongsTo(Country::class);
