@@ -15,6 +15,7 @@ use App\Models\Payment;
 use App\Models\Commission;
 use App\Models\AgentCommission;
 use App\Models\Booking;
+use App\Models\Wallet;
 
 class BookingController extends Controller
 {
@@ -24,7 +25,8 @@ class BookingController extends Controller
     private Commission $commissions,
     private AgentCommission $agent_commission,
     private PrivateRequest $private_request,
-    private Booking $booking,){}
+    private Booking $booking,
+    private Wallet $wallet,){}
     use Image;
 
     public function lists(){
@@ -183,6 +185,108 @@ class BookingController extends Controller
             $paymentRequest['receipt_image'] = $image_path;
         }
         $paymentRequest['currency_id'] = $trip->currency_id;
+        $payments = $this->payments
+        ->create($paymentRequest);
+        $this->booking
+        ->create([
+            'user_id' => $request->user()->id,
+            'bus_id' => $trip->bus_id,
+            'trip_id' => $trip->id,
+            'destenation_from' => $trip->pickup_station_id,
+            'destenation_to' => $trip->dropoff_station_id,
+            'date' => $request->travel_date,
+            'seats_count' => $request->travelers,
+            'status' => 'pending',
+        ]);
+        if (empty($commission)) {
+            $commission = $this->commissions
+            ->where('type', 'defult')
+            ->first();
+        }
+        if (empty($commission)) {
+            $commission = $this->commissions
+            ->create([
+                'type' => 'defult',
+                'train' => 0,
+                'bus' => 0,
+                'hiace' => 0, 
+            ]);
+        }
+        $commission_precentage = 0;
+        if ($trip->trip_type == 'bus') {
+            $commission_precentage = $commission->bus;
+        }
+        elseif ($trip->trip_type == 'hiace') {
+            $commission_precentage = $commission->hiace;
+        }
+        elseif ($trip->trip_type == 'train') {
+            $commission_precentage = $commission->train;
+        }
+        $commission = $total * $commission_precentage / 100;
+        $receivable = $total - $commission;
+        $this->agent_commission
+        ->create([
+            'user_id' => $request->user()->id,
+            'agent_id' => $trip->agent_id,
+            'trip_id' => $request->trip_id,
+            'payment_id' => $payments->id,
+            'commission' => $commission,
+            'receivable_to_agent' => $receivable,
+            'total' => $total,
+        ]);
+        $trip->avalible_seats -= $request->travelers;
+        $trip->save();
+
+        return response()->json([
+            'success' => 'You add data success'
+        ]);
+    }
+
+    public function payment_wallet(Request $request){
+        // user/booking/payment_wallet
+        // Keys
+        // trip_id, travelers, amount, receipt_image, travel_date
+        $validation = Validator::make(request()->all(),[
+            'trip_id' => 'required|exists:trips,id',
+            'travelers' => 'required|numeric',
+            'amount' => 'required|numeric',
+            'travel_date' => 'required|date',
+        ]);
+        if($validation->fails()){
+            return response()->json(['error'=>$validation->errors()],400);
+        }
+        $trip = $this->trips
+        ->where('id', $request->trip_id)
+        ->first();
+        $commission = $this->commissions
+        ->where('agent_id', $trip->agent_id)
+        ->first();
+        $total = $trip->price * $request->travelers;
+        $min_cost = $trip->min_cost * $request->travelers;
+        $wallet = $this->wallet
+        ->where('user_id', $request->user()->id)
+        ->where('currency_id', $trip->currency_id)
+        ->first();
+        if (empty($wallet) || $total > $wallet->amount) {
+            return response()->json([
+                'errors' => 'Wallet does not have ' . $total
+            ], 400);
+        }
+        if ($request->travelers > $trip->avalible_seats) {
+            return response()->json([
+                'errors' => 'travellers must not more than ' . $trip->avalible_seats
+            ], 403);
+        }
+        if (!empty($trip->max_book_date) && date('Y-m-d') > $trip->max_book_date) {
+            return response()->json([
+                'errors' => 'Max book date at ' . $trip->max_book_date
+            ], 404);
+        }
+        $paymentRequest = $validation->validated(); 
+        $paymentRequest['total'] = $total;
+        $paymentRequest['user_id'] = $request->user()->id;
+        $paymentRequest['currency_id'] = $trip->currency_id;
+        $paymentRequest['status'] = $trip->currency_id;
         $payments = $this->payments
         ->create($paymentRequest);
         $this->booking

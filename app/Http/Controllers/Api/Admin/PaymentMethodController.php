@@ -50,8 +50,7 @@ class PaymentMethodController extends Controller
         }
 
         $validation = Validator::make(request()->all(),[
-            'name' => 'required|string',
-            'image' => 'required|string',
+            'name' => 'required|string', 
             'status' => 'required|in:active,inactive',
         ]);
 
@@ -59,11 +58,14 @@ class PaymentMethodController extends Controller
             return response()->json(['error'=>$validation->errors()],400);
         }
 
-        $paymentMethod->update([
+        $paymentRequest = [
             'name' => $request->name,
-            'image' => $this->storeBase64Image($request->image , 'admin/payment_method'),
             'status' => $request->status,
-        ]);
+        ];
+        if ($request->image) { 
+            $paymentRequest['image'] = $this->storeBase64Image($request->image , 'admin/payment_method');
+        }
+        $paymentMethod->update($paymentRequest);
     }
 
     public function deletepaymentMethod($id){
