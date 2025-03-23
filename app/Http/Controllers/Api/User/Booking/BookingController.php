@@ -286,7 +286,7 @@ class BookingController extends Controller
         $paymentRequest['total'] = $total;
         $paymentRequest['user_id'] = $request->user()->id;
         $paymentRequest['currency_id'] = $trip->currency_id;
-        $paymentRequest['status'] = $trip->currency_id;
+        $paymentRequest['status'] = 'confirmed';
         $payments = $this->payments
         ->create($paymentRequest);
         $this->booking

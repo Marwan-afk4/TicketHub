@@ -15,6 +15,7 @@ Route::middleware(['auth:sanctum','IsUser'])->group(function () {
         Route::get('/history', 'history');
         Route::post('/', 'filter');
         Route::post('/payment', 'payment');
+        Route::post('/payment_wallet', 'payment_wallet');
         Route::post('/private_request', 'private_request');
     });
 
