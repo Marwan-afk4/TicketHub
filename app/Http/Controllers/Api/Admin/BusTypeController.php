@@ -19,7 +19,7 @@ class BusTypeController extends Controller
                 'id' => $item->id,
                 'name' => $item->name,
                 'bus_image'=> url('storage/'.$item->bus_image) ?? null,
-                'seat_count' => $item->seat_count,
+                'seat_count' => $item->seats_count,
                 'plan_image' => url('storage/'.$item->plan_image) ?? null,
                 'seats_image' => url('storage/'.$item->seats_image) ?? null,
                 'status' => $item->status
@@ -47,7 +47,7 @@ class BusTypeController extends Controller
             'bus_image' => $this->storeBase64Image($request->bus_image , 'admin/bus_type/bus'),
             'plan_image' => $this->storeBase64Image($request->plan_image , 'admin/bus_type/plan'),
             'seats_image' => $this->storeBase64Image($request->seats_image , 'admin/bus_type/seats'),
-            'seat_count' => $request->seat_count,
+            'seats_count' => $request->seat_count,
             'status' => $request->status,
         ]);
         return response()->json(['message'=>'Bus Type Created Successfully'],200);
