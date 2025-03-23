@@ -14,6 +14,7 @@ use App\Models\PrivateRequest;
 use App\Models\Payment;
 use App\Models\Commission;
 use App\Models\AgentCommission;
+use App\Models\Booking;
 
 class BookingController extends Controller
 {
@@ -22,7 +23,8 @@ class BookingController extends Controller
     private PaymentMethod $payment_methods,
     private Commission $commissions,
     private AgentCommission $agent_commission,
-    private PrivateRequest $private_request,){}
+    private PrivateRequest $private_request,
+    private Booking $booking,){}
     use Image;
 
     public function lists(){
@@ -182,6 +184,17 @@ class BookingController extends Controller
         }
         $payments = $this->payments
         ->create($paymentRequest);
+        $this->booking
+        ->create([
+            'user_id' => $request->user()->id,
+            'bus_id' => $trip->bus_id,
+            'trip_id' => $trip->id,
+            'destenation_from' => $trip->pickup_station_id,
+            'destenation_to' => $trip->dropoff_station_id,
+            'date' => $request->travel_date,
+            'seats_count' => $request->travelers,
+            'status' => 'pending',
+        ]);
         if (empty($commission)) {
             $commission = $this->commissions
             ->where('type', 'defult')
