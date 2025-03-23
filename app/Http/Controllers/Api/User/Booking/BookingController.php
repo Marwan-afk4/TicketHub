@@ -344,7 +344,10 @@ class BookingController extends Controller
         ]);
     }
 
-    public function private_request(Request $request){ 
+    public function private_request(Request $request){
+        // user/booking/private_request
+        // Keys
+        // from, to, date, traveler
         $validation = Validator::make(request()->all(),[ 
             'from' => 'required',
             'to' => 'required',
