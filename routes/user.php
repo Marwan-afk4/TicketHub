@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\User\Booking\BookingController;
 use App\Http\Controllers\Api\User\Profile\ProfileController;
+use App\Http\Controllers\Api\User\Wallet\WalletController;
 
 Route::middleware(['auth:sanctum','IsUser'])->group(function () {
     Route::controller(BookingController::class)->prefix('/booking')
@@ -21,5 +22,11 @@ Route::middleware(['auth:sanctum','IsUser'])->group(function () {
     ->group(function(){
         Route::get('/', 'view');
         Route::post('/update', 'update');
+    });
+
+    Route::controller(WalletController::class)->prefix('/wallet')
+    ->group(function(){
+        Route::get('/', 'view');
+        Route::post('/charge', 'charge');
     });
 });

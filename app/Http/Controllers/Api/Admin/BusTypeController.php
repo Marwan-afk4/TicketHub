@@ -14,15 +14,15 @@ class BusTypeController extends Controller
 
     public function getBusType(){
         $bus_type = BusType::all();
-        $data = $bus_type->map(function($bus_type){
+        $data = $bus_type->map(function($item){
             return [
-                'id' => $bus_type->id,
-                'name' => $bus_type->name,
-                'bus_image'=> url('storage/'.$bus_type->bus_image) ?? null,
-                'seat_count' => $bus_type->seat_count,
-                'plan_image' => url('storage/'.$bus_type->plan_image) ?? null,
-                'seats_image' => url('storage/'.$bus_type->seats_image) ?? null,
-                'status' => $bus_type->status
+                'id' => $item->id,
+                'name' => $item->name,
+                'bus_image'=> url('storage/'.$item->bus_image) ?? null,
+                'seat_count' => $item->seat_count,
+                'plan_image' => url('storage/'.$item->plan_image) ?? null,
+                'seats_image' => url('storage/'.$item->seats_image) ?? null,
+                'status' => $item->status
             ];
         });
         return response()->json(['bus_type' => $data]);

@@ -7,6 +7,8 @@ use App\Http\Requests\AuthRequest;
 use App\Http\Requests\Auth\SignupUserRequest;
 use App\Models\User;
 use App\Models\Nationality;
+use App\Models\Wallet;
+use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -14,7 +16,9 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ForgetPasswordMail;
 
 class AuthController extends Controller
-{ 
+{
+    public function __construct(private Currency $currency, private Wallet $wallet){}
+
     public function lists(){
         // /api/lists
         $nationality = Nationality::get();
@@ -32,6 +36,17 @@ class AuthController extends Controller
         $validated['role'] = 'user';
         $user = User::create($validated);
         $token = $user->createToken('auth_token')->plainTextToken;
+        $currencies = $this->currency
+        ->where('status', 1)
+        ->get();
+        foreach ($currencies as $item) {
+            $this->wallet
+            ->create([
+                'user_id' => $user->id,
+                'currency_id' => $item->id,
+                'amount' => 0,
+            ]);
+        }
         return response()->json([
             'token' => $token,
             'message'=>'user Added Successfully',
