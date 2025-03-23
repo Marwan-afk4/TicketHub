@@ -182,6 +182,7 @@ class BookingController extends Controller
             $image_path = $this->uploadFile($request->receipt_image, '/users/payment/receipt_image');
             $paymentRequest['receipt_image'] = $image_path;
         }
+        $paymentRequest['currency_id'] = $trip->currency_id;
         $payments = $this->payments
         ->create($paymentRequest);
         $this->booking

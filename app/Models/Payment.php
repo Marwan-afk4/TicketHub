@@ -16,6 +16,7 @@ class Payment extends Model
         'status',
         'total',
         'travel_date',
+        'currency_id',
     ];
 
     public function paymentMethod(){
