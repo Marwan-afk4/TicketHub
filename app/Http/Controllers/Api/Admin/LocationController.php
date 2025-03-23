@@ -197,8 +197,8 @@ class LocationController extends Controller
 // stations
 
     public function getStation (){
-        $stations = Station::all();
-        $data =$stations->map(function($station){
+        $pickup = Station::where('pickup',1)->get();
+        $dataPickup =$pickup->map(function($station){
             return [
                 'id' => $station->id,
                 'name' => $station->name,
@@ -214,7 +214,26 @@ class LocationController extends Controller
                 'status' => $station->status
             ];
         });
-        return response()->json(['stations'=>$data]);
+
+        $dropoff = Station::where('dropoff',1)->get();
+        $dataDropoff =$dropoff->map(function($station){
+            return [
+                'id' => $station->id,
+                'name' => $station->name,
+                'country_id' => $station->country_id,
+                'country_name' => $station->country->name,
+                'city_id' => $station->city_id,
+                'city_name' => $station->city->name,
+                'zone_id' => $station->zone_id,
+                'zone_name' => $station->zone->name,
+                'pickup'=> $station->pickup,
+                'dropoff'=> $station->dropoff,
+                'basic_station'=> $station->basic_station,
+                'status' => $station->status
+            ];
+        });
+        return response()->json([
+            'dropoff'=>$dataDropoff,'pickup'=>$dataPickup]);
     }
 
     public function addStation(Request $request){
