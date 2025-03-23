@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class BusType extends Model
 {
-
-
     protected $fillable =[
         'name',
         'bus_image',
