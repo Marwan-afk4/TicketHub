@@ -84,6 +84,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
     Route::get('/admin/bus_types',[BusTypeController::class,'getBusType']);
 
+    Route::put('/admin/bus_types/status/{id}',[BusTypeController::class,'busTypeStatus']);
+
     Route::post('/admin/bus_type/add',[BusTypeController::class,'addBusType']);
 
     Route::delete('/admin/bus_type/delete/{id}',[BusTypeController::class,'deleteBusType']);

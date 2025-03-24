@@ -28,6 +28,21 @@ class BusTypeController extends Controller
         return response()->json(['bus_type' => $data]);
     }
 
+    public function busTypeStatus(Request $request){
+        // api/admin/bus_types/status/{id}
+        $validation = Validator::make(request()->all(),[ 
+            'status' => 'required|in:active,inactive',
+        ]); 
+        if($validation->fails()){
+            return response()->json(['errors'=>$validation->errors()],400);
+        }
+        $bus_type = BusType::update([
+            'status' => $request->status
+        ]);
+        
+        return response()->json(['success' => $request->status]);
+    }
+
     public function addBusType(Request $request){
         $validation = Validator::make(request()->all(),[
             'name' => 'required|string',
