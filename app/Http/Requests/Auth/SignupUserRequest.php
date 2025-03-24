@@ -37,7 +37,7 @@ class SignupUserRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'message' => 'Validation errors',
-            'data' => $validator->errors()
+            'errors' => $validator->errors()
         ],400),);
     }
 }

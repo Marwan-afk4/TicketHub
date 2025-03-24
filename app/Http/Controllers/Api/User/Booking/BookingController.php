@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Image;
 
 use App\Models\City;
+use App\Models\Country;
 use App\Models\Trip;
 use App\Models\PaymentMethod;
 use App\Models\PrivateRequest;
@@ -19,7 +20,8 @@ use App\Models\Wallet;
 
 class BookingController extends Controller
 {
-    public function __construct(private City $cities, 
+    public function __construct(private City $cities,
+    private Country $countries,
     private Trip $trips, private Payment $payments, 
     private PaymentMethod $payment_methods,
     private Commission $commissions,
@@ -35,11 +37,16 @@ class BookingController extends Controller
         ->select('id', 'name')
         ->where('status', 'active')
         ->get();
+        $countries = $this->countries
+        ->select('id', 'name')
+        ->where('status', 'active')
+        ->get();
         $payment_methods = $this->payment_methods
         ->where('status', 'active')
         ->get();
 
         return response()->json([
+            'countries' => $countries,
             'cities' => $cities,
             'payment_methods' => $payment_methods,
         ]);
@@ -349,6 +356,7 @@ class BookingController extends Controller
         // user/booking/private_request
         // Keys
         // from, to, date, traveler
+        // country_id, city_id, address, map
         $validation = Validator::make(request()->all(),[ 
             'from' => 'required',
             'to' => 'required',
