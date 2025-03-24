@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('addresses', function (Blueprint $table) {
-            $table->id();
+        Schema::table('private_requests', function (Blueprint $table) {
             $table->foreignId('country_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('city_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('address');
             $table->string('map');
-            $table->timestamps();
         });
     }
 
@@ -26,6 +24,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('addresses');
+        Schema::table('private_requests', function (Blueprint $table) {
+            //
+        });
     }
 };

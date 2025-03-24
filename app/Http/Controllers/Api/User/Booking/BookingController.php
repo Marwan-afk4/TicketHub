@@ -65,7 +65,7 @@ class BookingController extends Controller
             'type' => 'nullable|in:one_way,round_trip',
         ]);
         if($validation->fails()){
-            return response()->json(['error'=>$validation->errors()],400);
+            return response()->json(['errors'=>$validation->errors()],400);
         }
         
         $buses_trips = $this->trips
@@ -159,7 +159,7 @@ class BookingController extends Controller
             'travel_date' => 'required|date',
         ]);
         if($validation->fails()){
-            return response()->json(['error'=>$validation->errors()],400);
+            return response()->json(['errors'=>$validation->errors()],400);
         }
         $trip = $this->trips
         ->where('id', $request->trip_id)
@@ -260,7 +260,7 @@ class BookingController extends Controller
             'travel_date' => 'required|date',
         ]);
         if($validation->fails()){
-            return response()->json(['error'=>$validation->errors()],400);
+            return response()->json(['errors'=>$validation->errors()],400);
         }
         $trip = $this->trips
         ->where('id', $request->trip_id)
@@ -357,14 +357,18 @@ class BookingController extends Controller
         // Keys
         // from, to, date, traveler
         // country_id, city_id, address, map
-        $validation = Validator::make(request()->all(),[ 
+        $validation = Validator::make(request()->all(),[
             'from' => 'required',
             'to' => 'required',
             'date' => 'required|date',
             'traveler' => 'required|numeric',
+            'country_id' => 'required|exists:countries,id',
+            'city_id' => 'required|exists:cities,id',
+            'address' => 'required',
+            'map' => 'required',
         ]);
         if($validation->fails()){
-            return response()->json(['error'=>$validation->errors()],400);
+            return response()->json(['errors'=>$validation->errors()],400);
         }
 
         $privateRequest = $validation->validated();

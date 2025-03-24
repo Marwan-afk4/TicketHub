@@ -12,5 +12,9 @@ class PrivateRequest extends Model
         'to',
         'date',
         'traveler',
+        'country_id',
+        'city_id',
+        'address',
+        'map',
     ];
 }

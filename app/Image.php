@@ -81,7 +81,7 @@ trait Image
             return $folderPath . '/' . $fileName;
         }
 
-        return response()->json(['error' => 'Invalid base64 image string'], 400);
+        return response()->json(['errors' => 'Invalid base64 image string'], 400);
     }
 
 

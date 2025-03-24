@@ -19,7 +19,7 @@ class AdminMiddleware
         if (Auth::user()->role == 'admin') {
             return $next($request);
         } else {
-            return response()->json(['error' => 'Unauthorized ,you are not admin'], 401);
+            return response()->json(['errors' => 'Unauthorized ,you are not admin'], 401);
         }
     }
 }

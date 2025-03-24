@@ -52,7 +52,7 @@ class BusController extends Controller
         ]);
 
         if ($validation->fails()) {
-            return response()->json(['error' => $validation->errors()], 400);
+            return response()->json(['errors' => $validation->errors()], 400);
         }
 
         $busImagePath = null;
@@ -80,7 +80,7 @@ class BusController extends Controller
     public function deleteBus($id){
         $bus = Bus::find($id);
         if (!$bus) {
-            return response()->json(['error' => 'Bus not found'], 404);
+            return response()->json(['errors' => 'Bus not found'], 404);
         }
         $bus->delete();
         return response()->json(['message' => 'Bus Deleted Successfully']);
@@ -92,7 +92,7 @@ class BusController extends Controller
         $bus = Bus::find($id);
 
         if (!$bus) {
-            return response()->json(['error' => 'Bus not found'], 404);
+            return response()->json(['errors' => 'Bus not found'], 404);
         }
 
         $bus->update([

@@ -37,7 +37,7 @@ class LocationController extends Controller
         ]);
 
         if($validation->fails()){
-            return response()->json(['error'=>$validation->errors()],400);
+            return response()->json(['errors'=>$validation->errors()],400);
         }
 
         $country = Country::create([
@@ -52,7 +52,7 @@ class LocationController extends Controller
         $country = Country::find($id);
 
         if (!$country) {
-            return response()->json(['error' => 'Country not found'], 404);
+            return response()->json(['errors' => 'Country not found'], 404);
         }
 
         $updatedData = [
@@ -102,7 +102,7 @@ class LocationController extends Controller
         ]);
 
         if($validation->fails()){
-            return response()->json(['error'=>$validation->errors()],400);
+            return response()->json(['errors'=>$validation->errors()],400);
         }
 
         $city = City::create([
@@ -161,7 +161,7 @@ class LocationController extends Controller
         ]);
 
         if($validation->fails()){
-            return response()->json(['error'=>$validation->errors()],400);
+            return response()->json(['errors'=>$validation->errors()],400);
         }
 
         $zone = Zone::create([
@@ -248,7 +248,7 @@ class LocationController extends Controller
         ]);
 
         if($validation->fails()){
-            return response()->json(['error'=>$validation->errors()],400);
+            return response()->json(['errors'=>$validation->errors()],400);
         }
 
         $station = Station::create([

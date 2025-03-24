@@ -19,7 +19,7 @@ class UserMiddleware
         if (Auth::user()->role == 'user') {
             return $next($request);
         } else {
-            return response()->json(['error' => 'Unauthorized ,you are not user'], 401);
+            return response()->json(['errors' => 'Unauthorized ,you are not user'], 401);
         }
     }
 }

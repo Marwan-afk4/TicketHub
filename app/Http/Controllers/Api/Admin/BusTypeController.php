@@ -39,7 +39,7 @@ class BusTypeController extends Controller
         ]);
 
         if($validation->fails()){
-            return response()->json(['error'=>$validation->errors()],400);
+            return response()->json(['errors'=>$validation->errors()],400);
         }
 
         $bustype = BusType::create([
