@@ -31,4 +31,8 @@ class Payment extends Model
     public function trip(){
         return $this->belongsTo(Trip::class);
     }
+
+    public function booking(){
+        return $this->belongsTo(Booking::class, 'booking_id');
+    }
 }

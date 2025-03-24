@@ -372,7 +372,7 @@ class BookingController extends Controller
     public function history(Request $request){
         // /user/booking/history
         $history = $this->payments
-        ->select('id', 'amount', 'total', 'status', 'travelers', 'travel_date', 'trip_id')
+        ->select('id', 'amount', 'total', 'status', 'travelers', 'travel_date', 'trip_id', 'booking_id')
         ->with(['trip' => function($query){
             $query->select('id', 'deputre_time', 'arrival_time', 'pickup_station_id', 
             'dropoff_station_id', 'city_id', 'to_city_id')
@@ -392,10 +392,15 @@ class BookingController extends Controller
                         });
                   });
         })
-        ->get();
+        ->get()
+        ->map(function($item){
+            $item->travel_status = $item?->booking?->status ?? null;
+            $item->makeHidden(['booking', 'booking_id']);
+            return $item;
+        });
 
         $upcoming = $this->payments
-        ->select('id', 'amount', 'total', 'status', 'travelers', 'travel_date', 'trip_id')
+        ->select('id', 'amount', 'total', 'status', 'travelers', 'travel_date', 'trip_id', 'booking_id')
         ->with(['trip' => function($query){
             $query->select('id', 'deputre_time', 'arrival_time', 'pickup_station_id', 
             'dropoff_station_id', 'city_id', 'to_city_id')
@@ -415,7 +420,12 @@ class BookingController extends Controller
                         });
                   });
         })
-        ->get();
+        ->get()
+        ->map(function($item){
+            $item->travel_status = $item?->booking?->status ?? null;
+            $item->makeHidden(['booking', 'booking_id']);
+            return $item;
+        });
 
         return response()->json([
             'history' => $history,
@@ -450,5 +460,16 @@ class BookingController extends Controller
         ->where('user_id', $request->user()->id)
         ->where('currency_id', $trip->currency_id)
         ->first();
+        $wallet->amount += $total;
+        $wallet->save();
+        $booking = $this->booking
+        ->where('id', $payments->booking_id)
+        ->update([
+            'status' => 'canceled'
+        ]);
+
+        return response()->json([
+            'success' => 'You cancel trip success',
+        ]);
     }
 }

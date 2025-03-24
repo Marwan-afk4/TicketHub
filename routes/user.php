@@ -17,6 +17,7 @@ Route::middleware(['auth:sanctum','IsUser'])->group(function () {
         Route::post('/payment', 'payment');
         Route::post('/payment_wallet', 'payment_wallet');
         Route::post('/private_request', 'private_request');
+        Route::post('/cancel/{id}', 'cancel');
     });
 
     Route::controller(ProfileController::class)->prefix('/profile')
