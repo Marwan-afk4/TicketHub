@@ -382,6 +382,7 @@ class BookingController extends Controller
             ]);
         }])
         ->where('user_id', $request->user()->id)
+        ->where('status', 'confirmed')
         ->where(function ($query) {
             $query->where('travel_date', '<', date('Y-m-d'))
                   ->orWhere(function ($q) {
@@ -404,6 +405,7 @@ class BookingController extends Controller
             ]);
         }])
         ->where('user_id', $request->user()->id)
+        ->where('status', 'confirmed')
         ->where(function ($query) {
             $query->where('travel_date', '>', date('Y-m-d'))
                   ->orWhere(function ($q) {
@@ -419,5 +421,32 @@ class BookingController extends Controller
             'history' => $history,
             'upcoming' => $upcoming
         ]);
+    }
+
+    public function cancel(Request $request, $id){
+        $payments = $this->payments
+        ->where('id', $id)
+        ->where('user_id', $request->user()->id)
+        ->with('trip')
+        ->first();
+        if (empty($payments)) {
+            return response()->json([
+                'errors' => 'id is wrong'
+            ], 400);
+        }
+        $trip = $payments->trip;
+        $fees = 0;
+        if (!empty($trip->cancelation_date) && $trip->cancelation_date < date('Y-m-d')) {
+            if ($trip->cancelation_pay_amount == 'percentage') {
+                $fees = $trip->price * $trip->cancelation_pay_value / 100;
+            } 
+            else {
+                $fees = $trip->cancelation_pay_value;
+            }
+        }
+        $fees = $fees * $payments->travelers;
+        $total = $payments->amount - $fees;
+        $wallet = $this->wallet
+        ->where('user_id', $request->user()->id);
     }
 }

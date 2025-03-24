@@ -36,6 +36,7 @@ class Trip extends Model
         'min_cost',
         'trip_type',
         'currency_id',
+        'cancelation_date',
     ];
 
     public function bus(){
