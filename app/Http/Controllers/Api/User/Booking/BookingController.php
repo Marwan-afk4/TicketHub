@@ -287,9 +287,7 @@ class BookingController extends Controller
         $paymentRequest['user_id'] = $request->user()->id;
         $paymentRequest['currency_id'] = $trip->currency_id;
         $paymentRequest['status'] = 'confirmed';
-        $payments = $this->payments
-        ->create($paymentRequest);
-        $this->booking
+        $booking = $this->booking
         ->create([
             'user_id' => $request->user()->id,
             'bus_id' => $trip->bus_id,
@@ -300,6 +298,9 @@ class BookingController extends Controller
             'seats_count' => $request->travelers,
             'status' => 'pending',
         ]);
+        $paymentRequest['booking_id'] = $booking->id;
+        $payments = $this->payments
+        ->create($paymentRequest);
         if (empty($commission)) {
             $commission = $this->commissions
             ->where('type', 'defult')
