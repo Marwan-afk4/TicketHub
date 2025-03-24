@@ -447,6 +447,8 @@ class BookingController extends Controller
         $fees = $fees * $payments->travelers;
         $total = $payments->amount - $fees;
         $wallet = $this->wallet
-        ->where('user_id', $request->user()->id);
+        ->where('user_id', $request->user()->id)
+        ->where('currency_id', $trip->currency_id)
+        ->first();
     }
 }
