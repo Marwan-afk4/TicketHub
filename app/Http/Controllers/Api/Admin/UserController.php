@@ -94,7 +94,7 @@ class UserController extends Controller
     public function UpdateUser(Request $request,$id){
         $user = User::find($id);
         if($user){
-            $user->update([
+            $data = [
                 'country_id' => $request->country_id ?? $user->country_id,
                 'city_id' => $request->city_id ?? $user->city_id,
                 'zone_id' => $request->zone_id ?? $user->zone_id,
@@ -102,7 +102,11 @@ class UserController extends Controller
                 'email' => $request->email ?? $user->email,
                 'phone' => $request->phone ?? $user->phone,
                 'role' => 'user' ?? $user->role
-            ]);
+            ];
+            if (!empty($request->password)) {
+                $data['password'] = Hash::make($request->password);
+            }
+            $user->update($data);
             return response()->json(['message'=>'User Updated Successfully'],200);
         }
     }
