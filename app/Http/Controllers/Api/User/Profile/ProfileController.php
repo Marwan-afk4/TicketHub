@@ -30,12 +30,12 @@ class ProfileController extends Controller
         // Keys
         // nationality_id, name, email, phone, gender, password, image
         $validation = Validator::make($request->all(),[
-            'nationality_id' => ['required', 'exists:nationalities,id'],
-            'name' => ['required', 'string'],
-            'email' => ['required','email', Rule::unique('users')->ignore($request->user()->id)],
-            'phone' => ['required', Rule::unique('users')->ignore($request->user()->id)],
-            'gender' => ['required', 'in:male,female'],
-            'password' => ['required','min:8'],
+            'nationality_id' => ['exists:nationalities,id'],
+            'name' => ['string'],
+            'email' => ['email', Rule::unique('users')->ignore($request->user()->id)],
+            'phone' => [Rule::unique('users')->ignore($request->user()->id)],
+            'gender' => ['in:male,female'],
+            'password' => ['min:8'],
         ]);
         if($validation->fails()){
             return response()->json(['message'=>$validation->errors()],400);
@@ -47,9 +47,16 @@ class ProfileController extends Controller
         ->first();
         if ($request->image && !is_string($request->image)) {
             $image_path = $this->update_image($request, $user->image ,'image', '/users/image');
-            $profileRequest['image'] = $image_path;
         }
-        $user->update($profileRequest);
+        $user->nationality_id = $request->nationality_id ?? $user->nationality_id;
+        $user->name = $request->name ?? $user->name;
+        $user->email = $request->email ?? $user->email;
+        $user->phone = $request->phone ?? $user->phone;
+        $user->gender = $request->gender ?? $user->gender;
+        $user->password = $request->password && !empty($request->password) ?
+        $request->password : $user->password;
+        $user->image = isset($image_path) ? $image_path : $user->image;
+        $user->save();
 
         return response()->json([
             'success' => 'You update data success'

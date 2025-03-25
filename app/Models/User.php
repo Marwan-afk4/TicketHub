@@ -57,4 +57,9 @@ class User extends Model
     {
         return $this->hasMany(Bus::class);
     }
+
+    public function modules()
+    {
+        return $this->hasMany(AgentModule::class, 'agent_id');
+    }
 }
