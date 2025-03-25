@@ -17,10 +17,10 @@ return new class extends Migration
             $table->foreignId('brand_id')->nullable()->constrained('car_brands')->onDelete('cascade');
             $table->foreignId('model_id')->nullable()->constrained('car_models')->onDelete('cascade');
             $table->foreignId('agent_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->string('car_number');
-            $table->string('car_color');
-            $table->string('car_year');
-            $table->enum('status', ['busy', 'available']);
+            $table->string('car_number')->nullable();
+            $table->string('car_color')->nullable();
+            $table->string('car_year')->nullable();
+            $table->enum('status', ['busy', 'available'])->default('available');
             $table->string('image')->nullable();
             $table->timestamps();
         });

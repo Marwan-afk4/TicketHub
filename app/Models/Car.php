@@ -10,6 +10,7 @@ class Car extends Model
         'category_id',
         'brand_id',
         'model_id',
+        'agent_id',
         'car_number',
         'car_color',
         'car_year',

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\AgentMiddleware;
 use App\Http\Middleware\UserMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,12 +18,18 @@ return Application::configure(basePath: dirname(__DIR__))
             ->prefix('user')
             ->name('user.')
             ->group(base_path('routes/user.php'));
+
+            Route::middleware('api')
+            ->prefix('agent')
+            ->name('agent.')
+            ->group(base_path('routes/agent.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'IsAdmin'=>AdminMiddleware::class,
             'IsUser' => UserMiddleware::class,
+            'IsAgent' => AgentMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

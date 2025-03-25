@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Agent\Car;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Agent\CarRequest;
+use App\Image;
 
 use App\Models\CarBrand;
 use App\Models\CarCategory;
@@ -15,9 +17,49 @@ class CarController extends Controller
     public function __construct(private CarBrand $brands,
     private CarCategory $category, private CarModel $car_mode,
     private Car $car){}
+    use Image;
 
     public function view(Request $request){
+        // /agent/car
         $cars = $this->car
-        ->where('agent_id', $request->user()->id);
+        ->where('agent_id', $request->user()->id)
+        ->with(['category:id,name', 'brand:id,name', 'model:id,name'])
+        ->get();
+
+        return response()->json([
+            'cars' => $cars
+        ]);
+    }
+
+    public function car(Request $request, $id){
+        // /agent/car/item/{id}
+        $car = $this->car
+        ->where('id', $id)
+        ->where('agent_id', $request->user()->id)
+        ->with(['category:id,name', 'brand:id,name', 'model:id,name'])
+        ->first();
+
+        return response()->json([
+            'car' => $car
+        ]);
+    }
+
+    public function create(CarRequest $request){
+        // /agent/car/add
+        // Keys
+        // category_id, brand_id, model_id, status => [busy, available], 
+        // car_number, car_color, car_year
+        $carRequest = $request->validated();
+        $carRequest['agent_id'] = $request->user()->id;
+        if ($request->image && !is_string($request->image)) {
+            $image_path = $this->upload_image($request, 'image', '/agent/cars');
+            $carRequest['image'] = $image_path;
+        }
+        $car = $this->car
+        ->create($carRequest);
+
+        return response()->json([
+            'success' => 'You add data success',
+        ]);
     }
 }
