@@ -110,6 +110,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
     Route::get('/admin/complaints',[ComplaintController::class,'getComplaint']);
 
+    Route::get('/admin/users',[ComplaintController::class,'getUsers']);
+
     Route::post('/admin/complaint/add',[ComplaintController::class,'addComplaint']);
 
     Route::delete('/admin/complaint/delete/{id}',[ComplaintController::class,'deleteComplaint']);
