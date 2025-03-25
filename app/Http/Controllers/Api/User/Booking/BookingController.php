@@ -71,7 +71,10 @@ class BookingController extends Controller
         }
         
         $buses_trips = $this->trips
-        ->with(['bus:id,bus_number,bus_image', 'pickup_station:id,name', 'dropoff_station:id,name'])
+        ->with(['bus' => function($query){
+            $query->select('id', 'bus_number', 'bus_image')
+            ->with(['aminity:id,name,icon']);
+        }, 'pickup_station:id,name', 'dropoff_station:id,name'])
         ->where('avalible_seats', '>', 0)
         ->where('status', 'active');
 
@@ -103,7 +106,10 @@ class BookingController extends Controller
         
         if ($request->type === 'round_trip') {
             $buses_back_trips = $this->trips
-            ->with(['bus:id,bus_number,bus_image', 'pickup_station:id,name', 'dropoff_station:id,name'])
+            ->with(['bus' => function($query){
+                $query->select('id', 'bus_number', 'bus_image')
+                ->with(['aminity:id,name,icon']);
+            }, 'pickup_station:id,name', 'dropoff_station:id,name'])
             ->where('avalible_seats', '>', 0)
             ->where('status', 'active');
 

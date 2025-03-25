@@ -25,6 +25,10 @@ class Bus extends Model
         return $this->belongsTo(BusType::class);
     }
 
+    public function aminity(){
+        return $this->belongsToMany(Aminity::class, 'aminity_bus');
+    }
+
     public function agent(){
         return $this->belongsTo(User::class, 'agent_id');
     }
