@@ -19,7 +19,7 @@ class WalletController extends Controller
     public function view(Request $request){
         // /user/wallet
         $wallets = $this->wallets
-        ->with('currency:id,name,symbol')
+        ->with(['currency:id,name,symbol'])
         ->where('user_id', $request->user()->id)
         ->get();
 
@@ -28,13 +28,26 @@ class WalletController extends Controller
         ]);
     }
 
+    public function history(Request $request){
+        // /user/wallet/history
+        $history = $this->charge_wallet
+        ->with(['currency:id,name,symbol', 'payment_method:id,name'])
+        ->where('user_id', $request->user()->id)
+        ->get();
+
+        return response()->json([
+            'history' => $history
+        ]);
+    }
+
     public function charge(Request $request){
         // /user/wallet/charge
         // Keys
-        // wallet_id, amount
+        // wallet_id, amount, payment_method_id
         $validation = Validator::make($request->all(),[
             'wallet_id' => 'required|exists:wallets,id',
-            'amount' => 'required|numeric'
+            'amount' => 'required|numeric',
+            'payment_method_id' => 'nullable|exists:payment_methods,id'
         ]);
         if($validation->fails()){
             return response()->json(['message'=>$validation->errors()],400);
@@ -46,7 +59,8 @@ class WalletController extends Controller
             'user_id' => $request->user()->id,
             'currency_id' => $wallet->currency_id,
             'wallet_id' => $wallet->id,
-            'amount' => $request->amount
+            'amount' => $request->amount,
+            'payment_method_id' => $request->payment_method_id,
         ]; 
         if ($request->image && !is_string($request->image)) {
             $image_path = $this->upload_image($request, 'image', '/users/wallet/charge');

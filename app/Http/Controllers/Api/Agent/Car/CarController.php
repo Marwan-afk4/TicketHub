@@ -62,4 +62,50 @@ class CarController extends Controller
             'success' => 'You add data success',
         ]);
     }
+
+    public function modify(CarRequest $request, $id){
+        // /agent/car/update/{id}
+        // Keys
+        // category_id, brand_id, model_id, status => [busy, available], 
+        // car_number, car_color, car_year
+        $carRequest = $request->validated();
+        $car = $this->car
+        ->where('agent_id', $request->user()->id)
+        ->where('id', $id)
+        ->first();
+        if (empty($car)) {
+            return response()->json([
+                'errors' => 'item is not found'
+            ], 400);
+        }
+        $carRequest['agent_id'] = $request->user()->id;
+        if ($request->image && !is_string($request->image)) {
+            $image_path = $this->update_image($request, $car->image, 'image', '/agent/cars');
+            $carRequest['image'] = $image_path;
+        }
+        $car->update($carRequest);
+
+        return response()->json([
+            'success' => 'You update data success',
+        ]);
+    }
+
+    public function delete(Request $request, $id){
+        // /agent/car/delete/{id}
+        $car = $this->car
+        ->where('agent_id', $request->user()->id)
+        ->where('id', $id)
+        ->first();
+        if (empty($car)) {
+            return response()->json([
+                'errors' => 'item is not found'
+            ], 400);
+        }
+        $this->deleteImage($car->image);
+        $car->delete();
+
+        return response()->json([
+            'success' => 'You delete data success'
+        ]);
+    }
 }
