@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\User\Points;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\Point;
 use App\Models\Wallet;
@@ -18,6 +19,7 @@ class PointsController extends Controller
     ){}
 
     public function view(Request $request){
+        // user/points
         $user_data = $request->user();
         $redeem_points = $this->points
         ->with('currency')
@@ -30,9 +32,12 @@ class PointsController extends Controller
     }
 
     public function convert(Request $request){
+        // user/points/convert
+        // Keys
+        // currency_id, points
         $validation = Validator::make(request()->all(),[ 
             'currency_id' => ['exists:currencies,id', 'required'],
-            'points' => ['numeric', 'required', 'gt:' . $request->user()->points],
+            'points' => ['numeric', 'required'],
         ]);
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
@@ -44,6 +49,11 @@ class PointsController extends Controller
         if (empty($redeem_points)) {
             return response()->json([
                 'errors' => "You can't redeem point now"
+            ], 400);
+        }
+        if ($request->user()->points < $request->points) {
+            return response()->json([
+                'errors' => "The points field must be less than or equal " . $request->user()->points
             ], 400);
         }
         $points = $request->points - $request->points % $redeem_points->points;

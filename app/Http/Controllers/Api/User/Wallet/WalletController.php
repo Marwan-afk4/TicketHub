@@ -43,7 +43,7 @@ class WalletController extends Controller
     public function charge(Request $request){
         // /user/wallet/charge
         // Keys
-        // wallet_id, amount, payment_method_id
+        // wallet_id, amount, payment_method_id, image
         $validation = Validator::make($request->all(),[
             'wallet_id' => 'required|exists:wallets,id',
             'amount' => 'required|numeric',
