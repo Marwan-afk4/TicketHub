@@ -16,5 +16,9 @@ class PrivateRequest extends Model
         'city_id',
         'address',
         'map',
+        'car_id',
+        'category_id',
+        'brand_id',
+        'model_id',
     ];
 }

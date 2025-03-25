@@ -17,6 +17,7 @@ use App\Models\Commission;
 use App\Models\AgentCommission;
 use App\Models\Booking;
 use App\Models\Wallet;
+use App\Models\Car;
 
 class BookingController extends Controller
 {
@@ -28,7 +29,8 @@ class BookingController extends Controller
     private AgentCommission $agent_commission,
     private PrivateRequest $private_request,
     private Booking $booking,
-    private Wallet $wallet,){}
+    private Wallet $wallet,
+    private Car $car){}
     use Image;
 
     public function lists(){
@@ -357,22 +359,29 @@ class BookingController extends Controller
         // Keys
         // from, to, date, traveler
         // country_id, city_id, address, map
+        // car_id
         $validation = Validator::make(request()->all(),[
-            'from' => 'required',
-            'to' => 'required',
+            'from' => 'required|exists:cities,id',
+            'to' => 'required|exists:cities,id',
             'date' => 'required|date',
             'traveler' => 'required|numeric',
             'country_id' => 'required|exists:countries,id',
             'city_id' => 'required|exists:cities,id',
+            'car_id' => 'required|exists:cars,id',
             'address' => 'required',
             'map' => 'required',
         ]);
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
         }
-
+        $car = $this->car
+        ->where('id', $request->car_id)
+        ->first();
         $privateRequest = $validation->validated();
         $privateRequest['user_id'] = $request->user()->id;
+        $privateRequest['category_id'] = $car->category_id;
+        $privateRequest['brand_id'] = $car->brand_id;
+        $privateRequest['model_id'] = $car->model_id;
         $this->private_request
         ->create($privateRequest);
 
