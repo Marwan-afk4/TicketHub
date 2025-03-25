@@ -1,8 +1,15 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\BookingController;
 use App\Http\Controllers\Api\Admin\BusController;
 use App\Http\Controllers\Api\Admin\BusTypeController;
+use App\Http\Controllers\Api\Admin\ComplaintController;
+use App\Http\Controllers\Api\Admin\ComplaintSubjectController;
+use App\Http\Controllers\Api\Admin\CurrancyController;
 use App\Http\Controllers\Api\Admin\LocationController;
+use App\Http\Controllers\Api\Admin\NationailtyController;
+use App\Http\Controllers\Api\Admin\OperatorController;
+use App\Http\Controllers\Api\Admin\PaymentController;
 use App\Http\Controllers\Api\Admin\PaymentMethodController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
@@ -101,4 +108,78 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/payment_method/delete/{id}',[PaymentMethodController::class,'deletepaymentMethod']);
 
     Route::put('/admin/payment_method/update/{id}',[PaymentMethodController::class,'updatePaymentMethod']);
+
+/////////////////////////////////////////// Complaints ////////////////////////////////////////////
+
+    Route::get('/admin/complaints',[ComplaintController::class,'getComplaint']);
+
+    Route::get('/admin/users',[ComplaintController::class,'getUsers']);
+
+    Route::post('/admin/complaint/add',[ComplaintController::class,'addComplaint']);
+
+    Route::delete('/admin/complaint/delete/{id}',[ComplaintController::class,'deleteComplaint']);
+
+    Route::put('/admin/complaint/resolve/{id}',[ComplaintController::class,'resolveComplaint']);
+
+    Route::put('/admin/complaint/reject/{id}',[ComplaintController::class,'rejectComplaint']);
+
+////////////////////////////////////////// Subject Complaints ///////////////////////////////////////////
+
+    Route::get('/admin/complaint_subjects',[ComplaintSubjectController::class,'getSubjects']);
+
+    Route::post('/admin/complaint_subject/add',[ComplaintSubjectController::class,'addSubject']);
+
+    Route::delete('/admin/complaint_subject/delete/{id}',[ComplaintSubjectController::class,'deleteSubject']);
+
+    Route::put('/admin/complaint_subject/update/{id}',[ComplaintSubjectController::class,'updateSubject']);
+
+/////////////////////////////////////////////// Currency ////////////////////////////////////////////
+
+    Route::get('/admin/currencies',[CurrancyController::class,'getCurrincies']);
+
+    Route::post('/admin/currency/add',[CurrancyController::class,'addCurrancy']);
+
+    Route::put('/admin/currency/update/{id}',[CurrancyController::class,'updateCurrancy']);
+
+    Route::delete('/admin/currency/delete/{id}',[CurrancyController::class,'deleteCurrancy']);
+
+//////////////////////////////////////////////////// Nationality ////////////////////////////////////////////
+
+    Route::get('/admin/nationalities',[NationailtyController::class,'getNationalities']);
+
+    Route::post('/admin/nationality/add',[NationailtyController::class,'addNationality']);
+
+    Route::put('/admin/nationality/update/{id}',[NationailtyController::class,'updateNationality']);
+
+    Route::delete('/admin/nationality/delete/{id}',[NationailtyController::class,'deleteNationality']);
+
+////////////////////////////////////////////////// Operators ////////////////////////////////////////////
+
+    Route::get('/admin/operators',[OperatorController::class,'getOperators']);
+
+    Route::post('/admin/operator/add',[OperatorController::class,'addOperator']);
+
+    Route::put('/admin/operator/update/{id}',[OperatorController::class,'updateOperator']);
+
+    Route::delete('/admin/operator/delete/{id}',[OperatorController::class,'deleteOperator']);
+
+/////////////////////////////////////////////// Bookings ///////////////////////////////////////////////
+
+    Route::get('/admin/booking/history',[BookingController::class,'History']);
+
+    Route::get('/admin/booking/pending',[BookingController::class,'Upcoming']);
+
+    Route::get('/admin/booking/canceled',[BookingController::class,'canceled']);
+
+    Route::put('/admin/booking/confirm/{id}',[BookingController::class,'confirmBook']);
+
+    Route::put('/admin/booking/cancel/{id}',[BookingController::class,'cancelBook']);
+
+/////////////////////////////////////////////// Payments ///////////////////////////////////////////
+
+    Route::get('/admin/pending_payments',[PaymentController::class,'pendintPayment']);
+
+    Route::get('/admin/confirmed_payments',[PaymentController::class,'confirmedPayment']);
+
+    Route::get('/admin/canceled_payments',[PaymentController::class,'canceledPayment']);
 });
