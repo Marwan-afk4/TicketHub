@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Complaint;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,6 +16,14 @@ class ComplaintController extends Controller
         $complaints = Complaint::all();
         $data = [
             'complaints' => $complaints
+        ];
+        return response()->json($data);
+    }
+
+    public function getUsers(){
+        $users = User::where('role', 'user')->get();
+        $data = [
+            'users' => $users
         ];
         return response()->json($data);
     }
