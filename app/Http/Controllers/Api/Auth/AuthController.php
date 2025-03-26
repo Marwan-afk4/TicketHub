@@ -35,6 +35,7 @@ class AuthController extends Controller
         $validated['password'] = Hash::make($validated['password']);
         $validated['role'] = 'user';
         $user = User::create($validated);
+        $user->modules;
         $token = $user->createToken('auth_token')->plainTextToken;
         $currencies = $this->currency
         ->where('status', 1)
@@ -68,6 +69,7 @@ class AuthController extends Controller
 
         $user=User::where('email', $request->email)
         ->orWhere('phone', $request->email)
+        ->with('modules')
         ->first();
         if(!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['errors' => 'The provided credentials are incorrect'], 401);
