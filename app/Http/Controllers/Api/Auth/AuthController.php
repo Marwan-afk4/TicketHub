@@ -68,7 +68,66 @@ class AuthController extends Controller
         }
 
         $user=User::where('email', $request->email)
+        ->where('role', 'admin')
         ->orWhere('phone', $request->email)
+        ->where('role', 'admin')
+        ->with('modules')
+        ->first();
+        if(!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['errors' => 'The provided credentials are incorrect'], 401);
+        }
+        $token = $user->createToken('auth_token')->plainTextToken;
+        return response()->json([
+            'message'=>'Login Successfully',
+            'user' => $user,
+            'token' => $token,
+        ]);
+    }
+
+    public function login_user(Request $request){
+        // /api/login_user
+        // keys
+        // password,email
+        $validation = Validator::make($request->all(),[
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+        if($validation->fails()){
+            return response()->json(['message'=>$validation->errors()],400);
+        }
+
+        $user = User::where('email', $request->email)
+        ->where('role', 'user')
+        ->orWhere('phone', $request->email)
+        ->where('role', 'user') 
+        ->first();
+        if(!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['errors' => 'The provided credentials are incorrect'], 401);
+        }
+        $token = $user->createToken('auth_token')->plainTextToken;
+        return response()->json([
+            'message'=>'Login Successfully',
+            'user' => $user,
+            'token' => $token,
+        ]);
+    }
+
+    public function login_agent(Request $request){
+        // /api/login_agent
+        // keys
+        // password,email
+        $validation = Validator::make($request->all(),[
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+        if($validation->fails()){
+            return response()->json(['message'=>$validation->errors()],400);
+        }
+
+        $user=User::where('email', $request->email)
+        ->where('role', 'agent')
+        ->orWhere('phone', $request->email)
+        ->where('role', 'agent')
         ->with('modules')
         ->first();
         if(!$user || !Hash::check($request->password, $user->password)) {
