@@ -383,10 +383,10 @@ class BookingController extends Controller
             'city_id' => 'required|exists:cities,id',
             'car_id' => 'required|exists:cars,id',
             'address' => 'required',
-            'map' => 'required',       
+            'map' => 'sometimes',       
             'from_city_id' => 'required|exists:cities,id',
             'from_address' => 'required',
-            'from_map' => 'required',
+            'from_map' => 'sometimes',
         ]);
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
