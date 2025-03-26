@@ -370,7 +370,7 @@ class BookingController extends Controller
         // date, traveler
         // country_id, city_id, address, map
         // car_id
-        // from_country_id,  from_city_id, from_address, from_map
+        // from_city_id, from_address, from_map
         $validation = Validator::make(request()->all(),[
 
             'date' => 'required|date',
@@ -379,8 +379,7 @@ class BookingController extends Controller
             'city_id' => 'required|exists:cities,id',
             'car_id' => 'required|exists:cars,id',
             'address' => 'required',
-            'map' => 'required',     
-            'from_country_id' => 'required|exists:countries,id', 
+            'map' => 'required',       
             'from_city_id' => 'required|exists:cities,id',
             'from_address' => 'required',
             'from_map' => 'required',
