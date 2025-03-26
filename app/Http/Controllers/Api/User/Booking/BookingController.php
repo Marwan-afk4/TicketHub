@@ -36,7 +36,6 @@ class BookingController extends Controller
     public function lists(){
         // user/booking/lists
         $cities = $this->cities
-        ->select('id', 'name')
         ->where('status', 'active')
         ->get();
         $countries = $this->countries
