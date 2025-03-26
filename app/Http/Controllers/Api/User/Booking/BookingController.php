@@ -105,7 +105,9 @@ class BookingController extends Controller
         
         $buses_trips = $buses_trips->select(
         'id', 'bus_id', 'pickup_station_id', 'dropoff_station_id', 'trip_type',
-        'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price'
+        'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price',
+        'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
+        'cancelation_date'
         )->get();
         
         if ($request->type === 'round_trip') {
@@ -141,7 +143,9 @@ class BookingController extends Controller
             $buses_back_trips = $buses_back_trips->select(
                 'id', 'bus_id', 'pickup_station_id', 'dropoff_station_id',
                 'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price',
-                'trip_type'
+                'trip_type',
+                'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
+                'cancelation_date'
             )->get();
             
             $buses_trips = $buses_trips->merge($buses_back_trips);
