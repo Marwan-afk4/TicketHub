@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::table('private_requests', function (Blueprint $table) {
             $table->dropColumn('from');
             $table->dropColumn('to');
-            $table->foreignId('from_country_id')->nullable()->constrained('countries')->onDelete('set null');
             $table->foreignId('from_city_id')->nullable()->constrained('cities')->onDelete('set null');
             $table->string('from_address')->nullable();
             $table->string('from_map')->nullable();
