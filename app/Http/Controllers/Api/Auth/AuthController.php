@@ -224,4 +224,20 @@ class AuthController extends Controller
             'success' => 'You update data success'
         ]);
     }
+
+    public function logout(Request $request){
+        // /api/logout
+        $user = $request->user();
+        if ($user) {
+            $user->tokens()->delete();
+            return response()->json([
+                'success' => 'You have successfully logged out.'
+            ]);
+        }
+        
+        return response()->json([
+            'error' => 'Failed to log out.'
+        ], 400);
+        
+    }
 }

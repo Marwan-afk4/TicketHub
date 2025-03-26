@@ -28,6 +28,7 @@ Route::post('/change_password',[AuthController::class,'change_password']);
 
 
 Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
+    Route::get('/logout',[AuthController::class,'logout']);
 
     Route::get('/admin/users',[UserController::class,'getUsers']);
 
