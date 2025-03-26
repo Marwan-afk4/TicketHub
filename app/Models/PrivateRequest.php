@@ -8,8 +8,6 @@ class PrivateRequest extends Model
 {
     protected $fillable = [
         'user_id',
-        'from',
-        'to',
         'date',
         'traveler',
         'country_id',
@@ -20,5 +18,9 @@ class PrivateRequest extends Model
         'category_id',
         'brand_id',
         'model_id',
+        'from_country_id',
+        'from_city_id',
+        'from_address',
+        'from_map',
     ];
 }

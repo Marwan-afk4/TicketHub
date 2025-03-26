@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('private_requests', function (Blueprint $table) {
-            //, 
-            $table->foreignId('car_id')->nullable()->constrained('cities')->onDelete('set null');
-            $table->foreignId('category_id')->nullable()->constrained('car_categories')->onDelete('set null');
-            $table->foreignId('brand_id')->nullable()->constrained('car_brands')->onDelete('set null');
-            $table->foreignId('model_id')->nullable()->constrained('car_models')->onDelete('set null');
+            $table->dropColumn('from');
+            $table->dropColumn('to');
+            $table->foreignId('from_country_id')->nullable()->constrained('countries')->onDelete('set null');
+            $table->foreignId('from_city_id')->nullable()->constrained('cities')->onDelete('set null');
+            $table->string('from_address')->nullable();
+            $table->string('from_map')->nullable();
         });
     }
 

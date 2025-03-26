@@ -367,19 +367,23 @@ class BookingController extends Controller
     public function private_request(Request $request){
         // user/booking/private_request
         // Keys
-        // from, to, date, traveler
+        // date, traveler
         // country_id, city_id, address, map
         // car_id
+        // from_country_id,  from_city_id, from_address, from_map
         $validation = Validator::make(request()->all(),[
-            'from' => 'required|exists:cities,id',
-            'to' => 'required|exists:cities,id',
+
             'date' => 'required|date',
             'traveler' => 'required|numeric',
             'country_id' => 'required|exists:countries,id',
             'city_id' => 'required|exists:cities,id',
             'car_id' => 'required|exists:cars,id',
             'address' => 'required',
-            'map' => 'required',
+            'map' => 'required',     
+            'from_country_id' => 'required|exists:countries,id', 
+            'from_city_id' => 'required|exists:cities,id',
+            'from_address' => 'required',
+            'from_map' => 'required',
         ]);
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
