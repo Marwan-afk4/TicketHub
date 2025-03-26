@@ -30,6 +30,7 @@ Route::middleware(['auth:sanctum','IsUser'])->group(function () {
     Route::controller(WalletController::class)->prefix('/wallet')
     ->group(function(){
         Route::get('/', 'view');
+        Route::get('/lists', 'lists');
         Route::get('/history', 'history');
         Route::post('/charge', 'charge');
     });

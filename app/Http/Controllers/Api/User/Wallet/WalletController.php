@@ -9,11 +9,14 @@ use App\Image;
 
 use App\Models\Wallet;
 use App\Models\ChargeWallet;
+use App\Models\Currency;
+use App\Models\PaymentMethod;
 
 class WalletController extends Controller
 {
     public function __construct(private Wallet $wallets,
-    private ChargeWallet $charge_wallet){}
+    private ChargeWallet $charge_wallet, private Currency $currency,
+    private PaymentMethod $payment_methods){}
     use Image;
 
     public function view(Request $request){
@@ -21,10 +24,23 @@ class WalletController extends Controller
         $wallets = $this->wallets
         ->with(['currency:id,name,symbol'])
         ->where('user_id', $request->user()->id)
-        ->get();
+        ->get(); 
 
         return response()->json([
             'wallets' => $wallets
+        ]);
+    }
+
+    public function lists(Request $request){
+        // /user/wallet/lists
+        $currencies = $this->currency
+        ->get();
+        $payment_methods = $this->payment_methods
+        ->get();
+
+        return response()->json([
+            'currencies' => $currencies,
+            'payment_methods' => $payment_methods,
         ]);
     }
 

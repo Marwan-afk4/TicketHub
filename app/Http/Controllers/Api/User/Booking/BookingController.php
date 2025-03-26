@@ -46,11 +46,15 @@ class BookingController extends Controller
         $payment_methods = $this->payment_methods
         ->where('status', 'active')
         ->get();
+        $car = $this->car
+        ->with(['category:id,name', 'brand:id,name', 'model:id,name'])
+        ->get();
 
         return response()->json([
             'countries' => $countries,
             'cities' => $cities,
             'payment_methods' => $payment_methods,
+            'car' => $car,
         ]);
     }
 
