@@ -25,10 +25,10 @@ Route::post('/login_user',[AuthController::class,'login_user']);
 Route::post('/forget_password',[AuthController::class,'forget_password']);
 Route::post('/check_code',[AuthController::class,'check_code']);
 Route::post('/change_password',[AuthController::class,'change_password']);
+Route::get('/logout',[AuthController::class,'logout'])->middleware(['auth:sanctum']);
 
 
 Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
-    Route::get('/logout',[AuthController::class,'logout']);
 
     Route::get('/admin/users',[UserController::class,'getUsers']);
 
