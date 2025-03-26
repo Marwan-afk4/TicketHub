@@ -15,7 +15,7 @@ use App\Models\Car;
 class CarController extends Controller
 {
     public function __construct(private CarBrand $brands,
-    private CarCategory $category, private CarModel $car_mode,
+    private CarCategory $category, private CarModel $car_models,
     private Car $car){}
     use Image;
 
@@ -25,9 +25,18 @@ class CarController extends Controller
         ->where('agent_id', $request->user()->id)
         ->with(['category:id,name', 'brand:id,name', 'model:id,name'])
         ->get();
+        $category = $this->category
+        ->get();
+        $brands = $this->brands
+        ->get();
+        $car_models = $this->car_models
+        ->get();
 
         return response()->json([
-            'cars' => $cars
+            'cars' => $cars,
+            'category' => $category,
+            'brands' => $brands,
+            'car_models' => $car_models,
         ]);
     }
 
