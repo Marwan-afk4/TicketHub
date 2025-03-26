@@ -105,6 +105,7 @@ class AuthController extends Controller
             return response()->json(['errors' => 'The provided credentials are incorrect'], 401);
         }
         $token = $user->createToken('auth_token')->plainTextToken;
+        $user->token = $token;
         return response()->json([
             'message'=>'Login Successfully',
             'user' => $user,
@@ -134,6 +135,7 @@ class AuthController extends Controller
             return response()->json(['errors' => 'The provided credentials are incorrect'], 401);
         }
         $token = $user->createToken('auth_token')->plainTextToken;
+        $user->token = $token;
         return response()->json([
             'message'=>'Login Successfully',
             'user' => $user,
