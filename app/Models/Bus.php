@@ -28,4 +28,10 @@ class Bus extends Model
     public function agent(){
         return $this->belongsTo(User::class, 'agent_id');
     }
+
+    public function amenities()
+{
+    return $this->belongsToMany(Aminity::class, 'aminity_bus', 'bus_id', 'aminity_id');
+}
+
 }

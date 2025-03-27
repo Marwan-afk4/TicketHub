@@ -7,6 +7,7 @@ use App\Image;
 use App\Models\Bus;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class BusController extends Controller
@@ -19,25 +20,35 @@ class BusController extends Controller
     }
 
 
-    public function getBus(){
-        $buses = Bus::all();
-        $data = $buses->map(function($bus){
-            return [
-                'id' => $bus->id,
-                'agent_id' => $bus->agent_id,
-                'agent_name' => $bus->agent->name ?? null,
-                'agent_email' => $bus->agent->email ?? null,
-                'bus_number' => $bus->bus_number,
-                'bus_image' => $bus->bus_image ? asset('storage/'.$bus->bus_image) : null,
-                'bus_type_id' => $bus->bus_type_id,
-                'bus_type_name' => $bus->busType->name ?? null,
-                'capacity' => $bus->capacity,
-                'status' => $bus->status,
-                'type'=>$bus->type
-            ];
-        });
-        return response()->json(['buses' => $data]);
-    }
+    public function getBus()
+{
+    $buses = Bus::with(['agent', 'busType', 'amenities'])->get();
+
+    $data = $buses->map(function ($bus) {
+        return [
+            'id' => $bus->id,
+            'agent_id' => $bus->agent_id,
+            'agent_name' => $bus->agent->name ?? null,
+            'agent_email' => $bus->agent->email ?? null,
+            'bus_number' => $bus->bus_number,
+            'bus_image' => $bus->bus_image ? asset('storage/' . $bus->bus_image) : null,
+            'bus_type_id' => $bus->bus_type_id,
+            'bus_type_name' => $bus->busType->name ?? null,
+            'capacity' => $bus->capacity,
+            'status' => $bus->status,
+            'type' => $bus->type,
+            'amenities' => $bus->amenities->map(function ($amenity) {
+                return [
+                    'id' => $amenity->id,
+                    'name' => $amenity->name, 
+                ];
+            }),
+        ];
+    });
+
+    return response()->json(['buses' => $data]);
+}
+
 
 
     public function addBus(Request $request){
@@ -48,7 +59,9 @@ class BusController extends Controller
             'capacity' => 'required',
             'agent_id' => 'required|exists:users,id',
             'status' => 'required|in:active,inactive',
-            'type'=>'required|in:bus,hiace'
+            'type'=>'required|in:bus,hiace',
+            'aminty_id' => 'nullable|array',
+            'aminty_id.*' => 'exists:aminities,id'
         ]);
 
         if ($validation->fails()) {
@@ -70,6 +83,17 @@ class BusController extends Controller
             'status' => $request->status,
             'type'=>$request->type
         ]);
+
+        if ($request->has('aminty_id') && is_array($request->aminty_id)) {
+            $amintyData = [];
+            foreach ($request->aminty_id as $aminty) {
+                $amintyData[] = [
+                    'bus_id' => $bus->id,
+                    'aminity_id' => $aminty,
+                ];
+            }
+            DB::table('aminity_bus')->insert($amintyData);
+        }
 
         return response()->json([
             'message' => 'Bus Created Successfully',

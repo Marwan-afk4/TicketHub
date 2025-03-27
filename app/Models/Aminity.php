@@ -13,4 +13,7 @@ class Aminity extends Model
         'icon',
         'status',
     ];
+
+    public function bus(){
+        return $this->belongsToMany(Bus::class);}
 }

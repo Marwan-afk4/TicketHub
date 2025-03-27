@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Trip extends Model
 {
     protected $fillable = [
+        'trip_name',
         'bus_id',
         'pickup_station_id',
         'station_1',
@@ -43,6 +44,14 @@ class Trip extends Model
         return $this->belongsTo(Bus::class);
     }
 
+    public function country(){
+        return $this->belongsTo(Country::class);
+    }
+
+    public function to_country(){
+        return $this->belongsTo(Country::class, 'to_country_id');
+    }
+
     public function city(){
         return $this->belongsTo(City::class);
     }
@@ -65,5 +74,9 @@ class Trip extends Model
 
     public function dropoff_station(){
         return $this->belongsTo(Station::class);
+    }
+
+    public function currency(){
+        return $this->belongsTo(Currency::class);
     }
 }
