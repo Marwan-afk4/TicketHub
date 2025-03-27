@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\PayoutRequest;
 use App\Models\Wallet;
+use App\Models\Currency;
 
 class PayoutController extends Controller
 {
     public function __construct(private PayoutRequest $payout,
-    private Wallet $wallet){}
+    private Wallet $wallet, private Currency $currency){}
 
     public function history(Request $request){
         // /agent/payout
@@ -20,9 +21,12 @@ class PayoutController extends Controller
         ->where('agent_id', $request->user()->id)
         ->with(['currency:id,name'])
         ->get();
+        $currency = $this->currency
+        ->get();
 
         return response()->json([
             'payout_history' => $payout_history,
+            'currency' => $currency,
         ]);
     }
 
