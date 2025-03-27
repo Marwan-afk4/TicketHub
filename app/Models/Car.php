@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Car extends Model
 {
-    protected $fillable =[ 
+    protected $fillable =[
         'category_id',
         'brand_id',
         'model_id',
@@ -28,5 +28,9 @@ class Car extends Model
 
     public function model(){
         return $this->belongsTo(CarModel::class, 'model_id');
+    }
+
+    public function agent(){
+        return $this->belongsTo(User::class, 'agent_id');
     }
 }

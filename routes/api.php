@@ -1,8 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AmintyController;
 use App\Http\Controllers\Api\Admin\BookingController;
 use App\Http\Controllers\Api\Admin\BusController;
 use App\Http\Controllers\Api\Admin\BusTypeController;
+use App\Http\Controllers\Api\Admin\CarBrandController;
+use App\Http\Controllers\Api\Admin\CarCategoryController;
+use App\Http\Controllers\Api\Admin\CarController as AdminCarController;
+use App\Http\Controllers\Api\Admin\CarModelController;
 use App\Http\Controllers\Api\Admin\ComplaintController;
 use App\Http\Controllers\Api\Admin\ComplaintSubjectController;
 use App\Http\Controllers\Api\Admin\CurrancyController;
@@ -11,6 +16,7 @@ use App\Http\Controllers\Api\Admin\NationailtyController;
 use App\Http\Controllers\Api\Admin\OperatorController;
 use App\Http\Controllers\Api\Admin\PaymentController;
 use App\Http\Controllers\Api\Admin\PaymentMethodController;
+use App\Http\Controllers\Api\Admin\TripController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use Illuminate\Http\Request;
@@ -185,4 +191,66 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::get('/admin/confirmed_payments',[PaymentController::class,'confirmedPayment']);
 
     Route::get('/admin/canceled_payments',[PaymentController::class,'canceledPayment']);
+
+////////////////////////////////////////////// Aminites ///////////////////////////////////////////
+
+    Route::get('/admin/aminites',[AmintyController::class,'getAminites']);
+
+    Route::post('/admin/aminity/add',[AmintyController::class,'addAminity']);
+
+    Route::put('/admin/aminity/update/{id}',[AmintyController::class,'updateAminity']);
+
+    Route::delete('/admin/aminity/delete/{id}',[AmintyController::class,'deleteAminity']);
+
+///////////////////////////////////////////// Trips //////////////////////////////////////////////
+
+    Route::get('/admin/trips',[TripController::class,'getTrips']);
+
+    Route::post('/admin/trip/add',[TripController::class,'addTrip']);
+
+    Route::put('/admin/trip/update/{id}',[TripController::class,'updateTrip']);
+
+    Route::delete('/admin/trip/delete/{id}',[TripController::class,'deleteTrip']);
+
+/////////////////////////////////////////////// Car Categories ////////////////////////////////////////////
+
+    Route::get('/admin/car_categories',[CarCategoryController::class,'getCategories']);
+
+    Route::post('/admin/car_category/add',[CarCategoryController::class,'addCarCategories']);
+
+    Route::put('/admin/car_category/update/{id}',[CarCategoryController::class,'updateCarCategories']);
+
+    Route::delete('/admin/car_category/delete/{id}',[CarCategoryController::class,'deleteCarCategories']);
+
+///////////////////////////////////////////// Car Brands /////////////////////////////////////////////////////
+
+    Route::get('/admin/car_brands',[CarBrandController::class,'getBrands']);
+
+    Route::post('/admin/car_brand/add',[CarBrandController::class,'addBrands']);
+
+    Route::put('/admin/car_brand/update/{id}',[CarBrandController::class,'updateBrands']);
+
+    Route::delete('/admin/car_brand/delete/{id}',[CarBrandController::class,'deleteBrands']);
+
+//////////////////////////////////////////// Car Models /////////////////////////////////////////////////////
+
+    Route::get('/admin/car_models',[CarModelController::class,'getModels']);
+
+    Route::post('/admin/car_model/add',[CarModelController::class,'addCarModel']);
+
+    Route::put('/admin/car_model/update/{id}',[CarModelController::class,'updateCarModel']);
+
+    Route::delete('/admin/car_model/delete/{id}',[CarModelController::class,'deleteCarModel']);
+
+///////////////////////////////////////////// Cars ///////////////////////////////////////////
+
+    Route::get('/admin/cars',[AdminCarController::class,'getCar']);
+
+    Route::post('/admin/car/add',[AdminCarController::class,'addCar']);
+
+    Route::put('/admin/car/update/{id}',[AdminCarController::class,'updateCar']);
+
+    Route::delete('/admin/car/delete/{id}',[AdminCarController::class,'deleteCar']);
+
+    Route::get('/admin/agent_cars/{agent_id}',[AdminCarController::class,'getAgentCars']);
 });

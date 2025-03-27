@@ -27,6 +27,7 @@ class OperatorController extends Controller
         'points' => $operator->points,
         'role' => $operator->role,
         'code' => $operator->code,
+        'description' => $operator->description
     ]);
 
     return response()->json([ 'operators' => $data]);
@@ -40,6 +41,7 @@ public function addOperator(Request $request)
         'phone' => ['required', 'unique:users,phone'],
         'password' => ['required', 'min:8'],
         'image' => ['nullable', 'string'], // Ensure valid base64 image handling
+        'description' => ['required', 'string'],
     ]);
 
     if ($validation->fails()) {
@@ -54,6 +56,7 @@ public function addOperator(Request $request)
         'role' => 'agent',
         'image' => $request->image ? $this->storeBase64Image($request->image, 'admin/operator') : null,
         'code' => 'OP' . rand(10000, 99999) . strtolower(Str::random(1)),
+        'description' => $request->description
     ]);
 
     return response()->json(['message' => 'Operator added successfully']);
@@ -79,6 +82,7 @@ public function updateOperator(Request $request, $id)
         'email' => ['sometimes', 'required', 'email', 'unique:users,email,' . $id],
         'phone' => ['sometimes', 'required', 'unique:users,phone,' . $id],
         'image' => ['nullable', 'string'],
+        'description' => ['required', 'string'],
     ]);
 
     if ($validation->fails()) {
@@ -95,6 +99,7 @@ public function updateOperator(Request $request, $id)
         'name' => $request->name ?? $operator->name,
         'email' => $request->email ?? $operator->email,
         'phone' => $request->phone ?? $operator->phone,
+        'description' => $request->description ?? $operator->description,
         'image' => $request->image ? $this->storeBase64Image($request->image, 'admin/operator') : $operator->image,
     ]);
 
