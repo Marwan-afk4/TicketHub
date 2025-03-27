@@ -48,6 +48,10 @@ class Trip extends Model
         return $this->belongsTo(Country::class, 'country_id');
     }
 
+    public function to_country(){
+        return $this->belongsTo(Country::class, 'to_country_id');
+    }
+
     public function city(){
         return $this->belongsTo(City::class);
     }
