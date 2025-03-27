@@ -57,7 +57,7 @@ class CarController extends Controller
         // /agent/car/add
         // Keys
         // category_id, brand_id, model_id, status => [busy, available], 
-        // car_number, car_color, car_year
+        // car_number, car_color, car_year, image
         $carRequest = $request->validated();
         $carRequest['agent_id'] = $request->user()->id;
         if ($request->image && !is_string($request->image)) {
