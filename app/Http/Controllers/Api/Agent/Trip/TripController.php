@@ -11,11 +11,14 @@ use App\Models\Station;
 use App\Models\City;
 use App\Models\Zone;
 use App\Models\Country;
+use App\Models\Currency;
+use App\Models\Bus;
 
 class TripController extends Controller
 {
     public function __construct(private Trip $trip, private Station $stations,
-    private City $cities, private Zone $zones, private Country $countries){}
+    private City $cities, private Zone $zones, private Country $countries,
+    private Currency $currency, private Bus $buses){}
 
     public function view(Request $request){
         // /agent/trip
@@ -65,12 +68,20 @@ class TripController extends Controller
         ->get();
         $countries = $this->countries
         ->get();
+        $currency = $this->currency
+        ->get();
+        $buses = $this->buses
+        ->where('agent_id', $request->user()->id)
+        ->with('busType')
+        ->get();
         return response()->json([
             'trips' => $trips,
             'stations' => $stations,
             'cities' => $cities,
             'zones' => $zones,
             'countries' => $countries,
+            'currency' => $currency,
+            'buses' => $buses,
         ]);
     }
 
