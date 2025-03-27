@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\Agent\Hiace\HiaceController;
 use App\Http\Controllers\Api\Agent\Profile\ProfileController;
 use App\Http\Controllers\Api\Agent\Trip\TripController;
 use App\Http\Controllers\Api\Agent\Booking\BookingController;
+use App\Http\Controllers\Api\Agent\Payout\PayoutController;
+use App\Http\Controllers\Api\Agent\Wallet\WalletController;
 
 Route::middleware(['auth:sanctum','IsAgent'])->group(function () {
     Route::controller(CarController::class)
@@ -58,5 +60,16 @@ Route::middleware(['auth:sanctum','IsAgent'])->group(function () {
     ->prefix('bookings')->group(function(){
         Route::get('/', 'view');
         Route::put('/status/{id}', 'status'); 
+    });
+
+    Route::controller(PayoutController::class)
+    ->prefix('payout')->group(function(){
+        Route::get('/', 'history');
+        Route::post('/request', 'payout_request');
+    });
+
+    Route::controller(WalletController::class)
+    ->prefix('wallet')->group(function(){
+        Route::get('/', 'view');
     });
 });

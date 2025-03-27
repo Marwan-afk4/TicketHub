@@ -14,4 +14,8 @@ class PayoutRequest extends Model
         'rejected_reason',
         'status',
     ];
+
+    public function currency(){
+        return $this->belongsTo(Currency::class, 'currency_id');
+    }
 }
