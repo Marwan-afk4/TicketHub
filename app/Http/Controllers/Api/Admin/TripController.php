@@ -83,8 +83,8 @@ class TripController extends Controller
                     ] : null
                 ],
                 'destination' => [
-                    'country_id' => $trip->country_id,
-                    'country_name' => $trip->country->name,
+                    'country_id' => $trip->to_country_id,
+                    'country_name' => $trip->to_country->name,
                     'city' => $trip->to_city ? [
                         'id' => $trip->to_city->id,
                         'name' => $trip->to_city->name,
