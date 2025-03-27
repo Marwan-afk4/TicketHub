@@ -19,8 +19,7 @@ class Trip extends Model
         'deputre_time',
         'arrival_time',
         'avalible_seats',
-        'country_id',
-        'to_country_id',
+        'country_id', 
         'to_city_id',
         'to_zone_id',
         'date',
@@ -43,6 +42,10 @@ class Trip extends Model
         return $this->belongsTo(Bus::class);
     }
 
+    public function country(){
+        return $this->belongsTo(Country::class, 'country_id');
+    }
+
     public function city(){
         return $this->belongsTo(City::class);
     }
@@ -52,6 +55,10 @@ class Trip extends Model
     }
 
     public function zone(){
+        return $this->belongsTo(Zone::class);
+    }
+
+    public function to_zone(){
         return $this->belongsTo(Zone::class);
     }
 
@@ -65,5 +72,9 @@ class Trip extends Model
 
     public function dropoff_station(){
         return $this->belongsTo(Station::class);
+    }
+
+    public function currency(){
+        return $this->belongsTo(Currency::class, 'currency_id');
     }
 }

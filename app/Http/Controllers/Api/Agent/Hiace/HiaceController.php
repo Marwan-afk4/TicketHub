@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Agent\Bus;
+namespace App\Http\Controllers\Api\Agent\Hiace;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,46 +11,46 @@ use App\Models\Bus;
 use App\Models\BusType;
 use App\Models\Aminity;
 
-class BusController extends Controller
+class HiaceController extends Controller
 {
     public function __construct(private Bus $buses,
     private BusType $bus_type, private Aminity $aminities){}
     use Image;
 
     public function view(Request $request){
-        // /agent/bus
-        $bus_type = $this->bus_type
+        // /agent/hiace
+        $hiace_type = $this->bus_type
         ->get();
-        $buses = $this->buses
+        $hiaces = $this->buses
         ->where('agent_id', $request->user()->id)
-        ->where('type', 'bus')
+        ->where('type', 'hiace')
         ->with('busType', 'aminity')
         ->get();
         $aminities = $this->aminities
         ->get();
 
         return response()->json([
-            'bus_type' => $bus_type,
-            'buses' => $buses,
+            'hiace_type' => $hiace_type,
+            'hiaces' => $hiaces,
             'aminities' => $aminities,
         ]);
     }
 
-    public function bus(Request $request, $id){ 
-        // /agent/bus/item/{id}
-        $bus = $this->buses
+    public function hiace(Request $request, $id){ 
+        // /agent/hiace/item/{id}
+        $hiace = $this->buses
         ->where('agent_id', $request->user()->id)
         ->where('id', $id)
         ->with('busType', 'aminity')
         ->first();
 
         return response()->json([
-            'bus' => $bus,
+            'hiace' => $hiace,
         ]);
     }
 
     public function create(Request $request){
-        // /agent/bus/add
+        // /agent/hiace/add
         // Keys
         // bus_number, bus_type_id, capacity, status => [active, inactive]
         // bus_image, aminities[]
@@ -71,11 +71,11 @@ class BusController extends Controller
         }  
         $busRequest = $validation->validated();
         if ($request->bus_image && !is_string($request->bus_image)) {
-            $image_path = $this->upload_image($request, 'bus_image', '/agent/buses');
+            $image_path = $this->upload_image($request, 'bus_image', '/agent/hiace');
             $busRequest['bus_image'] = $image_path;
         }
         $busRequest['agent_id'] = $request->user()->id;
-        $busRequest['type'] = 'bus';
+        $busRequest['type'] = 'hiace';
         $bus = $this->buses
         ->create($busRequest);
         if($request->aminities){
@@ -88,7 +88,7 @@ class BusController extends Controller
     }
 
     public function modify(Request $request, $id){
-        // /agent/bus/update/{id}
+        // /agent/hiace/update/{id}
         // Keys
         // bus_number, bus_type_id, capacity, status => [active, inactive]
         // bus_image, aminities[]
@@ -118,7 +118,7 @@ class BusController extends Controller
             ], 400);
         }
         if ($request->bus_image && !is_string($request->bus_image)) {
-            $image_path = $this->update_image($request, $bus->bus_image, 'bus_image', '/agent/buses');
+            $image_path = $this->update_image($request, $bus->bus_image, 'bus_image', '/agent/hiace');
             $busRequest['bus_image'] = $image_path;
         }
         $bus->update($busRequest);
@@ -135,7 +135,7 @@ class BusController extends Controller
     }
 
     public function delete(Request $request, $id){
-        // /agent/bus/delete/{id}
+        // /agent/hiace/delete/{id}
         $bus = $this->buses
         ->where('agent_id', $request->user()->id)
         ->where('id', $id)
