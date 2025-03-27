@@ -11,11 +11,6 @@ class Aminity extends Model
         'icon',
         'status',
     ];
-<<<<<<< HEAD
-
-    public function bus(){
-        return $this->belongsToMany(Bus::class);}
-=======
     protected $appends = ['icon_link'];
 
     public function getIconLinkAttribute(){
@@ -24,5 +19,8 @@ class Aminity extends Model
         }
         return null;
     }
->>>>>>> eb30b70d7a27b84b89ee7eff14ac7d4054eb9fff
+
+    public function bus(){
+        return $this->belongsToMany(Bus::class);
+    }
 }
