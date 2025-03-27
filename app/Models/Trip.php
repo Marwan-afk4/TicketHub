@@ -20,6 +20,7 @@ class Trip extends Model
         'deputre_time',
         'arrival_time',
         'avalible_seats',
+        'to_country_id', 
         'country_id', 
         'to_city_id',
         'to_zone_id',
