@@ -35,6 +35,7 @@ class AuthController extends Controller
         $validated['password'] = Hash::make($validated['password']);
         $validated['role'] = 'user';
         $user = User::create($validated);
+        $user->modules;
         $token = $user->createToken('auth_token')->plainTextToken;
         $currencies = $this->currency
         ->where('status', 1)
@@ -67,12 +68,74 @@ class AuthController extends Controller
         }
 
         $user=User::where('email', $request->email)
+        ->where('role', 'admin')
         ->orWhere('phone', $request->email)
+        ->where('role', 'admin')
+        ->with('modules')
         ->first();
         if(!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['errors' => 'The provided credentials are incorrect'], 401);
         }
         $token = $user->createToken('auth_token')->plainTextToken;
+        return response()->json([
+            'message'=>'Login Successfully',
+            'user' => $user,
+            'token' => $token,
+        ]);
+    }
+
+    public function login_user(Request $request){
+        // /api/login_user
+        // keys
+        // password,email
+        $validation = Validator::make($request->all(),[
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+        if($validation->fails()){
+            return response()->json(['message'=>$validation->errors()],400);
+        }
+
+        $user = User::where('email', $request->email)
+        ->where('role', 'user')
+        ->orWhere('phone', $request->email)
+        ->where('role', 'user') 
+        ->first();
+        if(!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['errors' => 'The provided credentials are incorrect'], 401);
+        }
+        $token = $user->createToken('auth_token')->plainTextToken;
+        $user->token = $token;
+        return response()->json([
+            'message'=>'Login Successfully',
+            'user' => $user,
+            'token' => $token,
+        ]);
+    }
+
+    public function login_agent(Request $request){
+        // /api/login_agent
+        // keys
+        // password,email
+        $validation = Validator::make($request->all(),[
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+        if($validation->fails()){
+            return response()->json(['message'=>$validation->errors()],400);
+        }
+
+        $user=User::where('email', $request->email)
+        ->where('role', 'agent')
+        ->orWhere('phone', $request->email)
+        ->where('role', 'agent')
+        ->with('modules')
+        ->first();
+        if(!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['errors' => 'The provided credentials are incorrect'], 401);
+        }
+        $token = $user->createToken('auth_token')->plainTextToken;
+        $user->token = $token;
         return response()->json([
             'message'=>'Login Successfully',
             'user' => $user,
@@ -162,5 +225,21 @@ class AuthController extends Controller
         return response()->json([
             'success' => 'You update data success'
         ]);
+    }
+
+    public function logout(Request $request){
+        // /api/logout
+        $user = $request->user();
+        if ($user) {
+            $user->tokens()->delete();
+            return response()->json([
+                'success' => 'You have successfully logged out.'
+            ]);
+        }
+        
+        return response()->json([
+            'error' => 'Failed to log out.'
+        ], 400);
+        
     }
 }

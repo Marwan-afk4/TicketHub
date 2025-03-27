@@ -26,9 +26,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/lists',[AuthController::class,'lists']);
 Route::post('/register',[AuthController::class,'Register']);
 Route::post('/login',[AuthController::class,'login']);
+Route::post('/login_agent',[AuthController::class,'login_agent']);
+Route::post('/login_user',[AuthController::class,'login_user']);
 Route::post('/forget_password',[AuthController::class,'forget_password']);
 Route::post('/check_code',[AuthController::class,'check_code']);
 Route::post('/change_password',[AuthController::class,'change_password']);
+Route::get('/logout',[AuthController::class,'logout'])->middleware(['auth:sanctum']);
 
 
 Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {

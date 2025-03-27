@@ -12,12 +12,13 @@ use App\Http\Controllers\Api\User\Points\PointsController;
 Route::middleware(['auth:sanctum','IsUser'])->group(function () {
     Route::controller(BookingController::class)->prefix('/booking')
     ->group(function(){
-        Route::get('/lists', 'lists');
+        Route::get('/lists', 'lists')->withOutMiddleware(['auth:sanctum', 'IsUser']);
         Route::get('/history', 'history');
-        Route::post('/', 'filter');
+        Route::post('/', 'filter')->withOutMiddleware(['auth:sanctum', 'IsUser']);
         Route::post('/payment', 'payment');
         Route::post('/payment_wallet', 'payment_wallet');
         Route::post('/private_request', 'private_request');
+        Route::post('/private_request_history', 'private_request_history');
         Route::post('/cancel/{id}', 'cancel');
     });
 
@@ -30,6 +31,7 @@ Route::middleware(['auth:sanctum','IsUser'])->group(function () {
     Route::controller(WalletController::class)->prefix('/wallet')
     ->group(function(){
         Route::get('/', 'view');
+        Route::get('/lists', 'lists');
         Route::get('/history', 'history');
         Route::post('/charge', 'charge');
     });

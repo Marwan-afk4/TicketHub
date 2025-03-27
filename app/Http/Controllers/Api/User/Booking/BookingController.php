@@ -36,7 +36,6 @@ class BookingController extends Controller
     public function lists(){
         // user/booking/lists
         $cities = $this->cities
-        ->select('id', 'name')
         ->where('status', 'active')
         ->get();
         $countries = $this->countries
@@ -46,11 +45,15 @@ class BookingController extends Controller
         $payment_methods = $this->payment_methods
         ->where('status', 'active')
         ->get();
+        $car = $this->car
+        ->with(['category:id,name', 'brand:id,name', 'model:id,name'])
+        ->get();
 
         return response()->json([
             'countries' => $countries,
             'cities' => $cities,
             'payment_methods' => $payment_methods,
+            'car' => $car,
         ]);
     }
 
@@ -71,7 +74,10 @@ class BookingController extends Controller
         }
         
         $buses_trips = $this->trips
-        ->with(['bus:id,bus_number,bus_image', 'pickup_station:id,name', 'dropoff_station:id,name'])
+        ->with(['bus' => function($query){
+            $query->select('id', 'bus_number', 'bus_image')
+            ->with(['aminity:id,name,icon']);
+        }, 'pickup_station:id,name', 'dropoff_station:id,name'])
         ->where('avalible_seats', '>', 0)
         ->where('status', 'active');
 
@@ -98,12 +104,17 @@ class BookingController extends Controller
         
         $buses_trips = $buses_trips->select(
         'id', 'bus_id', 'pickup_station_id', 'dropoff_station_id', 'trip_type',
-        'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price'
+        'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price',
+        'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
+        'cancelation_date'
         )->get();
         
         if ($request->type === 'round_trip') {
             $buses_back_trips = $this->trips
-            ->with(['bus:id,bus_number,bus_image', 'pickup_station:id,name', 'dropoff_station:id,name'])
+            ->with(['bus' => function($query){
+                $query->select('id', 'bus_number', 'bus_image')
+                ->with(['aminity:id,name,icon']);
+            }, 'pickup_station:id,name', 'dropoff_station:id,name'])
             ->where('avalible_seats', '>', 0)
             ->where('status', 'active');
 
@@ -131,7 +142,9 @@ class BookingController extends Controller
             $buses_back_trips = $buses_back_trips->select(
                 'id', 'bus_id', 'pickup_station_id', 'dropoff_station_id',
                 'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price',
-                'trip_type'
+                'trip_type',
+                'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
+                'cancelation_date'
             )->get();
             
             $buses_trips = $buses_trips->merge($buses_back_trips);
@@ -357,19 +370,22 @@ class BookingController extends Controller
     public function private_request(Request $request){
         // user/booking/private_request
         // Keys
-        // from, to, date, traveler
+        // date, traveler
         // country_id, city_id, address, map
         // car_id
+        // from_city_id, from_address, from_map
         $validation = Validator::make(request()->all(),[
-            'from' => 'required|exists:cities,id',
-            'to' => 'required|exists:cities,id',
+
             'date' => 'required|date',
             'traveler' => 'required|numeric',
             'country_id' => 'required|exists:countries,id',
             'city_id' => 'required|exists:cities,id',
             'car_id' => 'required|exists:cars,id',
             'address' => 'required',
-            'map' => 'required',
+            'map' => 'sometimes',       
+            'from_city_id' => 'required|exists:cities,id',
+            'from_address' => 'required',
+            'from_map' => 'sometimes',
         ]);
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
