@@ -20,8 +20,8 @@ class Trip extends Model
         'deputre_time',
         'arrival_time',
         'avalible_seats',
-        'country_id',
-        'to_country_id',
+        'to_country_id', 
+        'country_id', 
         'to_city_id',
         'to_zone_id',
         'date',
@@ -39,13 +39,22 @@ class Trip extends Model
         'currency_id',
         'cancelation_date',
     ];
+    protected $appends = ['image_link'];
+
+    public function getImageLinkAttribute(){
+        if (isset($this->attributes['image'])) {
+            return url('storage/' . $this->attributes['image']);
+        }
+
+        return null;
+    }
 
     public function bus(){
         return $this->belongsTo(Bus::class);
     }
 
     public function country(){
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::class, 'country_id');
     }
 
     public function to_country(){
@@ -64,6 +73,10 @@ class Trip extends Model
         return $this->belongsTo(Zone::class);
     }
 
+    public function to_zone(){
+        return $this->belongsTo(Zone::class);
+    }
+
     public function stations(){
         return $this->belongsToMany(Station::class);
     }
@@ -77,6 +90,6 @@ class Trip extends Model
     }
 
     public function currency(){
-        return $this->belongsTo(Currency::class);
+        return $this->belongsTo(Currency::class, 'currency_id');
     }
 }

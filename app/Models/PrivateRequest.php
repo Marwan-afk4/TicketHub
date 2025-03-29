@@ -22,5 +22,6 @@ class PrivateRequest extends Model
         'from_city_id',
         'from_address',
         'from_map',
+        'status',
     ];
 }

@@ -8,6 +8,7 @@ class PaymentMethod extends Model
 {
     protected $fillable = [
         'name',
+        'description',
         'image',
         'status'
     ];
@@ -18,8 +19,8 @@ class PaymentMethod extends Model
     }
 
     public function getImageLinkAttribute(){
-        if (isset($this->attribute['image'])) {
-            return url('storage/' . $this->attribute['image']);
+        if (isset($this->attributes['image'])) {
+            return url('storage/' . $this->attributes['image']);
         }
         return null;
     }

@@ -201,6 +201,7 @@ class BookingController extends Controller
         }
         $paymentRequest = $validation->validated(); 
         $paymentRequest['total'] = $total;
+        $paymentRequest['agent_id'] = $trip->agent_id;
         $paymentRequest['user_id'] = $request->user()->id;
         if ($request->receipt_image && !is_string($request->receipt_image)) {
             $image_path = $this->uploadFile($request->receipt_image, '/users/payment/receipt_image');
@@ -209,17 +210,6 @@ class BookingController extends Controller
         $paymentRequest['currency_id'] = $trip->currency_id;
         $payments = $this->payments
         ->create($paymentRequest);
-        $this->booking
-        ->create([
-            'user_id' => $request->user()->id,
-            'bus_id' => $trip->bus_id,
-            'trip_id' => $trip->id,
-            'destenation_from' => $trip->pickup_station_id,
-            'destenation_to' => $trip->dropoff_station_id,
-            'date' => $request->travel_date,
-            'seats_count' => $request->travelers,
-            'status' => 'pending',
-        ]);
         if (empty($commission)) {
             $commission = $this->commissions
             ->where('type', 'defult')

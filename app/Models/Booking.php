@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Booking extends Model
 {
     protected $fillable =[
+        'agent_id',
         'user_id',
         'bus_id',
         'trip_id',
@@ -14,7 +15,7 @@ class Booking extends Model
         'destenation_to',
         'date',
         'seats_count',
-        'status'
+        'status',
     ];
 
     public function bus(){
