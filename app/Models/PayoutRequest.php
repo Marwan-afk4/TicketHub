@@ -10,6 +10,8 @@ class PayoutRequest extends Model
         'agent_id',
         'amount',
         'currency_id',
+        'payment_method_id',
+        'description',
         'date',
         'rejected_reason',
         'status',
