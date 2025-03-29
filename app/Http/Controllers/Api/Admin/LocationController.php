@@ -238,9 +238,9 @@ class LocationController extends Controller
 
     public function addStation(Request $request){
         $validation = Validator::make(request()->all(),[
-            'Country_id' => 'required|exists:countries,id',
-            'City_id' => 'required|exists:cities,id',
-            'Zone_id' => 'required|exists:zones,id',
+            'country_id' => 'required|exists:countries,id',
+            'city_id' => 'required|exists:cities,id',
+            'zone_id' => 'required|exists:zones,id',
             'name' => 'required|string',
             'pickup' => 'required|in:0,1',
             'dropoff' => 'required|in:0,1',
@@ -252,9 +252,9 @@ class LocationController extends Controller
         }
 
         $station = Station::create([
-            'Country_id' => $request->Country_id,
-            'City_id' => $request->City_id,
-            'Zone_id' => $request->Zone_id,
+            'country_id' => $request->country_id,
+            'city_id' => $request->city_id,
+            'zone_id' => $request->zone_id,
             'name' => $request->name,
             'pickup' => $request->pickup,
             'dropoff' => $request->dropoff,
@@ -267,9 +267,9 @@ class LocationController extends Controller
         $station = Station::find($id);
         if($station){
             $station->update([
-                'Country_id' => $request->Country_id ?? $station->Country_id,
-                'City_id' => $request->City_id ?? $station->City_id,
-                'Zone_id' => $request->Zone_id ?? $station->Zone_id,
+                'country_id' => $request->country_id ?? $station->country_id,
+                'city_id' => $request->city_id ?? $station->city_id,
+                'zone_id' => $request->zone_id ?? $station->zone_id,
                 'name' => $request->name ?? $station->name,
                 'pickup' => $request->pickup ?? $station->pickup,
                 'dropoff' => $request->dropoff ?? $station->dropoff,
