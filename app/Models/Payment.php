@@ -19,6 +19,7 @@ class Payment extends Model
         'currency_id',
         'booking_id',
         'agent_id',
+        'points',
     ];
 
     public function paymentMethod(){

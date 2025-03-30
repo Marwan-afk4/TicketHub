@@ -18,6 +18,8 @@ use App\Models\AgentCommission;
 use App\Models\Booking;
 use App\Models\Wallet;
 use App\Models\Car;
+use App\Models\CurrencyPoint;
+use App\Models\User;
 
 class BookingController extends Controller
 {
@@ -30,7 +32,9 @@ class BookingController extends Controller
     private PrivateRequest $private_request,
     private Booking $booking,
     private Wallet $wallet,
-    private Car $car){}
+    private Car $car,
+    private CurrencyPoint $currency_point,
+    private User $user){}
     use Image;
 
     public function lists(){
@@ -248,6 +252,15 @@ class BookingController extends Controller
         ]);
         $trip->avalible_seats -= $request->travelers;
         $trip->save();
+        $currency_point = $this->currency_point
+        ->where('currency_id', $trip->currency_id)
+        ->first();
+        if (!empty($currency_point)) {
+            $points = intval($total / $currency_point->currencies);
+            $points = $points * $currency_point->points; 
+            $payments->points = $points;
+            $payments->save();
+        }
 
         return response()->json([
             'success' => 'You add data success'
@@ -351,6 +364,28 @@ class BookingController extends Controller
         ]);
         $trip->avalible_seats -= $request->travelers;
         $trip->save();
+        $wallet->amount -= $total;
+        $wallet->save();
+        $agent_wallet = $this->wallet
+        ->where('user_id', $trip->agent_id )
+        ->where('currency_id', $trip->currency_id)
+        ->first();
+        $agent_wallet->amount += $receivable;
+        $agent_wallet->save();
+        $currency_point = $this->currency_point
+        ->where('currency_id', $trip->currency_id)
+        ->first();
+        if (!empty($currency_point)) {
+            $points = intval($total / $currency_point->currencies);
+            $points = $points * $currency_point->points;
+            $this->user
+            ->where('id', $request->user()->id)
+            ->update([
+                'points' => $points + $request->user()->points,
+            ]);
+            $payments->points = $points;
+            $payments->save();
+        }
 
         return response()->json([
             'success' => 'You add data success'
@@ -493,6 +528,11 @@ class BookingController extends Controller
         ->where('id', $payments->booking_id)
         ->update([
             'status' => 'canceled'
+        ]);
+        $this->user
+        ->where('id', $request->user()->id)
+        ->update([
+            'points' => $request->user()->points - $payments->points
         ]);
 
         return response()->json([
