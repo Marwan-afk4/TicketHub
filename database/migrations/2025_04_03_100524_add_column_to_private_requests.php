@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('private_requests', function (Blueprint $table) {
-            //, 
-            $table->foreignId('category_id')->nullable()->constrained('car_categories')->onDelete('set null');
-            $table->foreignId('brand_id')->nullable()->constrained('car_brands')->onDelete('set null');
+            $table->foreignId('agent_id')->nullable()->constrained('users')->onDelete('cascade'); 
         });
     }
 

@@ -17,7 +17,7 @@ use App\Models\Commission;
 use App\Models\AgentCommission;
 use App\Models\Booking;
 use App\Models\Wallet;
-use App\Models\Car;
+use App\Models\CarBrand;
 use App\Models\CurrencyPoint;
 use App\Models\BookingBus;
 use App\Models\User;
@@ -33,7 +33,7 @@ class BookingController extends Controller
     private PrivateRequest $private_request,
     private Booking $booking,
     private Wallet $wallet,
-    private Car $car,
+    private CarBrand $brands,
     private CurrencyPoint $currency_point,
     private BookingBus $booking_bus,
     private User $user){}
@@ -51,15 +51,15 @@ class BookingController extends Controller
         $payment_methods = $this->payment_methods
         ->where('status', 'active')
         ->get();
-        $car = $this->car
-        ->with(['category:id,name', 'brand:id,name', 'model:id,name'])
+        $brands = $this->brands
+        ->with(['carcategory:id,name'])
         ->get();
 
         return response()->json([
             'countries' => $countries,
             'cities' => $cities,
             'payment_methods' => $payment_methods,
-            'car' => $car,
+            'brands' => $brands,
         ]);
     }
 
@@ -425,15 +425,14 @@ class BookingController extends Controller
         // Keys
         // date, traveler
         // country_id, city_id, address, map
-        // car_id
+        // brand_id
         // from_city_id, from_address, from_map
         $validation = Validator::make(request()->all(),[
-
             'date' => 'required|date',
             'traveler' => 'required|numeric',
             'country_id' => 'required|exists:countries,id',
             'city_id' => 'required|exists:cities,id',
-            'car_id' => 'required|exists:cars,id',
+            'brand_id' => 'required|exists:car_brands,id',
             'address' => 'required',
             'map' => 'sometimes',       
             'from_city_id' => 'required|exists:cities,id',
@@ -443,14 +442,12 @@ class BookingController extends Controller
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
         }
-        $car = $this->car
-        ->where('id', $request->car_id)
+        $brand = $this->brands
+        ->where('id', $request->brand_id)
         ->first();
         $privateRequest = $validation->validated();
         $privateRequest['user_id'] = $request->user()->id;
-        $privateRequest['category_id'] = $car->category_id;
-        $privateRequest['brand_id'] = $car->brand_id;
-        $privateRequest['model_id'] = $car->model_id;
+        $privateRequest['category_id'] = $brand->category_id;
         $this->private_request
         ->create($privateRequest);
 
