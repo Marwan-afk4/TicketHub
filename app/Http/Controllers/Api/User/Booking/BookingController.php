@@ -65,7 +65,7 @@ class BookingController extends Controller
         // user/booking
         // Keys
         // from, to, date, round_date, travelers, type => [one_way, round_trip]
-        $validation = Validator::make(request()->all(),[ 
+        $validation = Validator::make(request()->all(),[
             'from' => 'nullable|exists:cities,id',
             'to' => 'nullable|exists:cities,id',
             'date' => 'date|nullable',
@@ -76,11 +76,11 @@ class BookingController extends Controller
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
         }
-        
+
         $buses_trips = $this->trips
         ->with(['bus' => function($query){
-            $query->select('id', 'bus_number', 'bus_image')
-            ->with(['aminity:id,name,icon']);
+            $query->select('id', 'bus_number', 'bus_image', 'capacity')
+            ->with(['aminity:id,name,icon', 'areas']);
         }, 'pickup_station:id,name', 'dropoff_station:id,name'])
         ->where('avalible_seats', '>', 0)
         ->where('status', 'active');
@@ -116,8 +116,8 @@ class BookingController extends Controller
         if ($request->type === 'round_trip') {
             $buses_back_trips = $this->trips
             ->with(['bus' => function($query){
-                $query->select('id', 'bus_number', 'bus_image')
-                ->with(['aminity:id,name,icon']);
+                $query->select('id', 'bus_number', 'bus_image', 'capacity')
+                ->with(['aminity:id,name,icon', 'areas']);
             }, 'pickup_station:id,name', 'dropoff_station:id,name'])
             ->where('avalible_seats', '>', 0)
             ->where('status', 'active');
@@ -153,6 +153,21 @@ class BookingController extends Controller
             
             $buses_trips = $buses_trips->merge($buses_back_trips);
         }
+        $buses_trips = $buses_trips->map(function ($trip) {
+            $bus = $trip->bus;
+            if (!empty($bus)) { 
+                $areas = collect($bus->areas)->pluck('area'); 
+                $seats = $bus->capacity; // Number of seats
+                $seats_arr = [];
+            
+                for ($i = 1; $i <= $seats; $i++) {
+                    $seats_arr[$i] = $areas->contains($i);
+                }
+                $bus->new_areas = $seats_arr;
+                $bus->makeHidden(['areas']);
+            } 
+            return $trip;
+        });
         
         $buses = $buses_trips->where('trip_type', 'bus')->values();
         $hiace = $buses_trips->where('trip_type', 'hiace')->values();
