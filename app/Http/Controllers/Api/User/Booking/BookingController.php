@@ -19,6 +19,7 @@ use App\Models\Booking;
 use App\Models\Wallet;
 use App\Models\Car;
 use App\Models\CurrencyPoint;
+use App\Models\BookingBus;
 use App\Models\User;
 
 class BookingController extends Controller
@@ -34,6 +35,7 @@ class BookingController extends Controller
     private Wallet $wallet,
     private Car $car,
     private CurrencyPoint $currency_point,
+    private BookingBus $booking_bus,
     private User $user){}
     use Image;
 
@@ -184,17 +186,21 @@ class BookingController extends Controller
     public function payment(Request $request){
         // user/booking/payment
         // Keys
-        // payment_method_id, trip_id, travelers, amount, receipt_image, travel_date
+        // payment_method_id, trip_id, travelers, amount, receipt_image, 
+        // travel_date, seats[]
         $validation = Validator::make(request()->all(),[ 
             'payment_method_id' => 'required|exists:payment_methods,id',
             'trip_id' => 'required|exists:trips,id',
             'travelers' => 'required|numeric',
             'amount' => 'required|numeric',
             'travel_date' => 'required|date',
+            'seats' => 'required|array',
+            'seats.*' => 'numeric',
         ]);
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
         }
+        //booking_bus
         $trip = $this->trips
         ->where('id', $request->trip_id)
         ->first();
@@ -275,6 +281,13 @@ class BookingController extends Controller
             $points = $points * $currency_point->points; 
             $payments->points = $points;
             $payments->save();
+        }
+        foreach ($request->seats  as $item) {
+            $this->booking_bus
+            ->create([
+                'bus_id' => $trip->bus_id,
+                'area' => $item,
+            ]);
         }
 
         return response()->json([
