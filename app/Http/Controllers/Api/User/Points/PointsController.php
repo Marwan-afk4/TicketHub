@@ -45,6 +45,7 @@ class PointsController extends Controller
 
         $redeem_points = $this->points
         ->where('currency_id', $request->currency_id)
+        ->where('points', '<=', $request->points)
         ->first();
         if (empty($redeem_points)) {
             return response()->json([
@@ -56,8 +57,9 @@ class PointsController extends Controller
                 'errors' => "The points field must be less than or equal " . $request->user()->points
             ], 400);
         }
-        $points = $request->points - $request->points % $redeem_points->points;
-        $redeem_point = $points / $redeem_points->points;
+        $points = intval($request->points / $redeem_points->points);
+        $redeem_point = $points * $redeem_points->currencies;
+        $points = $points * $redeem_points->points;
         $wallet = $this->wallet
         ->where('currency_id', $request->currency_id)
         ->where('user_id', $request->user()->id)

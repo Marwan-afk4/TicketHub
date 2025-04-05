@@ -17,7 +17,10 @@ use App\Models\Commission;
 use App\Models\AgentCommission;
 use App\Models\Booking;
 use App\Models\Wallet;
-use App\Models\Car;
+use App\Models\CarBrand;
+use App\Models\CurrencyPoint;
+use App\Models\BookingBus;
+use App\Models\User;
 
 class BookingController extends Controller
 {
@@ -30,7 +33,10 @@ class BookingController extends Controller
     private PrivateRequest $private_request,
     private Booking $booking,
     private Wallet $wallet,
-    private Car $car){}
+    private CarBrand $brands,
+    private CurrencyPoint $currency_point,
+    private BookingBus $booking_bus,
+    private User $user){}
     use Image;
 
     public function lists(){
@@ -45,15 +51,15 @@ class BookingController extends Controller
         $payment_methods = $this->payment_methods
         ->where('status', 'active')
         ->get();
-        $car = $this->car
-        ->with(['category:id,name', 'brand:id,name', 'model:id,name'])
+        $brands = $this->brands
+        ->with(['carcategory:id,name'])
         ->get();
 
         return response()->json([
             'countries' => $countries,
             'cities' => $cities,
             'payment_methods' => $payment_methods,
-            'car' => $car,
+            'brands' => $brands,
         ]);
     }
 
@@ -61,7 +67,7 @@ class BookingController extends Controller
         // user/booking
         // Keys
         // from, to, date, round_date, travelers, type => [one_way, round_trip]
-        $validation = Validator::make(request()->all(),[ 
+        $validation = Validator::make(request()->all(),[
             'from' => 'nullable|exists:cities,id',
             'to' => 'nullable|exists:cities,id',
             'date' => 'date|nullable',
@@ -72,11 +78,11 @@ class BookingController extends Controller
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
         }
-        
+
         $buses_trips = $this->trips
         ->with(['bus' => function($query){
-            $query->select('id', 'bus_number', 'bus_image')
-            ->with(['aminity:id,name,icon']);
+            $query->select('id', 'bus_number', 'bus_image', 'capacity')
+            ->with(['aminity:id,name,icon', 'areas']);
         }, 'pickup_station:id,name', 'dropoff_station:id,name'])
         ->where('avalible_seats', '>', 0)
         ->where('status', 'active');
@@ -112,8 +118,8 @@ class BookingController extends Controller
         if ($request->type === 'round_trip') {
             $buses_back_trips = $this->trips
             ->with(['bus' => function($query){
-                $query->select('id', 'bus_number', 'bus_image')
-                ->with(['aminity:id,name,icon']);
+                $query->select('id', 'bus_number', 'bus_image', 'capacity')
+                ->with(['aminity:id,name,icon', 'areas']);
             }, 'pickup_station:id,name', 'dropoff_station:id,name'])
             ->where('avalible_seats', '>', 0)
             ->where('status', 'active');
@@ -149,6 +155,21 @@ class BookingController extends Controller
             
             $buses_trips = $buses_trips->merge($buses_back_trips);
         }
+        $buses_trips = $buses_trips->map(function ($trip) {
+            $bus = $trip->bus;
+            if (!empty($bus)) { 
+                $areas = collect($bus->areas)->pluck('area'); 
+                $seats = $bus->capacity; // Number of seats
+                $seats_arr = [];
+            
+                for ($i = 1; $i <= $seats; $i++) {
+                    $seats_arr[$i] = $areas->contains($i);
+                }
+                $bus->new_areas = $seats_arr;
+                $bus->makeHidden(['areas']);
+            } 
+            return $trip;
+        });
         
         $buses = $buses_trips->where('trip_type', 'bus')->values();
         $hiace = $buses_trips->where('trip_type', 'hiace')->values();
@@ -165,17 +186,21 @@ class BookingController extends Controller
     public function payment(Request $request){
         // user/booking/payment
         // Keys
-        // payment_method_id, trip_id, travelers, amount, receipt_image, travel_date
+        // payment_method_id, trip_id, travelers, amount, receipt_image, 
+        // travel_date, seats[]
         $validation = Validator::make(request()->all(),[ 
             'payment_method_id' => 'required|exists:payment_methods,id',
             'trip_id' => 'required|exists:trips,id',
             'travelers' => 'required|numeric',
             'amount' => 'required|numeric',
             'travel_date' => 'required|date',
+            'seats' => 'required|array',
+            'seats.*' => 'numeric',
         ]);
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
         }
+        //booking_bus
         $trip = $this->trips
         ->where('id', $request->trip_id)
         ->first();
@@ -248,6 +273,24 @@ class BookingController extends Controller
         ]);
         $trip->avalible_seats -= $request->travelers;
         $trip->save();
+        $currency_point = $this->currency_point
+        ->where('currency_id', $trip->currency_id)
+        ->first();
+        if (!empty($currency_point)) {
+            $points = intval($total / $currency_point->currencies);
+            $points = $points * $currency_point->points; 
+            $payments->points = $points;
+            $payments->save();
+        }
+        foreach ($request->seats  as $item) {
+            $this->booking_bus
+            ->create([
+                'bus_id' => $trip->bus_id,
+                'area' => $item,
+            ]);
+        }
+        $payments->commission = $commission;
+        $payments->save();
 
         return response()->json([
             'success' => 'You add data success'
@@ -351,6 +394,30 @@ class BookingController extends Controller
         ]);
         $trip->avalible_seats -= $request->travelers;
         $trip->save();
+        $wallet->amount -= $total;
+        $wallet->save();
+        $agent_wallet = $this->wallet
+        ->where('user_id', $trip->agent_id )
+        ->where('currency_id', $trip->currency_id)
+        ->first();
+        $agent_wallet->amount += $receivable;
+        $agent_wallet->save();
+        $currency_point = $this->currency_point
+        ->where('currency_id', $trip->currency_id)
+        ->first();
+        if (!empty($currency_point)) {
+            $points = intval($total / $currency_point->currencies);
+            $points = $points * $currency_point->points;
+            $this->user
+            ->where('id', $request->user()->id)
+            ->update([
+                'points' => $points + $request->user()->points,
+            ]);
+            $payments->points = $points;
+            $payments->save();
+        }
+        $payments->commission = $commission;
+        $payments->save();
 
         return response()->json([
             'success' => 'You add data success'
@@ -362,15 +429,14 @@ class BookingController extends Controller
         // Keys
         // date, traveler
         // country_id, city_id, address, map
-        // car_id
+        // brand_id
         // from_city_id, from_address, from_map
         $validation = Validator::make(request()->all(),[
-
             'date' => 'required|date',
             'traveler' => 'required|numeric',
             'country_id' => 'required|exists:countries,id',
             'city_id' => 'required|exists:cities,id',
-            'car_id' => 'required|exists:cars,id',
+            'brand_id' => 'required|exists:car_brands,id',
             'address' => 'required',
             'map' => 'sometimes',       
             'from_city_id' => 'required|exists:cities,id',
@@ -380,14 +446,12 @@ class BookingController extends Controller
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
         }
-        $car = $this->car
-        ->where('id', $request->car_id)
+        $brand = $this->brands
+        ->where('id', $request->brand_id)
         ->first();
         $privateRequest = $validation->validated();
         $privateRequest['user_id'] = $request->user()->id;
-        $privateRequest['category_id'] = $car->category_id;
-        $privateRequest['brand_id'] = $car->brand_id;
-        $privateRequest['model_id'] = $car->model_id;
+        $privateRequest['category_id'] = $brand->category_id;
         $this->private_request
         ->create($privateRequest);
 
@@ -493,6 +557,11 @@ class BookingController extends Controller
         ->where('id', $payments->booking_id)
         ->update([
             'status' => 'canceled'
+        ]);
+        $this->user
+        ->where('id', $request->user()->id)
+        ->update([
+            'points' => $request->user()->points - $payments->points
         ]);
 
         return response()->json([

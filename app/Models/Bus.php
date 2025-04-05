@@ -21,6 +21,10 @@ class Bus extends Model
         return url('storage/' . $this->attributes['bus_image']);
     }
 
+    public function areas(){
+        return $this->hasMany(BookingBus::class, 'bus_id');
+    }
+
     public function busType(){
         return $this->belongsTo(BusType::class);
     }

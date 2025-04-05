@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('private_requests', function (Blueprint $table) {
-            //, 
-            $table->foreignId('category_id')->nullable()->constrained('car_categories')->onDelete('set null');
-            $table->foreignId('brand_id')->nullable()->constrained('car_brands')->onDelete('set null');
+        Schema::table('points', function (Blueprint $table) {
+            $table->integer('currencies');
         });
     }
 
@@ -23,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('private_requests', function (Blueprint $table) {
+        Schema::table('points', function (Blueprint $table) {
             //
         });
     }
