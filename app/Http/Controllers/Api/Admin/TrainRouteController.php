@@ -35,7 +35,7 @@ class TrainRouteController extends Controller
     public function addRoute(Request $request){
         $validation = Validator::make($request->all(),[
             'name' => ['required', 'string'],
-            'from_country_id	' => ['required', 'exists:countries,id'],
+            'from_country_id' => ['required', 'exists:countries,id'],
             'from_city_id' => ['required', 'exists:cities,id'],
             'to_country_id' => ['required', 'exists:countries,id'],
             'to_city_id' => ['required', 'exists:cities,id'],
