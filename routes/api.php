@@ -16,6 +16,10 @@ use App\Http\Controllers\Api\Admin\NationailtyController;
 use App\Http\Controllers\Api\Admin\OperatorController;
 use App\Http\Controllers\Api\Admin\PaymentController;
 use App\Http\Controllers\Api\Admin\PaymentMethodController;
+use App\Http\Controllers\Api\Admin\TrainClassController;
+use App\Http\Controllers\Api\Admin\TrainController;
+use App\Http\Controllers\Api\Admin\TrainRouteController;
+use App\Http\Controllers\Api\Admin\TrainTypeController;
 use App\Http\Controllers\Api\Admin\TripController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
@@ -253,4 +257,44 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/car/delete/{id}',[AdminCarController::class,'deleteCar']);
 
     Route::get('/admin/agent_cars/{agent_id}',[AdminCarController::class,'getAgentCars']);
+
+/////////////////////////////////////////// Train Type //////////////////////////////////////////////
+
+    Route::get('/admin/trainTypes',[TrainTypeController::class,'getTypes']);
+
+    Route::post('/admin/trainType/add',[TrainTypeController::class,'addType']);
+
+    Route::put('/admin/trainType/update/{id}',[TrainTypeController::class,'updateType']);
+
+    Route::delete('/admin/trainType/delete/{id}',[TrainTypeController::class,'deleteType']);
+
+////////////////////////////////////////// Train Class //////////////////////////////////////////////
+
+    Route::get('/admin/trainclasses',[TrainClassController::class,'getClasses']);
+
+    Route::post('/admin/trainclass/add',[TrainClassController::class,'addClass']);
+
+    Route::put('/admin/trainclass/update/{id}',[TrainClassController::class,'updateClass']);
+
+    Route::delete('/admin/trainclass/delete/{id}',[TrainClassController::class,'deleteClass']);
+
+////////////////////////////////////////// Train Route //////////////////////////////////////////////
+
+    Route::get('/admin/trainRoutes',[TrainRouteController::class,'getRoutes']);
+
+    Route::post('/admin/trainRoute/add',[TrainRouteController::class,'addRoute']);
+
+    Route::put('/admin/trainRoute/update/{id}',[TrainRouteController::class,'updateRoute']);
+
+    Route::delete('/admin/trainRoute/delete/{id}',[TrainRouteController::class,'deleteRoute']);
+
+////////////////////////////////////////////// Train //////////////////////////////////////////////
+
+    Route::get('/admin/trains',[TrainController::class,'getTrains']);
+
+    Route::post('/admin/train/add',[TrainController::class,'addTrain']);
+
+    Route::put('/admin/train/update/{id}',[TrainController::class,'modifyTrain']);
+
+    Route::delete('/admin/train/delete/{id}',[TrainController::class,'deleteTrain']);
 });

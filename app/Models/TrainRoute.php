@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TrainRoute extends Model
 {
     protected $fillable =[
+        'name',
         'from_country_id',
         'from_city_id',
         'to_country_id',
