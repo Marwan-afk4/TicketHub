@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\Agent\Booking\BookingController;
 use App\Http\Controllers\Api\Agent\Payout\PayoutController;
 use App\Http\Controllers\Api\Agent\Wallet\WalletController;
 use App\Http\Controllers\Api\Agent\Private\PrivateRequestController;
+use App\Http\Controllers\Api\Agent\Reports\BookingReportController;
+use App\Http\Controllers\Api\Agent\Reports\EarningReportController;
 
 Route::middleware(['auth:sanctum','IsAgent'])->group(function () {
     Route::controller(CarController::class)
@@ -88,6 +90,16 @@ Route::middleware(['auth:sanctum','IsAgent'])->group(function () {
 
     Route::controller(WalletController::class)
     ->prefix('wallet')->group(function(){
+        Route::get('/', 'view');
+    });
+
+    Route::controller(BookingReportController::class)
+    ->prefix('report/booking')->group(function(){
+        Route::get('/', 'view');
+    });
+
+    Route::controller(EarningReportController::class)
+    ->prefix('report/earning')->group(function(){
         Route::get('/', 'view');
     });
 });

@@ -20,7 +20,13 @@ class Payment extends Model
         'booking_id',
         'agent_id',
         'points',
+        'commission',
     ];
+    protected $appends = ['operator'];
+
+    public function getOperatorAttribute(){
+        return $this->total - $this->commission;
+    }
 
     public function paymentMethod(){
         return $this->belongsTo(PaymentMethod::class);

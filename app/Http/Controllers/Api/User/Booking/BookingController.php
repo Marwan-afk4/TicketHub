@@ -289,6 +289,8 @@ class BookingController extends Controller
                 'area' => $item,
             ]);
         }
+        $payments->commission = $commission;
+        $payments->save();
 
         return response()->json([
             'success' => 'You add data success'
@@ -414,6 +416,8 @@ class BookingController extends Controller
             $payments->points = $points;
             $payments->save();
         }
+        $payments->commission = $commission;
+        $payments->save();
 
         return response()->json([
             'success' => 'You add data success'
