@@ -13,12 +13,13 @@ use App\Models\Zone;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Bus;
+use App\Models\Train;
 
 class TripController extends Controller
 {
     public function __construct(private Trip $trip, private Station $stations,
     private City $cities, private Zone $zones, private Country $countries,
-    private Currency $currency, private Bus $buses){}
+    private Currency $currency, private Bus $buses, private Train $trains){}
 
     public function view(Request $request){
         // /agent/trip
@@ -26,7 +27,10 @@ class TripController extends Controller
         ->where('agent_id', $request->user()->id)
         ->with(['bus.busType', 'city', 'to_city', 'zone', 'to_zone',
         'pickup_station', 'dropoff_station', 'currency', 'country',
-        'to_country'])
+        'to_country', 'train' => function($query){
+            $query->select('id', 'name', 'class_id', 'type_id')
+            ->with(['type:id,name', 'class:id,name']);
+        }])
         ->get()
         ->map(function($item){
             return [
@@ -49,6 +53,9 @@ class TripController extends Controller
                 'bus_image' => $item?->bus?->image_link ?? null,
                 'bus_type' => $item?->bus?->busType?->name ?? null,
                 'bus_capacity' => $item?->bus?->capacity ?? null,
+                'train_name' => $item?->train?->name ?? null,
+                'train_type' => $item?->train?->type?->name ?? null,
+                'train_class' => $item?->train?->class?->name ?? null,
                 'from_country' => $item?->country?->name ?? null,
                 'from_city' => $item?->city?->name ?? null,
                 'from_zone' => $item?->zone?->name ?? null,
@@ -70,6 +77,12 @@ class TripController extends Controller
         ->get();
         $currency = $this->currency
         ->get();
+        $trains = $this->trains
+        ->where('agent_id', $request->user()->id)
+        ->with(['type', 'class', 'country', 'route' => function($query){
+            $query->with(['from_country', 'from_city', 'to_country', 'to_city']);
+        }])
+        ->get();
         $buses = $this->buses
         ->where('agent_id', $request->user()->id)
         ->with('busType')
@@ -82,6 +95,7 @@ class TripController extends Controller
             'countries' => $countries,
             'currency' => $currency,
             'buses' => $buses,
+            'trains' => $trains,
         ]);
     }
 
@@ -91,7 +105,11 @@ class TripController extends Controller
         ->where('agent_id', $request->user()->id)
         ->where('id', $id)
         ->with(['bus.busType', 'city', 'to_city', 'zone', 'to_zone',
-        'pickup_station', 'dropoff_station', 'currency', 'country'])
+        'pickup_station', 'dropoff_station', 'currency', 'country', 
+        'train' => function($query){
+            $query->select('id', 'name', 'class_id', 'type_id')
+            ->with(['type:id,name', 'class:id,name']);
+        }])
         ->first();
         $trips = collect([$trips]);
         $trips->map(function($item){
@@ -111,9 +129,14 @@ class TripController extends Controller
                 'min_cost' => $item->min_cost,
                 'trip_type' => $item->trip_type,
                 'cancelation_date' => $item->cancelation_date,
+                'bus_id' => $item?->bus?->id ?? null,
                 'bus_image' => $item?->bus?->image_link ?? null,
                 'bus_type' => $item?->bus?->busType?->name ?? null,
                 'bus_capacity' => $item?->bus?->capacity ?? null,
+                'train_id' => $item?->train?->id ?? null,
+                'train_name' => $item?->train?->name ?? null,
+                'train_type' => $item?->train?->type?->name ?? null,
+                'train_class' => $item?->train?->class?->name ?? null,
                 'country' => $item?->country?->name ?? null,
                 'from_city' => $item?->city?->name ?? null,
                 'from_zone' => $item?->zone?->name ?? null,
@@ -140,6 +163,7 @@ class TripController extends Controller
         // max_book_date, type => [limited, unlimited], fixed_date, cancellation_policy, 
         // cancelation_pay_amount => [fixed, percentage], cancelation_pay_value, 
         // min_cost, trip_type => [hiace, bus, train], currency_id, cancelation_date,
+        // train_id
         $tripRequest = $request->validated();
         $tripRequest['agent_id'] = $request->user()->id;
         $trip = $this->trip->create($tripRequest);
@@ -158,6 +182,7 @@ class TripController extends Controller
         // to_country_id, to_city_id, to_zone_id, date, price, status, 
         // max_book_date, type, fixed_date, cancellation_policy, cancelation_pay_amount, 
         // cancelation_pay_value, min_cost, trip_type, currency_id, cancelation_date,
+        // train_id
         $trip = $this->trip->find($id);
 
         if (!$trip) {

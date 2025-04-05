@@ -17,15 +17,20 @@ class BookingController extends Controller
         $pending_booking = $this->bookings
         ->where('status', 'pending')
         ->where('agent_id', $request->user()->id)
-        ->with(['bus:id,bus_image,bus_number', 'trip:id,trip_name'])
+        ->with(['bus:id,bus_image,bus_number', 'trip:id,trip_name',
+        'train:id,name'])
         ->get();
         $confirmed_booking = $this->bookings
         ->where('status', 'confirmed')
         ->where('agent_id', $request->user()->id)
+        ->with(['bus:id,bus_image,bus_number', 'trip:id,trip_name',
+        'train:id,name'])
         ->get();
         $canceled_booking = $this->bookings
         ->where('status', 'canceled')
         ->where('agent_id', $request->user()->id)
+        ->with(['bus:id,bus_image,bus_number', 'trip:id,trip_name',
+        'train:id,name'])
         ->get();
         
         return response()->json([

@@ -83,7 +83,11 @@ class BookingController extends Controller
         ->with(['bus' => function($query){
             $query->select('id', 'bus_number', 'bus_image', 'capacity')
             ->with(['aminity:id,name,icon', 'areas']);
-        }, 'pickup_station:id,name', 'dropoff_station:id,name'])
+        }, 'pickup_station:id,name', 'dropoff_station:id,name', 
+        'train' => function($query){
+            $query->select('id', 'name', 'class_id', 'type_id')
+            ->with(['type:id,name', 'class:id,name']);
+        }])
         ->where('avalible_seats', '>', 0)
         ->where('status', 'active');
 
@@ -112,7 +116,7 @@ class BookingController extends Controller
         'id', 'bus_id', 'pickup_station_id', 'dropoff_station_id', 'trip_type',
         'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price',
         'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
-        'cancelation_date'
+        'cancelation_date', 'train_id'
         )->get();
         
         if ($request->type === 'round_trip') {
@@ -120,7 +124,11 @@ class BookingController extends Controller
             ->with(['bus' => function($query){
                 $query->select('id', 'bus_number', 'bus_image', 'capacity')
                 ->with(['aminity:id,name,icon', 'areas']);
-            }, 'pickup_station:id,name', 'dropoff_station:id,name'])
+            }, 'pickup_station:id,name', 'dropoff_station:id,name', 
+            'train' => function($query){
+                $query->select('id', 'name', 'class_id', 'type_id')
+                ->with(['type:id,name', 'class:id,name']);
+            }])
             ->where('avalible_seats', '>', 0)
             ->where('status', 'active');
 
@@ -150,7 +158,7 @@ class BookingController extends Controller
                 'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price',
                 'trip_type',
                 'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
-                'cancelation_date'
+                'cancelation_date', 'train_id'
             )->get();
             
             $buses_trips = $buses_trips->merge($buses_back_trips);

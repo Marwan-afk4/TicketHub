@@ -16,7 +16,12 @@ class Booking extends Model
         'date',
         'seats_count',
         'status',
+        'train_id'
     ];
+
+    public function train(){
+        return $this->belongsTo(Train::class, 'train_id');
+    }
 
     public function bus(){
         return $this->belongsTo(Bus::class);
