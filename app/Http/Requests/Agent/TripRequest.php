@@ -26,6 +26,7 @@ class TripRequest extends FormRequest
         return [
             'trip_name' => 'required|string',
             'bus_id' => 'nullable|exists:buses,id',
+            'train_id' => 'nullable|exists:trains,id',
             'pickup_station_id' => 'required|exists:stations,id',
             'dropoff_station_id' => 'required|exists:stations,id',
             'city_id' => 'required|exists:cities,id',

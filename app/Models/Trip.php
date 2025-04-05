@@ -38,6 +38,7 @@ class Trip extends Model
         'trip_type',
         'currency_id',
         'cancelation_date',
+        'train_id',
     ];
     protected $appends = ['image_link'];
 
@@ -51,6 +52,10 @@ class Trip extends Model
 
     public function bus(){
         return $this->belongsTo(Bus::class);
+    }
+
+    public function train(){
+        return $this->belongsTo(Train::class, 'train_id');
     }
 
     public function country(){
