@@ -39,4 +39,8 @@ class Booking extends Model
         return $this->belongsTo(User::class,'agent_id');
     }
 
+    public function bookingUsers(){
+        return $this->hasMany(BookingUser::class);
+    }
+
 }

@@ -14,4 +14,20 @@ class BookingUser extends Model
         'booking_id',
         'private_request_id',
     ];
+
+    public function payment(){
+        return $this->belongsTo(Payment::class);
+    }
+
+    public function booking(){
+        return $this->belongsTo(Booking::class);
+    }
+
+    public function privateRequest(){
+        return $this->belongsTo(PrivateRequest::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

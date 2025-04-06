@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\BookingUser;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 
@@ -49,6 +50,10 @@ class PaymentController extends Controller
             'destenation_from'=>$payment->trip->pickup_station_id,
             'destenation_to'=>$payment->trip->dropoff_station_id,
             'train_id'=>$payment->trip->train_id ?? null
+        ]);
+        $bookingUser = BookingUser::where('payment_id', $payment->id)
+        ->update([
+            'booking_id' => $booking->id
         ]);
         $payment->save();
         return response()->json(['message' => 'Payment Confirmed successffully']);
