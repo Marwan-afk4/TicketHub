@@ -35,6 +35,7 @@ class TripController extends Controller
         ->map(function($item){
             return [
                 'id' => $item->id,
+                'trip_name' => $item->trip_name,
                 'deputre_time' => $item->deputre_time,
                 'arrival_time' => $item->arrival_time,
                 'avalible_seats' => $item->avalible_seats,
@@ -115,6 +116,7 @@ class TripController extends Controller
         $trips->map(function($item){
             return [
                 'deputre_time' => $item->deputre_time,
+                'trip_name' => $item->trip_name,
                 'arrival_time' => $item->arrival_time,
                 'avalible_seats' => $item->avalible_seats,
                 'date' => $item->date,
