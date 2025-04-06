@@ -15,7 +15,7 @@ class BookingReportController extends Controller
         // /agent/report/booking
         $bookings = $this->payments
         ->select('id', 'amount', 'total', 'status', 'travelers', 'travel_date', 'trip_id', 
-        'booking_id', 'user_id', 'commission')
+        'booking_id', 'user_id', 'commission', 'currency_id')
         ->with(['trip' => function($query){
             $query->select('id', 'trip_name', 'deputre_time', 'arrival_time', 'pickup_station_id', 
             'dropoff_station_id', 'city_id', 'to_city_id', 'trip_type')
@@ -23,7 +23,7 @@ class BookingReportController extends Controller
                 'pickup_station:id,name', 'dropoff_station:id,name',
                 'city:id,name', 'to_city:id,name'
             ]);
-        }, 'user:id,name,phone'])
+        }, 'user:id,name,phone', 'currency:id,name'])
         ->where('agent_id', $request->user()->id)
         ->where('status', 'confirmed')
         ->get()

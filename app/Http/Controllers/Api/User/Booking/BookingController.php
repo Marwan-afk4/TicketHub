@@ -442,7 +442,7 @@ class BookingController extends Controller
         $validation = Validator::make(request()->all(),[
             'date' => 'required|date',
             'traveler' => 'required|numeric',
-            'country_id' => 'required|exists:countries,id',
+            // 'country_id' => 'required|exists:countries,id',
             'city_id' => 'required|exists:cities,id',
             'brand_id' => 'required|exists:car_brands,id',
             'address' => 'required',
@@ -454,10 +454,16 @@ class BookingController extends Controller
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
         }
+        $cities = $this->cities
+        ->get();
         $brand = $this->brands
         ->where('id', $request->brand_id)
         ->first();
         $privateRequest = $validation->validated();
+        $from_country_id = $cities->where('id', $request->from_city_id);
+        $privateRequest['from_country_id'] = $from_country_id;
+        $country_id = $cities->where('id', $request->city_id);
+        $privateRequest['country_id'] = $country_id;
         $privateRequest['user_id'] = $request->user()->id;
         $privateRequest['category_id'] = $brand->category_id;
         $this->private_request

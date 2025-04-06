@@ -43,4 +43,8 @@ class Payment extends Model
     public function booking(){
         return $this->belongsTo(Booking::class, 'booking_id');
     }
+
+    public function currency(){
+        return $this->belongsTo(Currency::class, 'currency_id');
+    }
 }

@@ -14,7 +14,9 @@ class EarningReportController extends Controller
     public function view(Request $request){
         // /agent/report/earning
         $earning = $this->payments
-        ->select('id', 'amount', 'total', 'status', 'commission')
+        ->select('id', 'amount', 'total', 'status', 
+        'commission', 'currency_id')
+        ->with(['currency:id,name'])
         ->where('agent_id', $request->user()->id)
         ->where('status', 'confirmed')
         ->get()
@@ -23,8 +25,20 @@ class EarningReportController extends Controller
             $item->makeHidden(['booking', 'booking_id']);
             return $item;
         });
-        $total = $earning->sum('total');
-        $total_operator = $earning->sum('operator');
+
+        $total = [];
+        $total_operator = [];
+        foreach ($earning as $item) {
+            $currency = $item->currency;
+            if (isset($total[$currency?->name])) {
+                $total[$currency->name] += $item->total;
+                $total_operator[$currency->name] += $item->operator;
+            }
+            else{
+                $total[$currency->name] = $item->total;
+                $total_operator[$currency->name] = $item->operator;
+            }
+        }
 
         return response()->json([
             'earning' => $earning,

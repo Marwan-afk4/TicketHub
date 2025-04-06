@@ -16,7 +16,7 @@ class Booking extends Model
         'date',
         'seats_count',
         'status',
-        'train_id'
+        'train_id',
     ];
 
     public function train(){
