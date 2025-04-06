@@ -34,7 +34,7 @@ class TrainController extends Controller
     public function addtrain(Request $request){
         $validation = Validator::make($request->all(),[
             'name' => ['required', 'string'],
-            'agent_id' => ['required', 'exists:agents,id'],
+            'agent_id' => ['required', 'exists:users,id'],
             'type_id' => ['required', 'exists:train_types,id'],
             'route_id' => ['required', 'exists:train_routes,id'],
             'country_id' => ['required', 'exists:countries,id'],

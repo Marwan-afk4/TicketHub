@@ -35,4 +35,8 @@ class Booking extends Model
         return $this->belongsTo(Trip::class);
     }
 
+    public function agent(){
+        return $this->belongsTo(User::class,'agent_id');
+    }
+
 }

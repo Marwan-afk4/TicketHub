@@ -33,12 +33,20 @@ class UserController extends Controller
             'bookings' => $user->bookings->map(function ($booking) {
                 return [
                     'user_id' => $booking->user_id,
+                    'agent_id' => $booking->agent_id,
+                    'agent_name' => $booking->agent->name ?? null,
                     'bus_id' => $booking->bus_id,
                     'bus_name' => $booking->bus->bus_number ?? null,
                     'trip_id' => $booking->trip_id,
                     'trip_name' => $booking->trip->trip_name ?? null,
+                    'country_residence_id' => $booking->trip->country_id ?? null,
+                    'country_residence' => $booking->trip->country->name ?? null,
+                    'city_residence_id' => $booking->trip->city_id ?? null,
+                    'city_residence' => $booking->trip->city->name ?? null,
                     'destination_from' => $booking->destenation_from,
                     'destination_to' => $booking->destenation_to,
+                    'deputre_time'=> $booking->trip->deputre_time ?? null,
+                    'arrival_time' => $booking->trip->arrival_time ?? null,
                     'date' => $booking->date,
                     'seats_count' => $booking->seats_count,
                     'status' => $booking->status

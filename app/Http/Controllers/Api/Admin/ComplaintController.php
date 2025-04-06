@@ -20,13 +20,6 @@ class ComplaintController extends Controller
         return response()->json($data);
     }
 
-    public function getUsers(){
-        $users = User::where('role', 'user')->get();
-        $data = [
-            'users' => $users
-        ];
-        return response()->json($data);
-    }
 
     public function addComplaint(Request $request){
         $my_id = $request->user();
