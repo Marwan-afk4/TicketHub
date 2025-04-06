@@ -47,10 +47,10 @@ class TrainRouteController extends Controller
 
         $route = TrainRoute::create([
             'name' => $request->name,
-            'from_country_id' => $request->from_country,
-            'from_city_id' => $request->from_city,
-            'to_country_id' => $request->to_country,
-            'to_city_id' => $request->to_city,
+            'from_country_id' => $request->from_country_id,
+            'from_city_id' => $request->from_city_id,
+            'to_country_id' => $request->to_country_id,
+            'to_city_id' => $request->to_city_id,
         ]);
         return response()->json([
             'route' => $route
@@ -73,10 +73,10 @@ class TrainRouteController extends Controller
         $route = TrainRoute::find($id);
         $route->update([
             'name' => $request->name,
-            'from_country_id' => $request->from_country ?? $route->from_country_id,
-            'from_city_id' => $request->from_city ?? $route->from_city_id,
-            'to_country_id' => $request->to_country ?? $route->to_country_id,
-            'to_city_id' => $request->to_city ?? $route->to_city_id,
+            'from_country_id' => $request->from_country_id ?? $route->from_country_id,
+            'from_city_id' => $request->from_city_id ?? $route->from_city_id,
+            'to_country_id' => $request->to_country_id ?? $route->to_country_id,
+            'to_city_id' => $request->to_city_id ?? $route->to_city_id,
         ]);
         return response()->json([
             'route' => $route
