@@ -11,5 +11,7 @@ class BookingUser extends Model
         'age',
         'user_id',
         'payment_id',
+        'booking_id',
+        'private_request_id',
     ];
 }

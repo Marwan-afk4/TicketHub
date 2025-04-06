@@ -20,6 +20,7 @@ use App\Models\Wallet;
 use App\Models\CarBrand;
 use App\Models\CurrencyPoint;
 use App\Models\BookingBus;
+use App\Models\BookingUser;
 use App\Models\User;
 
 class BookingController extends Controller
@@ -36,7 +37,8 @@ class BookingController extends Controller
     private CarBrand $brands,
     private CurrencyPoint $currency_point,
     private BookingBus $booking_bus,
-    private User $user){}
+    private User $user,
+    private BookingUser $booking_user){}
     use Image;
 
     public function lists(){
@@ -196,6 +198,7 @@ class BookingController extends Controller
         // Keys
         // payment_method_id, trip_id, travelers, amount, receipt_image, 
         // travel_date, seats[]
+        // travellers_data[{name, age}]
         $validation = Validator::make(request()->all(),[ 
             'payment_method_id' => 'required|exists:payment_methods,id',
             'trip_id' => 'required|exists:trips,id',
@@ -204,6 +207,9 @@ class BookingController extends Controller
             'travel_date' => 'required|date',
             'seats' => 'required|array',
             'seats.*' => 'numeric',
+            'travellers_data' => 'required|array',
+            'travellers_data.*.name' => 'required',
+            'travellers_data.*.age' => 'required',
         ]);
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
@@ -299,6 +305,17 @@ class BookingController extends Controller
         }
         $payments->commission = $commission;
         $payments->save();
+        if ($request->travellers_data) {
+            foreach ( $request->travellers_data as $item) {
+                $this->booking_user
+                ->create([
+                    'name' => $item['name'],
+                    'age' => $item['age'],
+                    'user_id' => $request->user()->id,
+                    'payment_id' => $payments->id,
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => 'You add data success'
@@ -309,11 +326,15 @@ class BookingController extends Controller
         // user/booking/payment_wallet
         // Keys
         // trip_id, travelers, amount, receipt_image, travel_date
+        // travellers_data[{name, age}]
         $validation = Validator::make(request()->all(),[
             'trip_id' => 'required|exists:trips,id',
             'travelers' => 'required|numeric',
             'amount' => 'required|numeric',
             'travel_date' => 'required|date',
+            'travellers_data' => 'required|array',
+            'travellers_data.*.name' => 'required',
+            'travellers_data.*.age' => 'required',
         ]);
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
@@ -426,6 +447,17 @@ class BookingController extends Controller
         }
         $payments->commission = $commission;
         $payments->save();
+        if ($request->travellers_data) {
+            foreach ( $request->travellers_data as $item) {
+                $this->booking_user
+                ->create([
+                    'name' => $item['name'],
+                    'age' => $item['age'],
+                    'user_id' => $request->user()->id,
+                    'payment_id' => $payments->id,
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => 'You add data success'
@@ -439,10 +471,10 @@ class BookingController extends Controller
         // country_id, city_id, address, map
         // brand_id
         // from_city_id, from_address, from_map
+        // travellers_data[{name, age}]
         $validation = Validator::make(request()->all(),[
             'date' => 'required|date',
             'traveler' => 'required|numeric',
-            // 'country_id' => 'required|exists:countries,id',
             'city_id' => 'required|exists:cities,id',
             'brand_id' => 'required|exists:car_brands,id',
             'address' => 'required',
@@ -450,6 +482,9 @@ class BookingController extends Controller
             'from_city_id' => 'required|exists:cities,id',
             'from_address' => 'required',
             'from_map' => 'sometimes',
+            'travellers_data' => 'required|array',
+            'travellers_data.*.name' => 'required',
+            'travellers_data.*.age' => 'required',
         ]);
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
@@ -466,8 +501,19 @@ class BookingController extends Controller
         $privateRequest['country_id'] = $country_id[0]->country_id ;
         $privateRequest['user_id'] = $request->user()->id;
         $privateRequest['category_id'] = $brand->category_id;
-        $this->private_request
+        $private_request = $this->private_request
         ->create($privateRequest);
+        if ($request->travellers_data) {
+            foreach ( $request->travellers_data as $item) {
+                $this->booking_user
+                ->create([
+                    'name' => $item['name'],
+                    'age' => $item['age'],
+                    'user_id' => $request->user()->id,
+                    'private_request_id' => $private_request->id,
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => 'You make request success'
