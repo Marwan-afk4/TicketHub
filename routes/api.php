@@ -194,6 +194,10 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
     Route::get('/admin/canceled_payments',[PaymentController::class,'canceledPayment']);
 
+    Route::put('/admin/payment/confirm/{id}',[PaymentController::class,'confirmPayment']);
+
+    Route::put('/admin/payment/cancel/{id}',[PaymentController::class,'cancelPayment']);
+
 ////////////////////////////////////////////// Aminites ///////////////////////////////////////////
 
     Route::get('/admin/aminites',[AmintyController::class,'getAminites']);
