@@ -37,7 +37,7 @@ class Trip extends Model
         'min_cost',
         'trip_type',
         'currency_id',
-        'cancelation_date',
+        'cancelation_hours',
         'train_id',
     ];
     protected $appends = ['image_link'];

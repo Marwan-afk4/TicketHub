@@ -30,7 +30,8 @@ class BookingReportController extends Controller
         ->map(function($item){
             $item->trip_type = $item?->trip?->trip_type ?? null;
             $item->travel_status = $item?->booking?->status ?? null;
-            $item->makeHidden(['booking', 'booking_id']);
+            $item->operator = $item->total - $item->commission;
+            $item->makeHidden(['booking', 'booking_id', 'commission', 'total']);
             return $item;
         });
 

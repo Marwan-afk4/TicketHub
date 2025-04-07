@@ -50,7 +50,7 @@ class TripController extends Controller
                 'cancelation_pay_value' => $item->cancelation_pay_value,
                 'min_cost' => $item->min_cost,
                 'trip_type' => $item->trip_type,
-                'cancelation_date' => $item->cancelation_date,
+                'cancelation_hours' => $item->cancelation_hours,
                 'bus_image' => $item?->bus?->image_link ?? null,
                 'bus_type' => $item?->bus?->busType?->name ?? null,
                 'bus_capacity' => $item?->bus?->capacity ?? null,
@@ -130,7 +130,7 @@ class TripController extends Controller
                 'cancelation_pay_value' => $item->cancelation_pay_value,
                 'min_cost' => $item->min_cost,
                 'trip_type' => $item->trip_type,
-                'cancelation_date' => $item->cancelation_date,
+                'cancelation_hours' => $item->cancelation_hours,
                 'bus_id' => $item?->bus?->id ?? null,
                 'bus_image' => $item?->bus?->image_link ?? null,
                 'bus_type' => $item?->bus?->busType?->name ?? null,
@@ -164,7 +164,7 @@ class TripController extends Controller
         // to_country_id, to_city_id, to_zone_id, date, price, status => [active, inactive], 
         // max_book_date, type => [limited, unlimited], fixed_date, cancellation_policy, 
         // cancelation_pay_amount => [fixed, percentage], cancelation_pay_value, 
-        // min_cost, trip_type => [hiace, bus, train], currency_id, cancelation_date,
+        // min_cost, trip_type => [hiace, bus, train], currency_id, cancelation_hours,
         // train_id
         $tripRequest = $request->validated();
         $tripRequest['agent_id'] = $request->user()->id;
@@ -183,7 +183,7 @@ class TripController extends Controller
         // zone_id, deputre_time, arrival_time, avalible_seats, country_id, 
         // to_country_id, to_city_id, to_zone_id, date, price, status, 
         // max_book_date, type, fixed_date, cancellation_policy, cancelation_pay_amount, 
-        // cancelation_pay_value, min_cost, trip_type, currency_id, cancelation_date,
+        // cancelation_pay_value, min_cost, trip_type, currency_id, cancelation_hours,
         // train_id
         $trip = $this->trip->find($id);
 

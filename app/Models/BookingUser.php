@@ -12,6 +12,5 @@ class BookingUser extends Model
         'user_id',
         'payment_id',
         'booking_id',
-        'private_request_id',
     ];
 }

@@ -44,7 +44,7 @@ class TripController extends Controller
                 'policy' => $trip->cancellation_policy,
                 'pay_amount' => $trip->cancelation_pay_amount,
                 'pay_value' => $trip->cancelation_pay_value,
-                'cancellation_date' => $trip->cancelation_date
+                'cancelation_hours' => $trip->cancelation_hours
             ],
 
             'agent' => [

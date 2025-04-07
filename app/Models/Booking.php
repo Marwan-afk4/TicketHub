@@ -19,6 +19,10 @@ class Booking extends Model
         'train_id',
     ];
 
+    public function payments(){
+        return $this->hasMany(Payment::class, 'booking_id');
+    }
+
     public function train(){
         return $this->belongsTo(Train::class, 'train_id');
     }

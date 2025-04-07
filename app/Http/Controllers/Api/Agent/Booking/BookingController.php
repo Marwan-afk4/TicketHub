@@ -6,32 +6,43 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+
+use App\Models\Payment;
 use App\Models\Booking;
 
 class BookingController extends Controller
 {
-    public function __construct(private Booking $bookings){}
+    public function __construct(private Booking $bookings, private Payment $payments){}
 
     public function view(Request $request){
         // /agent/bookings 
-        $pending_booking = $this->bookings
-        ->where('status', 'pending')
+        $bookings = $this->payments
+        ->select('id', 'amount', 'total', 'status', 'travelers', 'travel_date', 'trip_id', 
+        'booking_id', 'user_id', 'commission', 'currency_id')
+        ->with(['trip' => function($query){
+            $query->select('id', 'trip_name', 'deputre_time', 'arrival_time', 'pickup_station_id', 
+            'dropoff_station_id', 'city_id', 'to_city_id', 'trip_type')
+            ->with([
+                'pickup_station:id,name', 'dropoff_station:id,name',
+                'city:id,name', 'to_city:id,name'
+            ]);
+        }, 'user:id,name,phone', 'currency:id,name'])
         ->where('agent_id', $request->user()->id)
-        ->with(['bus:id,bus_image,bus_number', 'trip:id,trip_name',
-        'train:id,name'])
-        ->get();
-        $confirmed_booking = $this->bookings
         ->where('status', 'confirmed')
-        ->where('agent_id', $request->user()->id)
-        ->with(['bus:id,bus_image,bus_number', 'trip:id,trip_name',
-        'train:id,name'])
-        ->get();
-        $canceled_booking = $this->bookings
-        ->where('status', 'canceled')
-        ->where('agent_id', $request->user()->id)
-        ->with(['bus:id,bus_image,bus_number', 'trip:id,trip_name',
-        'train:id,name'])
-        ->get();
+        ->get()
+        ->map(function($item){
+            $item->trip_type = $item?->trip?->trip_type ?? null;
+            $item->travel_status = $item?->booking?->status ?? null;
+            $item->operator = $item->total - $item->commission;
+            $item->makeHidden(['booking', 'booking_id', 'commission', 'total']);
+            return $item;
+        });
+        $pending_booking = $bookings
+        ->where('travel_status', 'pending');
+        $confirmed_booking = $bookings
+        ->where('travel_status', 'confirmed');
+        $canceled_booking = $bookings
+        ->where('travel_status', 'canceled'); 
         
         return response()->json([
             'pending_booking' => $pending_booking,

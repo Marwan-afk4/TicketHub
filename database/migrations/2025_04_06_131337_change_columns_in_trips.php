@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('booking_users', function (Blueprint $table) {
-            $table->foreignId('private_request_id')->after('name')->nullable()->constrained('private_requests')->onDelete('set null');
-            //
+        Schema::table('trips', function (Blueprint $table) {
+            $table->dropColumn('cancelation_date');
+            $table->integer('cancelation_hours')->default(0);
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('booking_users', function (Blueprint $table) {
+        Schema::table('trips', function (Blueprint $table) {
             //
         });
     }

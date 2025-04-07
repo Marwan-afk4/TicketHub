@@ -50,7 +50,7 @@ class TripRequest extends FormRequest
             'min_cost' => 'nullable|numeric|min:0',
             'trip_type' => 'required|in:bus,hiace,train',
             'currency_id' => 'required|exists:currencies,id',
-            'cancelation_date' => 'nullable|date',
+            'cancelation_hours' => 'required|numeric',
         ];
     }
 
