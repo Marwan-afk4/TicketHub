@@ -83,7 +83,7 @@ class BookingController extends Controller
         }
 
         $buses_trips = $this->trips
-        ->with(['bus' => function($query){
+        ->with(['currency:id,name,symbol','bus' => function($query){
             $query->select('id', 'bus_number', 'bus_image', 'capacity')
             ->with(['aminity:id,name,icon', 'areas']);
         }, 'pickup_station:id,name', 'dropoff_station:id,name', 
@@ -119,12 +119,12 @@ class BookingController extends Controller
         'id', 'bus_id', 'pickup_station_id', 'dropoff_station_id', 'trip_type',
         'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price',
         'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
-        'cancelation_hours', 'train_id'
+        'cancelation_hours', 'train_id', 'currency_id'
         )->get();
         
         if ($request->type === 'round_trip') {
             $buses_back_trips = $this->trips
-            ->with(['bus' => function($query){
+            ->with(['currency:id,name,symbol','bus' => function($query){
                 $query->select('id', 'bus_number', 'bus_image', 'capacity')
                 ->with(['aminity:id,name,icon', 'areas']);
             }, 'pickup_station:id,name', 'dropoff_station:id,name', 
@@ -161,7 +161,7 @@ class BookingController extends Controller
                 'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price',
                 'trip_type',
                 'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
-                'cancelation_hours', 'train_id'
+                'cancelation_hours', 'train_id', 'currency_id'
             )->get();
             
             $buses_trips = $buses_trips->merge($buses_back_trips);
