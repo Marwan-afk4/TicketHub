@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Admin\CarBrandController;
 use App\Http\Controllers\Api\Admin\CarCategoryController;
 use App\Http\Controllers\Api\Admin\CarController as AdminCarController;
 use App\Http\Controllers\Api\Admin\CarModelController;
+use App\Http\Controllers\Api\Admin\CommissionController;
 use App\Http\Controllers\Api\Admin\ComplaintController;
 use App\Http\Controllers\Api\Admin\ComplaintSubjectController;
 use App\Http\Controllers\Api\Admin\CurrancyController;
@@ -299,4 +300,14 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::put('/admin/train/update/{id}',[TrainController::class,'modifyTrain']);
 
     Route::delete('/admin/train/delete/{id}',[TrainController::class,'deleteTrain']);
+
+//////////////////////////////////////// Commission //////////////////////////////////////////////
+
+    Route::get('/admin/AllCommissions',[CommissionController::class,'getAllCommission']);
+
+    Route::get('/admin/CommissionAgent/{id}',[CommissionController::class,'getAgentCommission']);
+
+    Route::get('/admin/CommissionDefault/add',[CommissionController::class,'addDefultCommission']);
+
+    Route::post('/admin/CommissionAgent/add',[CommissionController::class,'addAgentCommission']);
 });
