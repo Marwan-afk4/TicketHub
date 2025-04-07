@@ -15,8 +15,10 @@ use App\Http\Controllers\Api\Admin\CurrancyController;
 use App\Http\Controllers\Api\Admin\LocationController;
 use App\Http\Controllers\Api\Admin\NationailtyController;
 use App\Http\Controllers\Api\Admin\OperatorController;
+use App\Http\Controllers\Api\Admin\OperatorPaymentMethodController;
 use App\Http\Controllers\Api\Admin\PaymentController;
 use App\Http\Controllers\Api\Admin\PaymentMethodController;
+use App\Http\Controllers\Api\Admin\PayoutController;
 use App\Http\Controllers\Api\Admin\TrainClassController;
 use App\Http\Controllers\Api\Admin\TrainController;
 use App\Http\Controllers\Api\Admin\TrainRouteController;
@@ -310,4 +312,22 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::post('/admin/CommissionDefault/add',[CommissionController::class,'addDefultCommission']);
 
     Route::post('/admin/CommissionAgent/add',[CommissionController::class,'addAgentCommission']);
+
+    Route::get('/admin/defaultCommission',[CommissionController::class,'getDefaultCommission']);
+
+    Route::put('/admin/defaultCommission/update/{id}',[CommissionController::class,'updateDefaultCommission']);
+
+/////////////////////////////////////////////// operator Payment Method ////////////////////////////////////////////
+
+    Route::get('/admin/operator_payment_methods',[OperatorPaymentMethodController::class,'getOperatorPaymentMetod']);
+
+    Route::post('/admin/operator_payment_method/add',[OperatorPaymentMethodController::class,'addOperatorPaymentMethod']);
+
+    Route::put('/admin/operator_payment_method/update/{id}',[OperatorPaymentMethodController::class,'updateOperatorPaymentMethod']);
+
+    Route::delete('/admin/operator_payment_method/delete/{id}',[OperatorPaymentMethodController::class,'deleteOperatorPaymentMethod']);
+
+//////////////////////////////////////////////////// Payout Request ////////////////////////////////////////////
+
+    Route::put('/admin/payoutRequest/cancel/{id}',[PayoutController::class,'cancelPayout']);
 });
