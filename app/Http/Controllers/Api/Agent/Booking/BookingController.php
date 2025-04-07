@@ -45,9 +45,9 @@ class BookingController extends Controller
         ->where('travel_status', 'canceled'); 
         
         return response()->json([
-            'pending_booking' => $pending_booking,
-            'confirmed_booking' => $confirmed_booking,
-            'canceled_booking' => $canceled_booking,
+            'pending_booking' => $pending_booking->values(),
+            'confirmed_booking' => $confirmed_booking->values(),
+            'canceled_booking' => $canceled_booking->values(),
         ]);
     }
     
