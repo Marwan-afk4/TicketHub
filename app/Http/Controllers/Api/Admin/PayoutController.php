@@ -43,7 +43,7 @@ class PayoutController extends Controller
         $wallet = Wallet::where('user_id', $agent_id)->where('currency_id', $payout->currency_id)->first();
         // dd($wallet->amount);
         if($wallet->amount < $payout->amount){
-            return response()->json(['message' => 'Insufficient balance'], 400);
+            return response()->json(['message' => 'Insufficient balance your wallet ballance is'. ' ' .$wallet->amount], 400);
         }
         elseif($wallet->amount == $payout->amount || $wallet->amount > $payout->amount){
             $wallet->update([
