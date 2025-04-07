@@ -307,7 +307,7 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
     Route::get('/admin/CommissionAgent/{id}',[CommissionController::class,'getAgentCommission']);
 
-    Route::get('/admin/CommissionDefault/add',[CommissionController::class,'addDefultCommission']);
+    Route::post('/admin/CommissionDefault/add',[CommissionController::class,'addDefultCommission']);
 
     Route::post('/admin/CommissionAgent/add',[CommissionController::class,'addAgentCommission']);
 });
