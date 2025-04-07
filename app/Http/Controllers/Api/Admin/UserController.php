@@ -13,54 +13,78 @@ class UserController extends Controller
 
 
     public function getUsers()
-{
-    $users = User::where('role', 'user')
-        ->with(['country', 'city', 'zone', 'bookings.bus', 'bookings.trip'])
-        ->get();
+    {
+        $users = User::where('role', 'user')
+            ->with(['country', 'city', 'zone', 'bookings.bus', 'bookings.trip', 'bookings.bookingUsers'])
+            ->get();
 
-    $data = $users->map(function ($user) {
-        return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'phone' => $user->phone,
-            'country_id' => $user->country_id,
-            'country' => $user->country->name ?? null,
-            'city_id' => $user->city_id,
-            'city' => $user->city->name ?? null,
-            'zone_id' => $user->zone_id,
-            'zone' => $user->zone->name ?? null,
-            'bookings' => $user->bookings->map(function ($booking) {
-                return [
-                    'user_id' => $booking->user_id,
-                    'agent_id' => $booking->agent_id,
-                    'agent_name' => $booking->agent->name ?? null,
-                    'bus_id' => $booking->bus_id,
-                    'bus_name' => $booking->bus->bus_number ?? null,
-                    'trip_id' => $booking->trip_id,
-                    'trip_name' => $booking->trip->trip_name ?? null,
-                    'country_residence_id' => $booking->trip->country_id ?? null,
-                    'country_residence' => $booking->trip->country->name ?? null,
-                    'city_residence_id' => $booking->trip->city_id ?? null,
-                    'city_residence' => $booking->trip->city->name ?? null,
-                    'destination_from' => $booking->destenation_from,
-                    'destination_to' => $booking->destenation_to,
-                    'deputre_time'=> $booking->trip->deputre_time ?? null,
-                    'arrival_time' => $booking->trip->arrival_time ?? null,
-                    'date' => $booking->date,
-                    'seats_count' => $booking->seats_count,
-                    'status' => $booking->status
-                ];
-            })
-        ];
-    });
+        $data = $users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'country_id' => $user->country_id,
+                'country' => $user->country->name ?? null,
+                'city_id' => $user->city_id,
+                'city' => $user->city->name ?? null,
+                'zone_id' => $user->zone_id,
+                'zone' => $user->zone->name ?? null,
+                'bookings' => $user->bookings->map(function ($booking) {
+                    return [
+                        'user_id' => $booking->user_id,
+                        'agent_id' => $booking->agent_id,
+                        'agent_name' => $booking->agent->name ?? null,
+                        'agent_email' => $booking->agent->email ?? null,
+                        'agent_phone' => $booking->agent->phone ?? null,
+                        'agent_code'=> $booking->agent->code ?? null,
+                        'bus_id' => $booking->bus_id,
+                        'bus_name' => $booking->bus->bus_number ?? null,
+                        'trip_id' => $booking->trip_id,
+                        'trip_name' => $booking->trip->trip_name ?? null,
+                        'country_residence_id' => $booking->trip->country_id ?? null,
+                        'country_residence' => $booking->trip->country->name ?? null,
+                        'city_residence_id' => $booking->trip->city_id ?? null,
+                        'city_residence' => $booking->trip->city->name ?? null,
+                        'to_country_id' => $booking->trip->to_country_id ?? null,
+                        'to_country' => $booking->trip->to_country->name ?? null,
+                        'to_city_id' => $booking->trip->to_city_id ?? null,
+                        'to_city' => $booking->trip->to_city->name ?? null,
+                        'destination_from_id' => $booking->destenation_from,
+                        'destination_from_name' => $booking->destnationFrom->name ?? null,
+                        'destination_to_id' => $booking->destenation_to,
+                        'destination_to_name' => $booking->destnationTo->name ?? null,
+                        'deputre_time' => $booking->trip->deputre_time ?? null,
+                        'arrival_time' => $booking->trip->arrival_time ?? null,
+                        'date' => $booking->date,
+                        'seats_count' => $booking->seats_count,
+                        'status' => $booking->status,
+                        'booking_users' => $booking->bookingUsers->map(function ($passenger) {
+                            return [
+                                'id' => $passenger->id,
+                                'name' => $passenger->name,
+                                'age' => $passenger->age,
+                                'user_id' => $passenger->user_id,
+                                'user_name' => $passenger->user->name ?? null,
+                                'user_email' => $passenger->user->email ?? null,
+                                'user_phone' => $passenger->user->phone ?? null,
+                                'payment_id' => $passenger->payment_id,
+                                'booking_id' => $passenger->booking_id,
+                                'private_request_id' => $passenger->private_request_id,
+                            ];
+                        }),
+                    ];
+                }),
+            ];
+        });
 
-    return response()->json(['data' => $data]);
-}
+        return response()->json(['data' => $data]);
+    }
 
 
-    public function addUser(Request $request){
-        $validation = Validator::make(request()->all(),[
+    public function addUser(Request $request)
+    {
+        $validation = Validator::make(request()->all(), [
             'country_id' => 'nullable|exists:countries,id',
             'city_id' => 'nullable|exists:cities,id',
             'zone_id' => 'nullable|exists:zones,id',
@@ -70,8 +94,8 @@ class UserController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        if($validation->fails()){
-            return response()->json(['message'=>$validation->errors()],400);
+        if ($validation->fails()) {
+            return response()->json(['message' => $validation->errors()], 400);
         }
 
         $usercreation = User::create([
@@ -85,23 +109,24 @@ class UserController extends Controller
             'role' => 'user'
         ]);
 
-        if($usercreation){
-            return response()->json(['message'=>'User Created Successfully'],200);
+        if ($usercreation) {
+            return response()->json(['message' => 'User Created Successfully'], 200);
         }
-
     }
 
-    public function deleteUser($id){
+    public function deleteUser($id)
+    {
         $user = User::find($id);
-        if($user){
+        if ($user) {
             $user->delete();
-            return response()->json(['message'=>'User Deleted Successfully'],200);
+            return response()->json(['message' => 'User Deleted Successfully'], 200);
         }
     }
 
-    public function UpdateUser(Request $request,$id){
+    public function UpdateUser(Request $request, $id)
+    {
         $user = User::find($id);
-        if($user){
+        if ($user) {
             $data = [
                 'country_id' => $request->country_id ?? $user->country_id,
                 'city_id' => $request->city_id ?? $user->city_id,
@@ -115,7 +140,7 @@ class UserController extends Controller
                 $data['password'] = Hash::make($request->password);
             }
             $user->update($data);
-            return response()->json(['message'=>'User Updated Successfully'],200);
+            return response()->json(['message' => 'User Updated Successfully'], 200);
         }
     }
 }
