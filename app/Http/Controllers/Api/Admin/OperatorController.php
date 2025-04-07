@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Image;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -15,96 +16,123 @@ class OperatorController extends Controller
     use Image;
 
     public function getOperators()
-{
-    $operators = User::where('role', 'agent')->get();
+    {
+        $operators = User::where('role', 'agent')->get();
 
-    $data = $operators->map(fn($operator) => [
-        'id' => $operator->id,
-        'name' => $operator->name,
-        'email' => $operator->email,
-        'phone' => $operator->phone,
-        'image' => $operator->image ? asset('storage/' . $operator->image) : null,
-        'points' => $operator->points,
-        'role' => $operator->role,
-        'code' => $operator->code,
-        'description' => $operator->description
-    ]);
+        $data = $operators->map(fn($operator) => [
+            'id' => $operator->id,
+            'name' => $operator->name,
+            'email' => $operator->email,
+            'phone' => $operator->phone,
+            'image' => $operator->image ? asset('storage/' . $operator->image) : null,
+            'points' => $operator->points,
+            'role' => $operator->role,
+            'code' => $operator->code,
+            'description' => $operator->description
+        ]);
 
-    return response()->json([ 'operators' => $data]);
-}
-
-public function addOperator(Request $request)
-{
-    $validation = Validator::make($request->all(), [
-        'name' => ['required', 'string'],
-        'email' => ['required', 'email', 'unique:users,email'],
-        'phone' => ['required', 'unique:users,phone'],
-        'password' => ['required', 'min:8'],
-        'image' => ['nullable', 'string'], // Ensure valid base64 image handling
-        'description' => ['required', 'string'],
-    ]);
-
-    if ($validation->fails()) {
-        return response()->json(['message' => $validation->errors()], 400);
+        return response()->json(['operators' => $data]);
     }
 
-    $operator = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'phone' => $request->phone,
-        'password' => Hash::make($request->password),
-        'role' => 'agent',
-        'image' => $request->image ? $this->storeBase64Image($request->image, 'admin/operator') : null,
-        'code' => 'OP' . rand(10000, 99999) . strtolower(Str::random(1)),
-        'description' => $request->description
-    ]);
+    public function addOperator(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'name' => ['required', 'string'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'phone' => ['required', 'unique:users,phone'],
+            'password' => ['required', 'min:8'],
+            'image' => ['nullable', 'string'],
+            'description' => ['required', 'string'],
+            'train_commission' => ['nullable', 'numeric'],
+            'bus_commission' => ['nullable', 'numeric'],
+            'hiace_commission' => ['nullable', 'numeric'],
+            'commission_type' => ['required', 'in:private,defult']
+        ]);
 
-    return response()->json(['message' => 'Operator added successfully']);
-}
+        if ($validation->fails()) {
+            return response()->json(['message' => $validation->errors()], 400);
+        }
 
-public function deleteOperator($id)
-{
-    $operator = User::find($id);
+        $operator = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
+            'role' => 'agent',
+            'image' => $request->image ? $this->storeBase64Image($request->image, 'admin/operator') : null,
+            'code' => 'OP' . rand(10000, 99999) . strtolower(Str::random(1)),
+            'description' => $request->description
+        ]);
 
-    if (!$operator) {
-        return response()->json(['message' => 'Operator not found'], 404);
+        if ($request->commission_type == 'private') {
+            DB::table('commissions')->insert([
+                'agent_id' => $operator->id,
+                'train' => $request->train_commission,
+                'bus' => $request->bus_commission,
+                'hiace' => $request->hiace_commission,
+                'type' => 'private'
+            ]);
+        } elseif ($request->commission_type == 'defult') {
+            $defaultCommission = DB::table('commissions')->where('type', 'defult')->first();
+
+            if (!$defaultCommission) {
+                return response()->json(['message' => 'Default commission not found'], 400);
+            }
+
+            DB::table('commissions')->insert([
+                'agent_id' => $operator->id,
+                'train' => $defaultCommission->train,
+                'bus' => $defaultCommission->bus,
+                'hiace' => $defaultCommission->hiace,
+                'type'=>'defult'
+            ]);
+        }
+
+        return response()->json(['message' => 'Operator added successfully and commission handled correctly']);
     }
 
-    $operator->delete();
 
-    return response()->json(['message' => 'Operator deleted successfully']);
-}
+    public function deleteOperator($id)
+    {
+        $operator = User::find($id);
 
-public function updateOperator(Request $request, $id)
-{
-    $validation = Validator::make($request->all(), [
-        'name' => ['sometimes', 'required', 'string'],
-        'email' => ['sometimes', 'required', 'email', 'unique:users,email,' . $id],
-        'phone' => ['sometimes', 'required', 'unique:users,phone,' . $id],
-        'image' => ['nullable', 'string'],
-        'description' => ['required', 'string'],
-    ]);
+        if (!$operator) {
+            return response()->json(['message' => 'Operator not found'], 404);
+        }
 
-    if ($validation->fails()) {
-        return response()->json(['message' => $validation->errors()], 400);
+        $operator->delete();
+
+        return response()->json(['message' => 'Operator deleted successfully']);
     }
 
-    $operator = User::find($id);
+    public function updateOperator(Request $request, $id)
+    {
+        $validation = Validator::make($request->all(), [
+            'name' => ['sometimes', 'required', 'string'],
+            'email' => ['sometimes', 'required', 'email', 'unique:users,email,' . $id],
+            'phone' => ['sometimes', 'required', 'unique:users,phone,' . $id],
+            'image' => ['nullable', 'string'],
+            'description' => ['required', 'string'],
+        ]);
 
-    if (!$operator) {
-        return response()->json(['message' => 'Operator not found'], 404);
+        if ($validation->fails()) {
+            return response()->json(['message' => $validation->errors()], 400);
+        }
+
+        $operator = User::find($id);
+
+        if (!$operator) {
+            return response()->json(['message' => 'Operator not found'], 404);
+        }
+
+        $operator->update([
+            'name' => $request->name ?? $operator->name,
+            'email' => $request->email ?? $operator->email,
+            'phone' => $request->phone ?? $operator->phone,
+            'description' => $request->description ?? $operator->description,
+            'image' => $request->image ? $this->storeBase64Image($request->image, 'admin/operator') : $operator->image,
+        ]);
+
+        return response()->json(['message' => 'Operator updated successfully']);
     }
-
-    $operator->update([
-        'name' => $request->name ?? $operator->name,
-        'email' => $request->email ?? $operator->email,
-        'phone' => $request->phone ?? $operator->phone,
-        'description' => $request->description ?? $operator->description,
-        'image' => $request->image ? $this->storeBase64Image($request->image, 'admin/operator') : $operator->image,
-    ]);
-
-    return response()->json(['message' => 'Operator updated successfully']);
-}
-
-
 }

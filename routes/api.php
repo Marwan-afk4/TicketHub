@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Admin\OperatorController;
 use App\Http\Controllers\Api\Admin\OperatorPaymentMethodController;
 use App\Http\Controllers\Api\Admin\PaymentController;
 use App\Http\Controllers\Api\Admin\PaymentMethodController;
+use App\Http\Controllers\Api\Admin\PayoutController;
 use App\Http\Controllers\Api\Admin\TrainClassController;
 use App\Http\Controllers\Api\Admin\TrainController;
 use App\Http\Controllers\Api\Admin\TrainRouteController;
@@ -327,4 +328,6 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/operator_payment_method/delete/{id}',[OperatorPaymentMethodController::class,'deleteOperatorPaymentMethod']);
 
 //////////////////////////////////////////////////// Payout Request ////////////////////////////////////////////
+
+    Route::put('/admin/payoutRequest/cancel/{id}',[PayoutController::class,'cancelPayout']);
 });
