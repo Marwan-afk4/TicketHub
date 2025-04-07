@@ -43,4 +43,12 @@ class Booking extends Model
         return $this->hasMany(BookingUser::class);
     }
 
+    public function destnationFrom(){
+        return $this->belongsTo(Station::class, 'destenation_from');
+    }
+
+    public function destnationTo(){
+        return $this->belongsTo(Station::class, 'destenation_to');
+    }
+
 }
