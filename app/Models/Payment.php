@@ -47,4 +47,8 @@ class Payment extends Model
     public function currency(){
         return $this->belongsTo(Currency::class, 'currency_id');
     }
+
+    public function travellers(){
+        return $this->hasMany(BookingUser::class, 'payment_id');
+    }
 }
