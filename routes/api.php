@@ -330,4 +330,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 //////////////////////////////////////////////////// Payout Request ////////////////////////////////////////////
 
     Route::put('/admin/payoutRequest/cancel/{id}',[PayoutController::class,'cancelPayout']);
+
+    Route::get('/admin/payoutRequest',[PayoutController::class,'getPayoutRequest']);
+
+    Route::put('/admin/payoutRequest/confirm/{id}',[PayoutController::class,'confirmPayout']);
 });

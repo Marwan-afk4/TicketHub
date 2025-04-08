@@ -20,4 +20,12 @@ class PayoutRequest extends Model
     public function currency(){
         return $this->belongsTo(Currency::class, 'currency_id');
     }
+
+    public function payment_method(){
+        return $this->belongsTo(OperatorPaymentMethod::class, 'payment_method_id');
+    }
+
+    public function agent(){
+        return $this->belongsTo(User::class, 'agent_id');
+    }
 }
