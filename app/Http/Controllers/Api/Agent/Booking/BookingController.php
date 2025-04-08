@@ -31,6 +31,7 @@ class BookingController extends Controller
         ->where('status', 'confirmed')
         ->get()
         ->map(function($item){
+            $item->booking = $item?->booking?->id ?? null;
             $item->trip_type = $item?->trip?->trip_type ?? null;
             $item->travel_status = $item?->booking?->status ?? null;
             $item->operator = $item->total - $item->commission;
