@@ -17,7 +17,7 @@ class BookingController extends Controller
     public function view(Request $request){
         // /agent/bookings 
         $bookings = $this->payments
-        ->select('amount', 'total', 'status', 'travelers', 'travel_date', 'trip_id', 
+        ->select('id', 'amount', 'total', 'status', 'travelers', 'travel_date', 'trip_id', 
         'booking_id', 'user_id', 'commission', 'currency_id')
         ->with(['trip' => function($query){
             $query->select('id', 'trip_name', 'deputre_time', 'arrival_time', 'pickup_station_id', 
@@ -31,7 +31,6 @@ class BookingController extends Controller
         ->where('status', 'confirmed')
         ->get()
         ->map(function($item){
-            $item->booking = $item?->booking?->id ?? null;
             $item->trip_type = $item?->trip?->trip_type ?? null;
             $item->travel_status = $item?->booking?->status ?? null;
             $item->operator = $item->total - $item->commission;
