@@ -13,6 +13,7 @@ class Car extends Model
         'agent_id',
         'car_number',
         'car_color',
+        'capacity',
         'car_year',
         'status',
         'image',
