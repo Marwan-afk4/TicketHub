@@ -206,7 +206,7 @@ class BookingController extends Controller
             'travelers' => 'required|numeric',
             'amount' => 'required|numeric',
             'travel_date' => 'required|date',
-            'seats' => 'required|array',
+            'seats' => 'array',
             'seats.*' => 'numeric',
             'travellers_data' => 'required|array',
             'travellers_data.*.name' => 'required',
@@ -323,6 +323,15 @@ class BookingController extends Controller
                 $payments->points = $points;
                 $payments->save();
             }
+            if ($request->seats) {
+                foreach ($request->seats  as $item) {
+                    $this->booking_bus
+                    ->create([
+                        'bus_id' => $trip->bus_id,
+                        'area' => $item,
+                    ]);
+                }
+            }
             $payments->commission = $commission;
             $payments->save();
             if ($request->travellers_data) {
@@ -424,12 +433,14 @@ class BookingController extends Controller
                 $payments->points = $points;
                 $payments->save();
             }
-            foreach ($request->seats  as $item) {
-                $this->booking_bus
-                ->create([
-                    'bus_id' => $trip->bus_id,
-                    'area' => $item,
-                ]);
+            if ($request->seats) {
+                foreach ($request->seats  as $item) {
+                    $this->booking_bus
+                    ->create([
+                        'bus_id' => $trip->bus_id,
+                        'area' => $item,
+                    ]);
+                }
             }
             $payments->commission = $commission;
             $payments->save();
@@ -455,7 +466,7 @@ class BookingController extends Controller
         // user/booking/payment_wallet
         // Keys
         // trip_id, travelers, amount, receipt_image, travel_date
-        // travellers_data[{name, age}]
+        // travellers_data[{name, age}], seats[]
         $validation = Validator::make(request()->all(),[
             'trip_id' => 'required|exists:trips,id',
             'travelers' => 'required|numeric',
@@ -464,6 +475,8 @@ class BookingController extends Controller
             'travellers_data' => 'required|array',
             'travellers_data.*.name' => 'required',
             'travellers_data.*.age' => 'required',
+            'seats' => 'array',
+            'seats.*' => 'numeric',
         ]);
         if($validation->fails()){
             return response()->json(['errors'=>$validation->errors()],400);
@@ -574,6 +587,15 @@ class BookingController extends Controller
             ]);
             $payments->points = $points;
             $payments->save();
+        }
+        if ($request->seats) {
+            foreach ($request->seats  as $item) {
+                $this->booking_bus
+                ->create([
+                    'bus_id' => $trip->bus_id,
+                    'area' => $item,
+                ]);
+            }
         }
         $payments->commission = $commission;
         $payments->save();
