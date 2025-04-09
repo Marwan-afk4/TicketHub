@@ -621,7 +621,7 @@ class BookingController extends Controller
         ->where('id', $request->brand_id)
         ->first();
         $privateRequest = $validation->validated();
-        $from_country_id = $cities->where('id', $request->from_city_id);
+        $from_country_id = $cities->where('id', $request->from_city_id)->values();
         $privateRequest['from_country_id'] = $from_country_id[0]->country_id;
         $country_id = $cities->where('id', $request->city_id);
         $privateRequest['country_id'] = $country_id[0]->country_id ;
