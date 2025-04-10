@@ -88,6 +88,8 @@ class TripController extends Controller
         ->where('agent_id', $request->user()->id)
         ->with('busType')
         ->get();
+        $hiaces = $buses->where('type', 'hiace')->values();
+        $buses = $buses->where('type', 'bus')->values();
         return response()->json([
             'trips' => $trips,
             'stations' => $stations,
@@ -96,6 +98,7 @@ class TripController extends Controller
             'countries' => $countries,
             'currency' => $currency,
             'buses' => $buses,
+            'hiaces' => $hiaces,
             'trains' => $trains,
         ]);
     }
