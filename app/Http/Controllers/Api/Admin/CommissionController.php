@@ -99,11 +99,10 @@ class CommissionController extends Controller
         }
 
         $commission = Commission::create([
-            'agent_id' => null,
             'train' => $request->train,
             'bus' => $request->bus,
             'hiace' => $request->hiace,
-            'type' => 'default'
+            'type' => 'defult'
         ]);
 
         return response()->json(['message' => 'defult commission added successfully']);

@@ -26,11 +26,12 @@ class BookingController extends Controller
                 'pickup_station:id,name', 'dropoff_station:id,name',
                 'city:id,name', 'to_city:id,name'
             ]);
-        }, 'user:id,name,phone', 'currency:id,name'])
+        }, 'user:id,name,phone', 'currency:id,name', 'booking'])
         ->where('agent_id', $request->user()->id)
         ->where('status', 'confirmed')
         ->get()
         ->map(function($item){
+            $item->id = $item?->booking?->id ?? null;
             $item->trip_type = $item?->trip?->trip_type ?? null;
             $item->travel_status = $item?->booking?->status ?? null;
             $item->operator = $item->total - $item->commission;

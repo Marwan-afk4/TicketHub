@@ -87,12 +87,12 @@ class Trip extends Model
     }
 
     public function pickup_station(){
-        return $this->belongsTo(Station::class);
+        return $this->belongsTo(Station::class, 'pickup_station_id');
     }
 
     public function dropoff_station(){
-        return $this->belongsTo(Station::class);
-    }
+        return $this->belongsTo(Station::class, 'dropoff_station_id');
+    } 
 
     public function currency(){
         return $this->belongsTo(Currency::class, 'currency_id');

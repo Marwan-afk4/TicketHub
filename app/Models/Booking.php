@@ -17,6 +17,7 @@ class Booking extends Model
         'seats_count',
         'status',
         'train_id',
+        'code',
     ];
 
     public function payments(){

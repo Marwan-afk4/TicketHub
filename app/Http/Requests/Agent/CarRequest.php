@@ -28,12 +28,11 @@ class CarRequest extends FormRequest
             'category_id' => ['required', 'exists:car_categories,id'],
             'brand_id' => ['required', 'exists:car_brands,id'],
             'model_id' => ['required', 'exists:car_models,id'],
-
             'car_number' => ['sometimes'],
             'car_color' => ['sometimes'],
             'car_year' => ['sometimes'],
-
             'status' => ['required', 'in:busy,available'],
+            'capacity' => ['required', 'numeric'],
         ];
     }
 
