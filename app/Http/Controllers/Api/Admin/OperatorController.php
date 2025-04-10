@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Image;
+use App\Models\AgentModule;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,9 @@ class OperatorController extends Controller
 
     public function getOperators()
     {
-        $operators = User::where('role', 'agent')->get();
+        $operators = User::where('role', 'agent')
+        ->with(['modules','commissions'])
+        ->get();
 
         $data = $operators->map(fn($operator) => [
             'id' => $operator->id,
@@ -28,7 +31,18 @@ class OperatorController extends Controller
             'points' => $operator->points,
             'role' => $operator->role,
             'code' => $operator->code,
-            'description' => $operator->description
+            'description' => $operator->description,
+            'modules' => $operator->modules->map(fn($module) =>[
+                'id' => $module->id,
+                'module' => $module->module,
+            ]),
+            'commissions' => $operator->commissions->map(fn($commission) => [
+                'id' => $commission->id,
+                'train' => $commission->train,
+                'bus' => $commission->bus,
+                'hiace' => $commission->hiace,
+                'type' => $commission->type
+            ])->toArray(),
         ]);
 
         return response()->json(['operators' => $data]);
@@ -46,7 +60,10 @@ class OperatorController extends Controller
             'train_commission' => ['nullable', 'numeric'],
             'bus_commission' => ['nullable', 'numeric'],
             'hiace_commission' => ['nullable', 'numeric'],
-            'commission_type' => ['required', 'in:private,defult']
+            'commission_type' => ['required', 'in:private,defult'],
+            'bus_modules' => ['required', 'in:0,1'],
+            'train_modules' => ['required', 'in:0,1'],
+            'hiace_modules' => ['required', 'in:0,1'],
         ]);
 
         if ($validation->fails()) {
@@ -85,6 +102,28 @@ class OperatorController extends Controller
                 'bus' => $defaultCommission->bus,
                 'hiace' => $defaultCommission->hiace,
                 'type'=>'defult'
+            ]);
+        }
+
+
+        if ($request->bus_modules == 1) {
+            AgentModule::create([
+                'agent_id' => $operator->id,
+                'module' => 'bus',
+            ]);
+        }
+
+        if ($request->train_modules == 1) {
+            AgentModule::create([
+                'agent_id' => $operator->id,
+                'module' => 'train',
+            ]);
+        }
+
+        if ($request->hiace_modules == 1) {
+            AgentModule::create([
+                'agent_id' => $operator->id,
+                'module' => 'hiace',
             ]);
         }
 

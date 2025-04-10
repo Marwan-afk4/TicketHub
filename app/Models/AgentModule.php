@@ -10,4 +10,9 @@ class AgentModule extends Model
         'agent_id',
         'module',
     ];
+
+    public function agent()
+    {
+        return $this->belongsTo(User::class,'agent_id');
+    }
 }
