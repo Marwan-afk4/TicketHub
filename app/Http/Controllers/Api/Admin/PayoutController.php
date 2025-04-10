@@ -57,4 +57,22 @@ class PayoutController extends Controller
         return response()->json(['message' => 'Payout request has been confirmed'], 200);
 
     }
+
+    public function getHistoryPayout(){
+        $payout = PayoutRequest::where('status', 'approved')
+        ->with(['currency:id,name,symbol','payment_method:id,name,image','agent:id,name,email,phone,image'])->get();
+        $data =[
+            'payout' => $payout
+        ];
+        return response()->json($data);
+    }
+
+    public function canceledPayoutRequest(){
+        $payout = PayoutRequest::where('status', 'rejected')
+        ->with(['currency:id,name,symbol','payment_method:id,name,image','agent:id,name,email,phone,image'])->get();
+        $data =[
+            'payout' => $payout
+        ];
+        return response()->json($data);
+    }
 }

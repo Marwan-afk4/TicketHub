@@ -64,6 +64,7 @@ class OperatorController extends Controller
             'bus_modules' => ['required', 'in:0,1'],
             'train_modules' => ['required', 'in:0,1'],
             'hiace_modules' => ['required', 'in:0,1'],
+            'private_modules'=>['required', 'in:0,1'],
         ]);
 
         if ($validation->fails()) {
@@ -124,6 +125,13 @@ class OperatorController extends Controller
             AgentModule::create([
                 'agent_id' => $operator->id,
                 'module' => 'hiace',
+            ]);
+        }
+
+        if ($request->private_modules == 1) {
+            AgentModule::create([
+                'agent_id' => $operator->id,
+                'module' => 'private',
             ]);
         }
 
