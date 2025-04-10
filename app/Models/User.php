@@ -63,4 +63,9 @@ class User extends Model
     {
         return $this->hasMany(AgentModule::class, 'agent_id');
     }
+
+    public function commissions()
+    {
+        return $this->hasMany(Commission::class, 'agent_id');
+    }
 }

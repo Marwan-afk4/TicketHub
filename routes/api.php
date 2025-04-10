@@ -334,4 +334,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::get('/admin/payoutRequest',[PayoutController::class,'getPayoutRequest']);
 
     Route::put('/admin/payoutRequest/confirm/{id}',[PayoutController::class,'confirmPayout']);
+
+    Route::get('/admin/payoutRequest/history',[PayoutController::class,'getHistoryPayout']);
+
+    Route::get('/admin/canceledPayoutRequest',[PayoutController::class,'canceledPayoutRequest']);
 });
