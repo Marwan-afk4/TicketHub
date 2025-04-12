@@ -106,16 +106,18 @@ class BookingController extends Controller
         $buses_trips->where(function ($query) use ($request) {
             $query->where('date', $request->date)
                 ->orWhere('type', 'unlimited')
-                ->orWhere('fixed_date', '>=', $request->date);
+                ->where('start_date', '<=', $request->date)
+                ->orWhere('fixed_date', '>=', $request->date)
+                ->where('start_date', '<=', $request->date);
         });
         }
         if ($request->filled('travelers')) {
         $buses_trips->where('avalible_seats', '>=', $request->travelers);
         }
-        $buses_trips->where(function ($query) {
-            $query->where('max_book_date', '>=', date('Y-m-d'))
-                ->orWhereNull('max_book_date');
-        });
+        // $buses_trips->where(function ($query) {
+        //     $query->where('max_book_date', '>=', date('Y-m-d'))
+        //         ->orWhereNull('max_book_date');
+        // });
         
         $buses_trips = $buses_trips->select(
         'id', 'bus_id', 'pickup_station_id', 'dropoff_station_id', 'trip_type',
@@ -153,10 +155,10 @@ class BookingController extends Controller
             if ($request->filled('travelers')) {
                 $buses_back_trips->where('avalible_seats', '>=', $request->travelers);
             }
-            $buses_back_trips->where(function ($query) {
-                $query->where('max_book_date', '>=', date('Y-m-d'))
-                    ->orWhereNull('max_book_date');
-            });
+            // $buses_back_trips->where(function ($query) {
+            //     $query->where('max_book_date', '>=', date('Y-m-d'))
+            //         ->orWhereNull('max_book_date');
+            // });
             
             $buses_back_trips = $buses_back_trips->select(
                 'id', 'bus_id', 'pickup_station_id', 'dropoff_station_id',
@@ -170,6 +172,7 @@ class BookingController extends Controller
         }
         $service_fees = $this->service_fees
         ->first();
+    
         $buses_trips = $buses_trips->map(function ($trip) use($service_fees) {
             $bus = $trip->bus;
             if (!empty($bus)) { 
@@ -186,6 +189,7 @@ class BookingController extends Controller
             $fees = $service_fees->{$trip->trip_type} ?? 0;
             $fees = $trip->price * $fees / 100;
             $trip->service_fees = $fees;
+            $trip->max_book_date = date('Y-m-d')->subDays($trip->date);
             return $trip;
         });
         $buses = $buses_trips->where('trip_type', 'bus')->values();
