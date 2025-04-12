@@ -39,6 +39,7 @@ class Trip extends Model
         'currency_id',
         'cancelation_hours',
         'train_id',
+        'start_date',
     ];
     protected $appends = ['image_link'];
 
@@ -96,5 +97,9 @@ class Trip extends Model
 
     public function currency(){
         return $this->belongsTo(Currency::class, 'currency_id');
+    }
+
+    public function days(){
+        return $this->hasMany(TripDays::class, 'trip_id');
     }
 }

@@ -22,6 +22,7 @@ use App\Models\CarBrand;
 use App\Models\CurrencyPoint;
 use App\Models\BookingBus;
 use App\Models\BookingUser;
+use App\Models\ServiceFees;
 use App\Models\User;
 
 class BookingController extends Controller
@@ -39,7 +40,8 @@ class BookingController extends Controller
     private CurrencyPoint $currency_point,
     private BookingBus $booking_bus,
     private User $user,
-    private BookingUser $booking_user){}
+    private BookingUser $booking_user,
+    private ServiceFees $service_fees){}
     use Image;
 
     public function lists(){
@@ -166,7 +168,9 @@ class BookingController extends Controller
             
             $buses_trips = $buses_trips->merge($buses_back_trips);
         }
-        $buses_trips = $buses_trips->map(function ($trip) {
+        $service_fees = $this->service_fees
+        ->first();
+        $buses_trips = $buses_trips->map(function ($trip) use($service_fees) {
             $bus = $trip->bus;
             if (!empty($bus)) { 
                 $areas = collect($bus->areas)->pluck('area'); 
@@ -179,9 +183,11 @@ class BookingController extends Controller
                 $bus->new_areas = $seats_arr;
                 $bus->makeHidden(['areas']);
             } 
+            $fees = $service_fees->{$trip->trip_type} ?? 0;
+            $fees = $trip->price * $fees / 100;
+            $trip->service_fees = $fees;
             return $trip;
         });
-        
         $buses = $buses_trips->where('trip_type', 'bus')->values();
         $hiace = $buses_trips->where('trip_type', 'hiace')->values();
         $train = $buses_trips->where('trip_type', 'train')->values();

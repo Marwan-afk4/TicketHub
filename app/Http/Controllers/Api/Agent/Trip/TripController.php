@@ -168,6 +168,7 @@ class TripController extends Controller
         // max_book_date, type => [limited, unlimited], fixed_date, cancellation_policy, 
         // cancelation_pay_amount => [fixed, percentage], cancelation_pay_value, 
         // min_cost, trip_type => [hiace, bus, train], currency_id, cancelation_hours,
+        // 
         // train_id
         $tripRequest = $request->validated();
         $tripRequest['agent_id'] = $request->user()->id;

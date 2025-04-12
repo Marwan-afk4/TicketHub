@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Commission extends Model
 {
-
-
     protected $fillable =[
         'agent_id',
         'train',
         'bus',
         'hiace',
+        'private_request',
         'type'
     ];
 
