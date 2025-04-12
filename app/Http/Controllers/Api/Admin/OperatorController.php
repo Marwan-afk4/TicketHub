@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Image;
 use App\Models\AgentModule;
+use App\Models\Commission;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -60,6 +61,7 @@ class OperatorController extends Controller
             'train_commission' => ['nullable', 'numeric'],
             'bus_commission' => ['nullable', 'numeric'],
             'hiace_commission' => ['nullable', 'numeric'],
+            'privateRequest_commission' =>['required','numeric'],
             'commission_type' => ['required', 'in:private,defult'],
             'bus_modules' => ['required', 'in:0,1'],
             'train_modules' => ['required', 'in:0,1'],
@@ -88,6 +90,7 @@ class OperatorController extends Controller
                 'train' => $request->train_commission,
                 'bus' => $request->bus_commission,
                 'hiace' => $request->hiace_commission,
+                'private_request'=> $request->privateRequest_commission,
                 'type' => 'private'
             ]);
         } elseif ($request->commission_type == 'defult') {
@@ -102,6 +105,7 @@ class OperatorController extends Controller
                 'train' => $defaultCommission->train,
                 'bus' => $defaultCommission->bus,
                 'hiace' => $defaultCommission->hiace,
+                'private_request'=> $defaultCommission->privateRequest_commission,
                 'type'=>'defult'
             ]);
         }
@@ -159,7 +163,16 @@ class OperatorController extends Controller
             'email' => ['sometimes', 'required', 'email', 'unique:users,email,' . $id],
             'phone' => ['sometimes', 'required', 'unique:users,phone,' . $id],
             'image' => ['nullable', 'string'],
-            'description' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
+            'train_commission' => ['nullable', 'numeric'],
+            'bus_commission' => ['nullable', 'numeric'],
+            'hiace_commission' => ['nullable', 'numeric'],
+            'privateRequest_commission' => ['nullable', 'numeric'],
+            'commission_type' => ['nullable', 'in:private,defult'],
+            'bus_modules' => ['nullable', 'in:0,1'],
+            'train_modules' => ['nullable', 'in:0,1'],
+            'hiace_modules' => ['nullable', 'in:0,1'],
+            'private_modules' => ['nullable', 'in:0,1'],
         ]);
 
         if ($validation->fails()) {
@@ -172,6 +185,7 @@ class OperatorController extends Controller
             return response()->json(['message' => 'Operator not found'], 404);
         }
 
+        // Update basic operator information
         $operator->update([
             'name' => $request->name ?? $operator->name,
             'email' => $request->email ?? $operator->email,
@@ -179,6 +193,59 @@ class OperatorController extends Controller
             'description' => $request->description ?? $operator->description,
             'image' => $request->image ? $this->storeBase64Image($request->image, 'admin/operator') : $operator->image,
         ]);
+
+        // Handle commission updates
+        if ($request->has('commission_type')) {
+            $operatorCommission = Commission::where('agent_id', $operator->id)->first();
+
+            if ($request->commission_type == 'private') {
+                $commissionData = [
+                    'agent_id' => $operator->id,
+                    'train' => $request->train_commission,
+                    'bus' => $request->bus_commission,
+                    'hiace' => $request->hiace_commission,
+                    'private_request' => $request->privateRequest_commission,
+                    'type' => 'private'
+                ];
+            } else {
+                $defaultCommission = Commission::where('type', 'defult')->first();
+                if (!$defaultCommission) {
+                    return response()->json(['message' => 'Default commission not found'], 400);
+                }
+
+                $commissionData = [
+                    'agent_id' => $operator->id,
+                    'train' => $defaultCommission->train,
+                    'bus' => $defaultCommission->bus,
+                    'hiace' => $defaultCommission->hiace,
+                    'private_request' => $defaultCommission->private_request,
+                    'type' => 'defult'
+                ];
+            }
+
+            if (!$operatorCommission) {
+                Commission::create($commissionData);
+            } else {
+                $operatorCommission->update($commissionData);
+            }
+        }
+
+        // Handle module updates
+        $moduleTypes = ['bus', 'train', 'hiace', 'private'];
+
+        // Delete existing modules for this agent
+        AgentModule::where('agent_id', $operator->id)->delete();
+
+        // Create new modules based on request
+        foreach ($moduleTypes as $module) {
+            $moduleKey = $module . '_modules';
+            if ($request->has($moduleKey) && $request->$moduleKey == 1) {
+                AgentModule::create([
+                    'agent_id' => $operator->id,
+                    'module' => $module,
+                ]);
+            }
+        }
 
         return response()->json(['message' => 'Operator updated successfully']);
     }
