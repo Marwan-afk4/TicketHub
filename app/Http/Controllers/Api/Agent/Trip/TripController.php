@@ -110,7 +110,7 @@ class TripController extends Controller
         $trips = $this->trip
         ->where('agent_id', $request->user()->id)
         ->where('id', $id)
-        ->with(['bus.busType', 'city', 'to_city', 'zone', 'to_zone',
+        ->with(['bus.busType', 'days', 'city', 'to_city', 'zone', 'to_zone',
         'pickup_station', 'dropoff_station', 'currency', 'country', 
         'train' => function($query){
             $query->select('id', 'name', 'class_id', 'type_id')
@@ -129,6 +129,8 @@ class TripController extends Controller
                 'status' => $item->status,
                 'max_book_date' => $item->max_book_date,
                 'type' => $item->type,
+                'start_date' => $item->start_date,
+                'days' => $item->days,
                 'fixed_date' => $item->fixed_date,
                 'cancellation_policy' => $item->cancellation_policy,
                 'cancelation_pay_amount' => $item->cancelation_pay_amount,
@@ -206,8 +208,17 @@ class TripController extends Controller
         if (!$trip) {
             return response()->json(['errors' => 'Trip not found'], 404);
         }
-
-        $trip->update($request->validated());
+        $tripRequest = $request->validated();
+        if (!$request->start_date) {
+            $tripRequest['start_date'] = null;
+        }
+        if (!$request->date) {
+            $tripRequest['date'] = null;
+        }
+        if (!$request->fixed_date) {
+            $tripRequest['fixed_date'] = null;
+        }
+        $trip->update($tripRequest);
         $this->trip_days
         ->where('trip_id', $trip->id)
         ->delete();
