@@ -42,6 +42,7 @@ class OperatorController extends Controller
                 'train' => $commission->train,
                 'bus' => $commission->bus,
                 'hiace' => $commission->hiace,
+                'privateRequest' => $commission->private_request,
                 'type' => $commission->type
             ])->toArray(),
         ]);
