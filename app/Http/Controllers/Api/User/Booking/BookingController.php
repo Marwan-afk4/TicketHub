@@ -75,7 +75,7 @@ class BookingController extends Controller
         $validation = Validator::make(request()->all(),[
             'from' => 'nullable|exists:cities,id',
             'to' => 'nullable|exists:cities,id',
-            'date' => 'date|nullable',
+            'date' => 'date|required',
             'round_date' => 'date|nullable',
             'travelers' => 'numeric|nullable',
             'type' => 'nullable|in:one_way,round_trip',
@@ -149,7 +149,9 @@ class BookingController extends Controller
                 $buses_back_trips->where(function ($query) use ($request) {
                     $query->where('date', $request->round_date)
                         ->orWhere('type', 'unlimited')
-                        ->orWhere('fixed_date', '>=', $request->round_date);
+                        ->where('start_date', '<=', $request->round_date)
+                        ->orWhere('fixed_date', '>=', $request->round_date)
+                        ->where('start_date', '<=', $request->round_date);
                 });
             }
             if ($request->filled('travelers')) {
@@ -172,7 +174,47 @@ class BookingController extends Controller
         }
         $service_fees = $this->service_fees
         ->first();
-    
+        if ($request->date && $request->round_date) {
+            $day = Carbon::parse($request->date)->format('l');
+            $round_day = Carbon::parse($request->round_date)->format('l');
+            $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $round_date) {
+                $trip_days = $trip->days->pluck('day');
+                if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
+                    $trip->date = $request->date;
+                    $trip->max_book_date = Carbon::parse($request->date)->subDays($trip->max_book_date)->format('Y-m-d');
+                    return $trip;
+                }
+                if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($round_date)) {
+                    $trip->date = $request->round_date;
+                    $trip->max_book_date = Carbon::parse($request->round_date)->subDays($trip->max_book_date)->format('Y-m-d');
+                    return $trip;
+                } 
+                if (empty($trip->days) || count($trip->days) == 0 ) {
+                    $trip->date = $request->date;
+                    $trip->max_book_date = Carbon::parse($request->date)->subDays($trip->max_book_date)->format('Y-m-d');
+                    return $trip;
+                }
+                return null;
+            })->filter();
+        }
+        elseif ($request->date) {
+            $day = Carbon::parse($request->date)->format('l');
+            $buses_trips = $buses_trips->map(function ($trip) use($request, $day) {
+                $trip_days = $trip->days->pluck('day');
+                if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
+                    $trip->date = $request->date;
+                    $trip->max_book_date = Carbon::parse($request->date)->subDays($trip->max_book_date)->format('Y-m-d');
+                    return $trip;
+                }
+                if (empty($trip->days) || count($trip->days) == 0 ) {
+                    $trip->date = $request->date;
+                    $trip->max_book_date = Carbon::parse($request->date)->subDays($trip->max_book_date)->format('Y-m-d');
+                    return $trip;
+                }
+                return null;
+            })->filter();
+        }
+
         $buses_trips = $buses_trips->map(function ($trip) use($service_fees) {
             $bus = $trip->bus;
             if (!empty($bus)) { 
@@ -189,9 +231,13 @@ class BookingController extends Controller
             $fees = $service_fees->{$trip->trip_type} ?? 0;
             $fees = $trip->price * $fees / 100;
             $trip->service_fees = $fees;
-            $trip->max_book_date = date('Y-m-d')->subDays($trip->date);
+            if ($trip->type == 'limited' && $trip->date > $trip->fixed_date) {
+                return null;
+            }
             return $trip;
-        });
+        })
+        ->filter()
+        ->where('max_book_date', '>=', date('Y-m-d'));
         $buses = $buses_trips->where('trip_type', 'bus')->values();
         $hiace = $buses_trips->where('trip_type', 'hiace')->values();
         $train = $buses_trips->where('trip_type', 'train')->values();
