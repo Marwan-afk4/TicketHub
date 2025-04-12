@@ -23,7 +23,7 @@ class TripRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->filled('type') == 'limited') {
+        if ($this->input('type') == 'limited') {
             return [
                 'trip_name' => 'required|string',
                 'bus_id' => 'nullable|exists:buses,id',
@@ -54,7 +54,7 @@ class TripRequest extends FormRequest
                 'cancelation_hours' => 'required|numeric',
             ];
         }
-        if ($this->filled('type') == 'unlimited') {
+        if ($this->input('type') == 'unlimited') {
             return [
                 'trip_name' => 'required|string',
                 'bus_id' => 'nullable|exists:buses,id',
