@@ -41,7 +41,7 @@ class TripRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'status' => 'required|in:active,inactive',
             'agent_id' => 'required|exists:users,id',
-            'max_book_date' => 'nullable|date',
+            'max_book_date' => 'nullable|numeric|min:0',
             'type' => 'required|in:limited,unlimited',
             'fixed_date' => 'nullable|date',
             'cancellation_policy' => 'nullable|string',
