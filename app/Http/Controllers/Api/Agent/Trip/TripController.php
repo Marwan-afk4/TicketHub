@@ -13,13 +13,15 @@ use App\Models\Zone;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Bus;
+use App\Models\TripDays;
 use App\Models\Train;
 
 class TripController extends Controller
 {
     public function __construct(private Trip $trip, private Station $stations,
     private City $cities, private Zone $zones, private Country $countries,
-    private Currency $currency, private Bus $buses, private Train $trains){}
+    private Currency $currency, private Bus $buses, private Train $trains,
+    private TripDays $trip_days){}
 
     public function view(Request $request){
         // /agent/trip
@@ -168,11 +170,20 @@ class TripController extends Controller
         // max_book_date, type => [limited, unlimited], fixed_date, cancellation_policy, 
         // cancelation_pay_amount => [fixed, percentage], cancelation_pay_value, 
         // min_cost, trip_type => [hiace, bus, train], currency_id, cancelation_hours,
-        // 
+        // start_date, days['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         // train_id
         $tripRequest = $request->validated();
         $tripRequest['agent_id'] = $request->user()->id;
         $trip = $this->trip->create($tripRequest);
+        if ($request->days) {
+            foreach ($request->days as $item) {
+                $this->trip_days
+                ->create([
+                    'day' => $item,
+                    'trip_id' => $trip->id
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => 'You add data successfully',
@@ -188,6 +199,7 @@ class TripController extends Controller
         // to_country_id, to_city_id, to_zone_id, date, price, status, 
         // max_book_date, type, fixed_date, cancellation_policy, cancelation_pay_amount, 
         // cancelation_pay_value, min_cost, trip_type, currency_id, cancelation_hours,
+        // start_date, days['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         // train_id
         $trip = $this->trip->find($id);
 
@@ -196,6 +208,18 @@ class TripController extends Controller
         }
 
         $trip->update($request->validated());
+        $this->trip_days
+        ->where('trip_id', $trip->id)
+        ->delete();
+        if ($request->days) {
+            foreach ($request->days as $item) {
+                $this->trip_days
+                ->create([
+                    'day' => $item,
+                    'trip_id' => $trip->id
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => 'You update data successfully',
