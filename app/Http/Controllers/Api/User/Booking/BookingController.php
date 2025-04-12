@@ -304,8 +304,7 @@ class BookingController extends Controller
             $paymentRequest['user_id'] = $request->user()->id;
             $paymentRequest['currency_id'] = $trip->currency_id;
             $paymentRequest['status'] = 'confirmed';
-            $booking = $this->booking
-            ->create([
+            $booking_arr = [
                 'user_id' => $request->user()->id,
                 'bus_id' => $trip->bus_id,
                 'trip_id' => $trip->id,
@@ -314,7 +313,12 @@ class BookingController extends Controller
                 'date' => $request->travel_date,
                 'seats_count' => $request->travelers,
                 'status' => 'pending',
-            ]);
+            ];
+            if($trip->trip_type == 'bus' || $trip->trip_type == 'hiace'){
+                $booking_arr['status'] = 'confirmed';
+            }
+            $booking = $this->booking
+            ->create($booking_arr);
             $paymentRequest['booking_id'] = $booking->id;
             $payments = $this->payments
             ->create($paymentRequest);
@@ -569,8 +573,7 @@ class BookingController extends Controller
         $paymentRequest['user_id'] = $request->user()->id;
         $paymentRequest['currency_id'] = $trip->currency_id;
         $paymentRequest['status'] = 'confirmed';
-        $booking = $this->booking
-        ->create([
+        $booking_arr = [
             'user_id' => $request->user()->id,
             'bus_id' => $trip->bus_id,
             'trip_id' => $trip->id,
@@ -579,7 +582,12 @@ class BookingController extends Controller
             'date' => $request->travel_date,
             'seats_count' => $request->travelers,
             'status' => 'pending',
-        ]);
+        ];
+        if($trip->trip_type == 'bus' || $trip->trip_type == 'hiace'){
+            $booking_arr['status'] = 'confirmed';
+        }
+        $booking = $this->booking
+        ->create($booking_arr);
         $paymentRequest['booking_id'] = $booking->id;
         $payments = $this->payments
         ->create($paymentRequest);
