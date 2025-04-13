@@ -22,7 +22,9 @@ class BusController extends Controller
 
     public function getBus()
 {
-    $buses = Bus::with(['agent', 'busType', 'amenities'])->get();
+    $buses = Bus::with(['agent', 'busType', 'amenities'])
+    ->where('type', 'bus')
+    ->get();
 
     $data = $buses->map(function ($bus) {
         return [
@@ -40,13 +42,44 @@ class BusController extends Controller
             'amenities' => $bus->amenities->map(function ($amenity) {
                 return [
                     'id' => $amenity->id,
-                    'name' => $amenity->name, 
+                    'name' => $amenity->name,
                 ];
             }),
         ];
     });
 
     return response()->json(['buses' => $data]);
+}
+
+public function getHiace()
+{
+    $buses = Bus::with(['agent', 'busType', 'amenities'])
+    ->where('type', 'hiace')
+    ->get();
+
+    $data = $buses->map(function ($bus) {
+        return [
+            'id' => $bus->id,
+            'agent_id' => $bus->agent_id,
+            'agent_name' => $bus->agent->name ?? null,
+            'agent_email' => $bus->agent->email ?? null,
+            'bus_number' => $bus->bus_number,
+            'bus_image' => $bus->bus_image ? asset('storage/' . $bus->bus_image) : null,
+            'bus_type_id' => $bus->bus_type_id,
+            'bus_type_name' => $bus->busType->name ?? null,
+            'capacity' => $bus->capacity,
+            'status' => $bus->status,
+            'type' => $bus->type,
+            'amenities' => $bus->amenities->map(function ($amenity) {
+                return [
+                    'id' => $amenity->id,
+                    'name' => $amenity->name,
+                ];
+            }),
+        ];
+    });
+
+    return response()->json(['hiaces' => $data]);
 }
 
 

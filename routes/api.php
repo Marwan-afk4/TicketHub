@@ -96,6 +96,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
     Route::get('/admin/busses',[BusController::class,'getBus']);
 
+    Route::get('/admin/hiaces',[BusController::class,'getHiace']);
+
     Route::post('/admin/bus/add',[BusController::class,'addBus']);
 
     Route::get('/admin/agents',[BusController::class,'getAgents']);
