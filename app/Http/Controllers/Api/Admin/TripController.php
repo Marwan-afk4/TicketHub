@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TripRequest;
+use App\Models\ServiceFees;
 use App\Models\Trip;
 use App\Models\TripDays;
 use Illuminate\Http\Request;
@@ -60,10 +61,25 @@ class TripController extends Controller
                     'type_id' => $trip->bus->bus_type_id,
                     'capacity' => $trip->bus->capacity,
                     'status' => $trip->bus->status,
+                    'fees' => ServiceFees::first()?->bus,
                     'image' => [
                         'path' => $trip->bus->bus_image,
                         'url' => $trip->bus->bus_image ? asset('storage/' . $trip->bus->bus_image) : null
                     ]
+                ] : null,
+
+                'train' => $trip->train ? [
+                    'id' => $trip->train->id,
+                    'train_name' => $trip->train->name,
+                    'train_class' => $trip->train->class->name,
+                    'train_type'=> $trip->train->type->name,
+                    'route' => $trip->train->route->name,
+                    'from_country'=>$trip->train->route->from_country->name,
+                    'to_country'=>$trip->train->route->to_country->name,
+                    'from_city'=>$trip->train->route->from_city->name,
+                    'to_city'=>$trip->train->route->to_city->name,
+                    'train_fees' => ServiceFees::first()?->train,
+                    'status' => $trip->train->status,
                 ] : null,
 
                 'route' => [

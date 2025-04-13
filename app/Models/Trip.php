@@ -20,8 +20,8 @@ class Trip extends Model
         'deputre_time',
         'arrival_time',
         'avalible_seats',
-        'to_country_id', 
-        'country_id', 
+        'to_country_id',
+        'country_id',
         'to_city_id',
         'to_zone_id',
         'date',
@@ -93,7 +93,7 @@ class Trip extends Model
 
     public function dropoff_station(){
         return $this->belongsTo(Station::class, 'dropoff_station_id');
-    } 
+    }
 
     public function currency(){
         return $this->belongsTo(Currency::class, 'currency_id');
@@ -101,5 +101,9 @@ class Trip extends Model
 
     public function days(){
         return $this->hasMany(TripDays::class, 'trip_id');
+    }
+
+    public function fees(){
+        return $this->hasMany(ServiceFees::class);
     }
 }
