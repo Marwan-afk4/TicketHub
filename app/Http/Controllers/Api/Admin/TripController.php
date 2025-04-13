@@ -32,6 +32,8 @@ class TripController extends Controller
                 'date' => $trip->date,
                 'departure_time' => $trip->deputre_time,
                 'arrival_time' => $trip->arrival_time,
+                'start_date' => $trip->start_date,
+                'fixed_date' => $trip->fixed_date,
                 'max_booking_date' => $trip->max_book_date,
                 'price' => $trip->price,
                 'min_cost' => $trip->min_cost,
