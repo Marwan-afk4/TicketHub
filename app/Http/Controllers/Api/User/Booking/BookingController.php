@@ -242,7 +242,7 @@ class BookingController extends Controller
         $train = $buses_trips->where('trip_type', 'train')->values();
 
         return response()->json([
-            'all_trips' => $buses_trips,
+            'all_trips' => $buses_trips->values(),
             'bus_trips' => $buses,
             'hiace_trips' => $hiace,
             'train_trips' => $train,
