@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Admin\CommissionController;
 use App\Http\Controllers\Api\Admin\ComplaintController;
 use App\Http\Controllers\Api\Admin\ComplaintSubjectController;
 use App\Http\Controllers\Api\Admin\CurrancyController;
+use App\Http\Controllers\Api\Admin\FeesController;
 use App\Http\Controllers\Api\Admin\LocationController;
 use App\Http\Controllers\Api\Admin\NationailtyController;
 use App\Http\Controllers\Api\Admin\OperatorController;
@@ -94,6 +95,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 /////////////////////////////////////// Busses ////////////////////////////////////////////
 
     Route::get('/admin/busses',[BusController::class,'getBus']);
+
+    Route::get('/admin/hiaces',[BusController::class,'getHiace']);
 
     Route::post('/admin/bus/add',[BusController::class,'addBus']);
 
@@ -338,4 +341,14 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::get('/admin/payoutRequest/history',[PayoutController::class,'getHistoryPayout']);
 
     Route::get('/admin/canceledPayoutRequest',[PayoutController::class,'canceledPayoutRequest']);
+
+////////////////////////////////////////////////// Fees ///////////////////////////////////////////////////////////
+
+    Route::get('/admin/fees',[FeesController::class,'getFees']);
+
+    Route::post('/admin/fees/add',[FeesController::class,'addFees']);
+
+    Route::put('/admin/fees/update/{id}',[FeesController::class,'updateFees']);
+
+    Route::delete('/admin/fees/delete/{id}',[FeesController::class,'deleteFees']);
 });

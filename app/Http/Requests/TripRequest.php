@@ -55,6 +55,7 @@ class TripRequest extends FormRequest
                 'day' => 'sometimes|array',
                 'day.*' => 'required_with:day|string|in:Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
                 'start_date' => 'nullable|date',
+                'train_id' => 'nullable|exists:trains,id',
             ];
         }
 
