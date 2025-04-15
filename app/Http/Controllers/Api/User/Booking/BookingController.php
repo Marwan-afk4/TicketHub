@@ -242,7 +242,7 @@ class BookingController extends Controller
         $train = $buses_trips->where('trip_type', 'train')->values();
 
         return response()->json([
-            'all_trips' => $buses_trips,
+            'all_trips' => $buses_trips->values(),
             'bus_trips' => $buses,
             'hiace_trips' => $hiace,
             'train_trips' => $train,
@@ -294,10 +294,13 @@ class BookingController extends Controller
                     'errors' => 'travellers must not more than ' . $trip->avalible_seats
                 ], 403);
             }
-            if (!empty($trip->max_book_date) && date('Y-m-d') > $trip->max_book_date) {
-                return response()->json([
-                    'errors' => 'Max book date at ' . $trip->max_book_date
-                ], 404);
+            if (!empty($trip->max_book_date)) {
+                $max_book_date = Carbon::parse($request->travel_date)->subDays($trip->max_book_date)->format('Y-m-d');
+                if (date('Y-m-d') > $max_book_date) {
+                    return response()->json([
+                        'errors' => 'Max book date at ' . $max_book_date
+                    ], 404);
+                }
             }
             $paymentRequest = $validation->validated(); 
             $paymentRequest['total'] = $total;
@@ -429,10 +432,13 @@ class BookingController extends Controller
                     'errors' => 'travellers must not more than ' . $trip->avalible_seats
                 ], 403);
             }
-            if (!empty($trip->max_book_date) && date('Y-m-d') > $trip->max_book_date) {
-                return response()->json([
-                    'errors' => 'Max book date at ' . $trip->max_book_date
-                ], 404);
+            if (!empty($trip->max_book_date)) {
+                $max_book_date = Carbon::parse($request->travel_date)->subDays($trip->max_book_date)->format('Y-m-d');
+                if (date('Y-m-d') > $max_book_date) {
+                    return response()->json([
+                        'errors' => 'Max book date at ' . $max_book_date
+                    ], 404);
+                }
             }
             $paymentRequest = $validation->validated(); 
             $paymentRequest['total'] = $total;
@@ -563,11 +569,14 @@ class BookingController extends Controller
                 'errors' => 'travellers must not more than ' . $trip->avalible_seats
             ], 403);
         }
-        if (!empty($trip->max_book_date) && date('Y-m-d') > $trip->max_book_date) {
-            return response()->json([
-                'errors' => 'Max book date at ' . $trip->max_book_date
-            ], 404);
-        }
+            if (!empty($trip->max_book_date)) {
+                $max_book_date = Carbon::parse($request->travel_date)->subDays($trip->max_book_date)->format('Y-m-d');
+                if (date('Y-m-d') > $max_book_date) {
+                    return response()->json([
+                        'errors' => 'Max book date at ' . $max_book_date
+                    ], 404);
+                }
+            }
         $paymentRequest = $validation->validated(); 
         $paymentRequest['total'] = $total;
         $paymentRequest['user_id'] = $request->user()->id;
