@@ -21,7 +21,8 @@ class TripController extends Controller
             'to_city',
             'zone',
             'pickup_station',
-            'dropoff_station'
+            'dropoff_station',
+            'days',
         ])->get();
 
         $data = $trips->map(function ($trip) {
@@ -43,7 +44,7 @@ class TripController extends Controller
                 'currency_sympol' => $trip->currency->symbol,
                 'available_seats' => $trip->avalible_seats,
                 'type' => $trip->type,
-
+                'days' => $trip->days->pluck('day'),
                 'cancellation_policy' => [
                     'policy' => $trip->cancellation_policy,
                     'pay_amount' => $trip->cancelation_pay_amount,

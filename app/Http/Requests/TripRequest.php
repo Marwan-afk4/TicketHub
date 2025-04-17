@@ -74,7 +74,7 @@ class TripRequest extends FormRequest
             'to_country_id' => 'required|exists:countries,id',
             'to_city_id' => 'required|exists:cities,id',
             'to_zone_id' => 'required|exists:zones,id',
-            'date' => 'required|date',
+            'date' => 'sometimes|date',
             'price' => 'required|numeric|min:0',
             'status' => 'required|in:active,inactive',
             'agent_id' => 'required|exists:users,id',
