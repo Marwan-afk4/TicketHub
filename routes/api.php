@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/lists',[AuthController::class,'lists']);
 Route::post('/register',[AuthController::class,'Register']);
+Route::post('/send_code',[AuthController::class,'send_code']);
 Route::post('/login',[AuthController::class,'login']);
 Route::post('/login_agent',[AuthController::class,'login_agent']);
 Route::post('/login_user',[AuthController::class,'login_user']);

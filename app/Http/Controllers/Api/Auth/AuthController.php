@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ForgetPasswordMail;
+use App\Mail\VerificationEmail;
 
 class AuthController extends Controller
 {
@@ -24,6 +25,26 @@ class AuthController extends Controller
         $nationality = Nationality::get();
         return response()->json([
             'nationality' => $nationality,
+        ]);
+    }
+
+
+    public function send_code(Request $request){
+        // /api/send_code
+        // keys
+        // email
+        $validation = Validator::make($request->all(),[
+            'email' => 'required|email',
+        ]);
+        if($validation->fails()){
+            return response()->json(['message'=>$validation->errors()],400);
+        }
+
+        $code = rand(100000, 999999);
+        Mail::to($request->email)->send(new VerificationEmail($code));
+        
+        return response()->json([
+            'success'=> $code, 
         ]);
     }
 

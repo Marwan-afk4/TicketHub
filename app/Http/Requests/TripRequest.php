@@ -85,7 +85,7 @@ class TripRequest extends FormRequest
             'cancelation_pay_amount' => 'nullable|in:fixed,percentage',
             'cancelation_pay_value' => 'nullable|numeric|min:0',
             'min_cost' => 'nullable|numeric|min:0',
-            'trip_type' => 'sometimes|in:bus,hiace,train',
+            'trip_type' => 'required|in:bus,hiace,train',
             'currency_id' => 'required|exists:currencies,id',
             'cancelation_hours' => 'nullable|numeric',
             'day' => 'sometimes|array',
