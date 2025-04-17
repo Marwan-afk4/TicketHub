@@ -15,6 +15,10 @@ class Bus extends Model
         'status',
         'type'
     ];
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
     protected $appends = ['image_link'];
 
     public function getImageLinkAttribute(){

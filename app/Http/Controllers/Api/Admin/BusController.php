@@ -87,7 +87,7 @@ public function getHiace()
     public function addBus(Request $request){
         $validation = Validator::make(request()->all(),[
             'bus_number' => 'required',
-            'bus_type_id' => 'required|exists:bus_types,id',
+            'bus_type_id' => 'nullable|exists:bus_types,id',
             'bus_image' => 'nullable',
             'capacity' => 'required',
             'agent_id' => 'required|exists:users,id',
@@ -109,7 +109,7 @@ public function getHiace()
 
         $bus = Bus::create([
             'bus_number' => $request->bus_number,
-            'bus_type_id' => $request->bus_type_id,
+            'bus_type_id' => $request->bus_type_id??null,
             'bus_image' => $busImagePath,
             'capacity' => $request->capacity,
             'agent_id' => $request->agent_id,
