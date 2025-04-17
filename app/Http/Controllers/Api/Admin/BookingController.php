@@ -96,6 +96,7 @@ class BookingController extends Controller
         'trip.to_city',
         'destnationFrom',
         'destnationTo',
+        'bookings.bookingUsers.user'
     ])->get();
 
     $data =[
