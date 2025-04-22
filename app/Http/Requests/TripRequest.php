@@ -52,8 +52,8 @@ class TripRequest extends FormRequest
                 'trip_type' => 'sometimes|in:bus,hiace,train',
                 'currency_id' => 'sometimes|exists:currencies,id',
                 'cancelation_hours' => 'nullable|numeric',
-                'day' => 'sometimes|array',
-                'day.*' => 'required_with:day|string|in:Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
+                'day' => 'nullable|array',
+                'day.*' => 'nullable|string|in:Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
                 'start_date' => 'nullable|date',
                 'train_id' => 'nullable|exists:trains,id',
             ];
@@ -88,8 +88,8 @@ class TripRequest extends FormRequest
             'trip_type' => 'required|in:bus,hiace,train',
             'currency_id' => 'required|exists:currencies,id',
             'cancelation_hours' => 'nullable|numeric',
-            'day' => 'required|array',
-            'day.*' => 'required|string|in:Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
+            'day' => 'nullable|array',
+            'day.*' => 'nullable|string|in:Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
             'start_date' => 'nullable|date',
         ];
     }
