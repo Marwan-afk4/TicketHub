@@ -65,7 +65,7 @@ class TrainController extends Controller
     public function modifytrain(Request $request, $id){
         $validation = Validator::make($request->all(),[
             'name' => ['nullable', 'string'],
-            'agent_id' => ['nullable', 'exists:agents,id'],
+            'agent_id' => ['nullable', 'exists:users,id'],
             'type_id' => ['nullable', 'exists:train_types,id'],
             'route_id' => ['nullable', 'exists:train_routes,id'],
             'country_id' => ['nullable', 'exists:countries,id'],
