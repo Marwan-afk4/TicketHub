@@ -197,7 +197,7 @@ class LocationController extends Controller
 // stations
 
     public function getStation (){
-        $pickup = Station::where('pickup',1)->get();
+        $pickup = Station::where('pickup','1')->get();
         $dataPickup =$pickup->map(function($station){
             return [
                 'id' => $station->id,
@@ -215,7 +215,7 @@ class LocationController extends Controller
             ];
         });
 
-        $dropoff = Station::where('dropoff',1)->get();
+        $dropoff = Station::where('dropoff','1')->get();
         $dataDropoff =$dropoff->map(function($station){
             return [
                 'id' => $station->id,
