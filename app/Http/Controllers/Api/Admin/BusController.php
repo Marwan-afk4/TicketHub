@@ -167,6 +167,20 @@ public function getHiace()
             $bus->save();
         }
 
+        DB::table('aminity_bus')
+        ->where('bus_id', $id)
+        ->delete();
+        if ($request->has('aminty_id') && is_array($request->aminty_id)) {
+            $amintyData = [];
+            foreach ($request->aminty_id as $aminty) {
+                $amintyData[] = [
+                    'bus_id' => $bus->id,
+                    'aminity_id' => $aminty,
+                ];
+            }
+            DB::table('aminity_bus')->insert($amintyData);
+        }
+
         return response()->json([
             'message' => 'Bus updated successfully',
             'bus' => $bus,
