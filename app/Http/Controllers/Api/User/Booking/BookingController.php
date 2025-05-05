@@ -176,7 +176,7 @@ class BookingController extends Controller
         if ($request->date && $request->round_date) {
             $day = Carbon::parse($request->date)->format('l');
             $round_day = Carbon::parse($request->round_date)->format('l');
-            $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $round_date) {
+            $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $round_day) {
                 $trip_days = $trip->days->pluck('day');
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
                     $trip->date = $request->date;
