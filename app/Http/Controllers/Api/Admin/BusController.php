@@ -152,20 +152,20 @@ public function getHiace()
             return response()->json(['errors' => 'Bus not found'], 404);
         }
 
-        $busImagePath = $bus->bus_image;
-        if ($request->has('bus_image')) {
-            $busImagePath = $this->storeBase64Image($request->bus_image, 'admin/bus/images');
-        }
-
         $bus->update([
             'bus_number' => $request->bus_number ?? $bus->bus_number,
             'bus_type_id' => $request->bus_type_id ?? $bus->bus_type_id,
             'capacity' => $request->capacity ?? $bus->capacity,
             'agent_id' => $request->agent_id ?? $bus->agent_id,
             'status' => $request->status ?? $bus->status,
-            'type'=>$request->type ?? $bus->type,
-            'bus_image' => $busImagePath,
+            'type'=>$request->type ?? $bus->type
         ]);
+
+        if ($request->has('bus_image')) {
+            $busImagePath = $this->storeBase64Image($request->bus_image, 'admin/bus/images');
+            $bus->bus_image = $busImagePath;
+            $bus->save();
+        }
 
         return response()->json([
             'message' => 'Bus updated successfully',

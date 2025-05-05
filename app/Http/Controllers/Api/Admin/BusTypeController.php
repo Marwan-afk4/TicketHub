@@ -76,6 +76,10 @@ class BusTypeController extends Controller
             return response()->json(['message'=>'bus type not found']);
         }
 
+        $bustype->update([
+            'name' => $request->name ?? $bustype->name, 
+            'status' => $request->status ?? $bustype->status,
+        ]);
         if($request->has('bus_image')) {
             $bustype->bus_image = $this->storeBase64Image($request->bus_image, 'admin/bus_type/bus');
         }
@@ -87,11 +91,7 @@ class BusTypeController extends Controller
         if($request->has('seats_image')) {
             $bustype->seats_image = $this->storeBase64Image($request->seats_image, 'admin/bus_type/seats');
         }
-        $bustype->update([
-            'name' => $request->name ?? $bustype->name,
-            'bus_image' => $request->bus_image ?? $bustype->bus_image,
-            'status' => $request->status ?? $bustype->status,
-        ]);
+        $bustype->save();
         return response()->json(['message'=>'Bus Type Updated Successfully'],200);
     }
 
