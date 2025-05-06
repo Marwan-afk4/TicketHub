@@ -16,7 +16,7 @@ class PaymentMethodController extends Controller
         $paymob = PaymentMethod::
         where('id', 1)
         ->first();
-        if (!empty($paymob)) {
+        if (empty($paymob)) {
             PaymentMethod::create([
                 'id' => 1,
                 'name' => 'Visa Card',
