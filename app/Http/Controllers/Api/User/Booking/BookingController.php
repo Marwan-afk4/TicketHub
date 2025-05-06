@@ -413,6 +413,14 @@ class BookingController extends Controller
             ]);
         }
         else{
+            // Using Paymob
+            if ($request->payment_method_id == 1) {
+                $response = $this->make_order($request);
+                if (isset($response['errors'])) {
+                    return response()->json($response, 400);
+                }
+                return response()->json($response, 200);
+            }
             // Using payment method
             $trip = $this->trips
             ->where('id', $request->trip_id)

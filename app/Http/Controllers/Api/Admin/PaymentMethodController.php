@@ -13,6 +13,17 @@ class PaymentMethodController extends Controller
     use Image;
 
     public function getPaymentMethod(){
+        $paymob = PaymentMethod::
+        where('id', 1)
+        ->first();
+        if (!empty($paymob)) {
+            PaymentMethod::create([
+                'id' => 1,
+                'name' => 'Visa Card',
+                'image' => 'visa.webp',
+                'status' => 'active',
+            ]);
+        }
         $paymentMethod = PaymentMethod::all();
         $data =$paymentMethod->map(function($paymentMethod){
             return [

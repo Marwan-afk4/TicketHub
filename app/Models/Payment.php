@@ -21,6 +21,7 @@ class Payment extends Model
         'agent_id',
         'points',
         'commission',
+        'transaction_id',
     ];
     protected $appends = ['operator'];
 

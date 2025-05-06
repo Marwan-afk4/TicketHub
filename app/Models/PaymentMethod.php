@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentMethod extends Model
 {
     protected $fillable = [
+        'id',
         'name',
         'description',
         'image',
