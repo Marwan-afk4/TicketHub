@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Image;
 use Carbon\Carbon;
+use App\trait\PaymentPaymob;
+use App\trait\PaymobData;
+use App\trait\PlaceOrder;
 
 use App\Models\City;
 use App\Models\Country;
@@ -43,6 +46,10 @@ class BookingController extends Controller
     private BookingUser $booking_user,
     private ServiceFees $service_fees){}
     use Image;
+    
+    use PaymentPaymob;
+    use PaymobData;
+    use PlaceOrder;
 
     public function lists(){
         // user/booking/lists
@@ -295,8 +302,8 @@ class BookingController extends Controller
                 ], 403);
             }
             if (!empty($trip->max_book_date)) {
-                $max_book_date = Carbon::parse($request->travel_date)->subDays($trip->max_book_date)->format('Y-m-d');
-                if (date('Y-m-d') > $max_book_date) {
+                $max_book_date = Carbon::parse($request->travel_date)->subHours($trip->max_book_date);
+                if (now() > $max_book_date) {
                     return response()->json([
                         'errors' => 'Max book date at ' . $max_book_date
                     ], 404);
@@ -415,11 +422,25 @@ class BookingController extends Controller
         else{
             // Using Paymob
             if ($request->payment_method_id == 1) {
-                $response = $this->make_order($request);
+                $tokens = $this->getToken();
+                $user = $request->user();
+                $amount_cents = $request->amount * 100;
+                $payment = $this->createOrder($request, $tokens, $user);
+                if (is_array($payment) && isset($payment['errors']) && !empty($payment['errors'])) {
+                    return response()->json($payment, 400);
+                }
+                $payment_id = $this->payments
+                ->where('transaction_id', $payment->id)
+                ->first();
+                $paymentToken = $this->getPaymentToken($user, $amount_cents, $payment, $tokens);
+                 $paymentLink = "https://accept.paymob.com/api/acceptance/iframes/" . env('PAYMOB_IFRAME_ID') . '?payment_token=' . $paymentToken;
+
                 if (isset($response['errors'])) {
                     return response()->json($response, 400);
                 }
-                return response()->json($response, 200);
+                return response()->json([
+                    'paymentLink' => $paymentLink
+                ], 200);
             }
             // Using payment method
             $trip = $this->trips

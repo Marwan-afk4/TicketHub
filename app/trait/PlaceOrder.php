@@ -2,6 +2,7 @@
 
 namespace App\trait;
 
+use Carbon\Carbon;
 use App\Models\Payment;
 use App\Models\BranchOff;
 
@@ -36,8 +37,8 @@ trait PlaceOrder
 
         // Start Make Payment
         $paymentRequest = $request->only($this->paymentRequest);
-        try {
-            $activePaymentMethod = $this->paymentMethod->where('status', '1')->find($paymentRequest['payment_method_id']);
+      
+            $activePaymentMethod = $this->payment_methods->where('status', 1)->find($paymentRequest['payment_method_id']);
             if (!$activePaymentMethod) {
                 return response()->json([
                     'paymentMethod.message' => 'This Payment Method Unavailable ',
@@ -47,15 +48,11 @@ trait PlaceOrder
             if (isset($order['errors']) && !empty($order['errors'])) {
                 return $order;
             }
-        } catch (\Throwable $th) {
-            throw new HttpResponseException(response()->json(['error' => 'Payment processing failed'], 500));
-        }
         // End Make Payment
 
         return [
-            'payment' => $order['payment'],
-            'orderItems' => $order['orderItems'],
-            'items' => $order['items']
+            'payment' => $order['payment'], 
+            'items' => $order['items'],
         ];
     }
 
@@ -145,8 +142,8 @@ trait PlaceOrder
             ];
         }
         if (!empty($trip->max_book_date)) {
-            $max_book_date = Carbon::parse($request->travel_date)->subDays($trip->max_book_date)->format('Y-m-d');
-            if (date('Y-m-d') > $max_book_date) {
+            $max_book_date = Carbon::parse($request->travel_date)->subHours($trip->max_book_date);
+            if (now() > $max_book_date) {
                 return [
                     'errors' => 'Max book date at ' . $max_book_date
                 ];
@@ -227,18 +224,22 @@ trait PlaceOrder
                 ]);
             }
         }
-
-        return [
-            'success' => 'You add data success'
-        ];
         
         if ($paymob) {
             $payments->status = 'failed';
         }
         $payments->save();
 
+        $items[] = [ "name"=> $trip->trip_name,
+            "amount_cents"=> $payments->amount,
+            "description"=> 'Welcome',
+            "quantity"=> $payments->travelers
+        ];
+        $items = $items;
+
         return [
-            'payment' => $payments,
+            'payment' => $payments, 
+            'items' => $items,
         ];
     }
 

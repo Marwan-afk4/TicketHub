@@ -9,7 +9,7 @@ trait PaymentPaymob
     // This Trait About Srvic Payment Paymob
  
     use placeOrder;
-     public function getToken($payment_method_auto) {
+     public function getToken() {
         //this function takes api key from env.file and get token from paymob accept
         $response = Http::post('https://accept.paymob.com/api/auth/tokens', [
             'api_key' => env('PAYMOB_API_KEY')
@@ -64,7 +64,7 @@ trait PaymentPaymob
         return $response->object();
     }
 
-    public function getPaymentToken($user,$total_amount,$order, $token, $payment_method_auto)
+    public function getPaymentToken($user,$total_amount,$order, $token)
     {
         //this function to add details to paymob order dashboard and you can fill this data from your Model Class as below
 
@@ -79,7 +79,8 @@ trait PaymentPaymob
             "apartment" => '45', //example $dataa->appartment
             "email" => $user->email, //example $dataa->email
             "floor" => '7',
-            "first_name" => $user->f_name,
+            "first_name" => $user->name,
+            "last_name" => $user->name,
             "street" => "NA",
             "building" => "NA",
             "phone_number" => $user->phone,
@@ -87,7 +88,6 @@ trait PaymentPaymob
             "postal_code" => "NA",
             "city" => "Alexandria",
             "country" => "Egypt",
-            "last_name" => $user->l_name,
             "state" => "0"
         ];
         
@@ -98,7 +98,7 @@ trait PaymentPaymob
             "order_id" => $order->id, // this order id created by paymob
             "billing_data" => $billingData,
             "currency" => "EGP",
-            "integration_id" => $payment_method_auto->integration_id
+            "integration_id" => env('PAYMOB_INTEGRATION_ID'),
         ];
         $response = Http::post('https://accept.paymob.com/api/acceptance/payment_keys', $data);
         return $response->object()->token;
