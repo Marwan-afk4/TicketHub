@@ -8,7 +8,7 @@ trait PaymentPaymob
 {
     // This Trait About Srvic Payment Paymob
  
-    use placeOrder;
+    use PlaceOrder;
      public function getToken() {
         //this function takes api key from env.file and get token from paymob accept
         $response = Http::post('https://accept.paymob.com/api/auth/tokens', [
