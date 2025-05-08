@@ -913,25 +913,26 @@ class BookingController extends Controller
             if ($status == "true") {
                 $payment_id = $data['order'];
                 $payment =  $this->payments->where('transaction_id', $payment_id)
-                ->update(['status'=> 'confirmed']);  
+                ->first();
+                $payment->update(['status'=> 'confirmed']); 
+                $booking = Booking::create([
+                    'user_id' => $payment->user_id,
+                    'trip_id'=> $payment->trip_id,
+                    'agent_id'=> $payment->agent_id,
+                    'status' => 'confirmed',
+                    'seats_count'=>$payment->travelers,
+                    'bus_id'=>$payment->trip->bus_id,
+                    'date'=>$payment->trip->date,
+                    'destenation_from'=>$payment->trip->pickup_station_id,
+                    'destenation_to'=>$payment->trip->dropoff_station_id,
+                    'train_id'=>$payment->trip->train_id ?? null
+                ]);
+                $bookingUser = BookingUser::where('payment_id', $payment->id)
+                ->update([
+                    'booking_id' => $booking->id
+                ]);
+                $payment->save(); 
             }
-            $booking = Booking::create([
-                'user_id' => $payment->user_id,
-                'trip_id'=> $payment->trip_id,
-                'agent_id'=> $payment->agent_id,
-                'status' => 'confirmed',
-                'seats_count'=>$payment->travelers,
-                'bus_id'=>$payment->trip->bus_id,
-                'date'=>$payment->trip->date,
-                'destenation_from'=>$payment->trip->pickup_station_id,
-                'destenation_to'=>$payment->trip->dropoff_station_id,
-                'train_id'=>$payment->trip->train_id ?? null
-            ]);
-            $bookingUser = BookingUser::where('payment_id', $payment->id)
-            ->update([
-                'booking_id' => $booking->id
-            ]);
-            $payment->save();
         }
              
         return response()->json([
