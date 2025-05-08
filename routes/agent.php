@@ -80,7 +80,8 @@ Route::middleware(['auth:sanctum','IsAgent'])->group(function () {
     Route::controller(BookingController::class)
     ->prefix('bookings')->group(function(){
         Route::get('/', 'view');
-        Route::put('/status/{id}', 'status'); 
+        Route::put('/status/{id}', 'status');
+        Route::get('/callback/{id}', 'callback');
     });
 
     Route::controller(PaymentController::class)

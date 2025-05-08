@@ -866,4 +866,15 @@ class BookingController extends Controller
             'success' => 'You cancel trip success',
         ]);
     }
+
+    public function callback($id){
+        // agent/bookings/callback/{id}
+        $this->payments
+        ->where('id', $id)
+        ->update(['status'=> 'confirmed']);
+
+        return response()->json([
+            'success' => 'You payment success'
+        ]);
+    }
 }
