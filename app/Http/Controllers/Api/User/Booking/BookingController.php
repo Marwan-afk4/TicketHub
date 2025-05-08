@@ -867,12 +867,73 @@ class BookingController extends Controller
         ]);
     }
 
-    public function callback($id){
-        // agent/bookings/callback/{id}
-        $this->payments
-        ->where('id', $id)
-        ->update(['status'=> 'confirmed']);
+    public function callback(Request $request)
+    {
+        //this call back function its return the data from paymob and we show the full response and we checked if hmac is correct means successfull payment
+        $data = $request->all();
+        ksort($data);
+        $hmac = $data['hmac'];
+        $array = [
+            'amount_cents',
+            'created_at',
+            'currency',
+            'error_occured',
+            'has_parent_transaction',
+            'id',
+            'integration_id',
+            'is_3d_secure',
+            'is_auth',
+            'is_capture',
+            'is_refunded',
+            'is_standalone_payment',
+            'is_voided',
+            'order',
+            'owner',
+            'pending',
+            'source_data_pan',
+            'source_data_sub_type',
+            'source_data_type',
+            'success',
+        ];
+        $connectedString = '';
+        foreach ($data as $key => $element) {
+            if (in_array($key, $array)) {
+                $connectedString .= $element;
+            }
+        }
+        $secret = env('PAYMOB_HMAC');
+        $hased = hash_hmac('sha512', $connectedString, $secret);
+        if ($hased == $hmac) {
+            //this below data used to get the last order created by the customer and check if its exists to 
+            // $todayDate = Carbon::now();
+            // $datas = Order::where('user_id',Auth::user()->id)->whereDate('created_at',$todayDate)->orderBy('created_at','desc')->first();
+            $status = $data['success'];
+            // $pending = $data['pending'];
 
+            if ($status == "true") {
+                $payment_id = $data['order'];
+                $payment =  $this->payments->where('transaction_id', $payment_id)
+                ->update(['status'=> 'confirmed']);  
+            }
+            $booking = Booking::create([
+                'user_id' => $payment->user_id,
+                'trip_id'=> $payment->trip_id,
+                'agent_id'=> $payment->agent_id,
+                'status' => 'confirmed',
+                'seats_count'=>$payment->travelers,
+                'bus_id'=>$payment->trip->bus_id,
+                'date'=>$payment->trip->date,
+                'destenation_from'=>$payment->trip->pickup_station_id,
+                'destenation_to'=>$payment->trip->dropoff_station_id,
+                'train_id'=>$payment->trip->train_id ?? null
+            ]);
+            $bookingUser = BookingUser::where('payment_id', $payment->id)
+            ->update([
+                'booking_id' => $booking->id
+            ]);
+            $payment->save();
+        }
+             
         return response()->json([
             'success' => 'You payment success'
         ]);

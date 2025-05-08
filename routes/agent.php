@@ -81,7 +81,6 @@ Route::middleware(['auth:sanctum','IsAgent'])->group(function () {
     ->prefix('bookings')->group(function(){
         Route::get('/', 'view');
         Route::put('/status/{id}', 'status');
-        Route::get('/callback/{id}', 'callback');
     });
 
     Route::controller(PaymentController::class)

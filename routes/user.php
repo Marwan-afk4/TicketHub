@@ -20,6 +20,7 @@ Route::middleware(['auth:sanctum','IsUser'])->group(function () {
         Route::post('/private_request', 'private_request');
         Route::post('/private_request_history', 'private_request_history');
         Route::post('/cancel/{id}', 'cancel');
+        Route::get('/callback', 'callback')->withoutMiddleware(['auth:sanctum','IsUser']);
     });
 
     Route::controller(ProfileController::class)->prefix('/profile')
