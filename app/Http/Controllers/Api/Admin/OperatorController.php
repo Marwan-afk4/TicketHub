@@ -191,33 +191,70 @@ class OperatorController extends Controller
         ]);
 
         // Handle commission updates
-        if ($request->has('commission_type')) {
-            $operatorCommission = Commission::where('agent_id', $operator->id)->first();
+        
+        $defaultCommission = DB::table('commissions')->where('type', 'defult')->first();
+        if (empty($defaultCommission)) {
+            $defaultCommission = DB::table('commissions')->insert([
+                'train' => 0,
+                'bus' => 0,
+                'hiace' => 0,
+                'private_request'=> 0,
+                'type'=>'defult'
+            ]);
+        }
 
-            if ($request->commission_type == 'private') {
-                $commissionData = [
+        if ($request->bus_modules || $request->train_modules || $request->hiace_modules || $request->private_modules) {
+            $commission = DB::table('commissions')
+            ->where('agent_id', $operator->id)
+            ->first();
+            if (empty($commission)) {
+                $commission->insert([
                     'agent_id' => $operator->id,
-                    'train' => $request->train_commission,
-                    'bus' => $request->bus_commission,
-                    'hiace' => $request->hiace_commission,
-                    'private_request' => $request->privateRequest_commission,
+                    'train' => $request->train_commission ?? $defaultCommission->train,
+                    'bus' => $request->bus_commission ?? $defaultCommission->bus,
+                    'hiace' => $request->hiace_commission ?? $defaultCommission->hiace,
+                    'private_request'=> $request->privateRequest_commission ?? $defaultCommission->private_request,
                     'type' => 'private'
-                ];
-            } else {
-                $defaultCommission = Commission::where('type', 'defult')->first();
-                if (!$defaultCommission) {
-                    return response()->json(['message' => 'Default commission not found'], 400);
-                }
-
-                $commissionData = [
-                    'agent_id' => $operator->id,
-                    'train' => $defaultCommission->train,
-                    'bus' => $defaultCommission->bus,
-                    'hiace' => $defaultCommission->hiace,
-                    'private_request' => $defaultCommission->private_request,
-                    'type' => 'defult'
-                ];
+                ]);
             }
+            else{
+                $commission->update([
+                    'agent_id' => $operator->id,
+                    'train' => $request->train_commission ?? $defaultCommission->train,
+                    'bus' => $request->bus_commission ?? $defaultCommission->bus,
+                    'hiace' => $request->hiace_commission ?? $defaultCommission->hiace,
+                    'private_request'=> $request->privateRequest_commission ?? $defaultCommission->private_request,
+                    'type' => 'private'
+                ]);
+            }
+        } 
+        // if ($request->has('commission_type')) {
+        //     $operatorCommission = Commission::where('agent_id', $operator->id)->first();
+
+        //     if ($request->commission_type == 'private') {
+        //         $commissionData = [
+        //             'agent_id' => $operator->id,
+        //             'train' => $request->train_commission,
+        //             'bus' => $request->bus_commission,
+        //             'hiace' => $request->hiace_commission,
+        //             'private_request' => $request->privateRequest_commission,
+        //             'type' => 'private'
+        //         ];
+        //     } else {
+        //         $defaultCommission = Commission::where('type', 'defult')->first();
+        //         if (!$defaultCommission) {
+        //             return response()->json(['message' => 'Default commission not found'], 400);
+        //         }
+
+        //         $commissionData = [
+        //             'agent_id' => $operator->id,
+        //             'train' => $defaultCommission->train,
+        //             'bus' => $defaultCommission->bus,
+        //             'hiace' => $defaultCommission->hiace,
+        //             'private_request' => $defaultCommission->private_request,
+        //             'type' => 'defult'
+        //         ];
+        //     }
 
             if (!$operatorCommission) {
                 Commission::create($commissionData);
