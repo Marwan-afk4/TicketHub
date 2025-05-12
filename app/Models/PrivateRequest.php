@@ -24,6 +24,10 @@ class PrivateRequest extends Model
         'status',
     ];
 
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function from_country(){
         return $this->belongsTo(Country::class, 'from_country_id');
     }

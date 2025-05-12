@@ -17,7 +17,7 @@ class PrivateRequestController extends Controller
         ->where('agent_id', $request->user()->id)
         ->with(['from_country:id,name,flag', 'from_city:id,name', 
         'to_country:id,name,flag', 'to_city:id,name',
-        'brand:id,name', 'category:id,name'])
+        'brand:id,name', 'category:id,name', 'user:id,name,email,phone'])
         ->where('status', 'confirmed')
         ->get();
 
