@@ -62,7 +62,7 @@ class OperatorController extends Controller
             'train_commission' => ['nullable', 'numeric'],
             'bus_commission' => ['nullable', 'numeric'],
             'hiace_commission' => ['nullable', 'numeric'],
-            'privateRequest_commission' =>['required','numeric'],
+            'privateRequest_commission' =>['nullable', 'numeric'],
             'commission_type' => ['required', 'in:private,defult'],
             'bus_modules' => ['required', 'in:0,1'],
             'train_modules' => ['required', 'in:0,1'],

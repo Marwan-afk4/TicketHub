@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('commissions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('agent_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->float('train');
-            $table->float('bus');
-            $table->float('hiace');
-            $table->enum('type',['defult','private']);
+            $table->float('train')->nullable();
+            $table->float('bus')->nullable();
+            $table->float('hiace')->nullable();
+            $table->enum('type',['defult','private'])->nullable();
             $table->timestamps();
         });
     }
