@@ -261,7 +261,6 @@ class OperatorController extends Controller
             } else {
                 $operatorCommission->update($commissionData);
             }
-        }
 
         // Handle module updates
         $moduleTypes = ['bus', 'train', 'hiace', 'private'];
