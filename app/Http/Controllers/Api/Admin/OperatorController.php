@@ -204,29 +204,26 @@ class OperatorController extends Controller
         }
 
         if ($request->bus_modules || $request->train_modules || $request->hiace_modules || $request->private_modules) {
-            $commission = DB::table('commissions')
-            ->where('agent_id', $operator->id)
-            ->first();
-            if (empty($commission)) {
-                $commission = DB::table('commissions')->insert([
-                    'agent_id' => $operator->id,
-                    'train' => $request->train_commission ?? null,
-                    'bus' => $request->bus_commission ?? null,
-                    'hiace' => $request->hiace_commission ?? null,
-                    'private_request'=> $request->privateRequest_commission ?? null,
-                    'type' => 'private'
-                ]);
-            }
-            else{
-                $commission->update([
-                    'agent_id' => $operator->id,
-                    'train' => $request->train_commission ?? null,
-                    'bus' => $request->bus_commission ?? null,
-                    'hiace' => $request->hiace_commission ?? null,
-                    'private_request'=> $request->privateRequest_commission ?? null,
-                    'type' => 'private'
-                ]);
-            }
+          $commission = DB::table('commissions')
+        ->where('agent_id', $operator->id)
+        ->first();
+
+        $data = [
+            'agent_id' => $operator->id,
+            'train' => $request->train_commission ?? null,
+            'bus' => $request->bus_commission ?? null,
+            'hiace' => $request->hiace_commission ?? null,
+            'private_request' => $request->privateRequest_commission ?? null,
+            'type' => 'private',
+        ];
+
+        if (empty($commission)) {
+            DB::table('commissions')->insert($data);
+        } else {
+            DB::table('commissions')
+                ->where('id', $commission->id)
+                ->update($data);
+        }
         } 
         // if ($request->has('commission_type')) {
         //     $operatorCommission = Commission::where('agent_id', $operator->id)->first();
