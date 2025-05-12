@@ -211,6 +211,7 @@ class LocationController extends Controller
                 'pickup'=> $station->pickup,
                 'dropoff'=> $station->dropoff,
                 'basic_station'=> $station->basic_station,
+                'location'=> $station->location,
                 'status' => $station->status
             ];
         });
@@ -229,7 +230,8 @@ class LocationController extends Controller
                 'pickup'=> $station->pickup,
                 'dropoff'=> $station->dropoff,
                 'basic_station'=> $station->basic_station,
-                'status' => $station->status
+                'location' => $station->location,
+                'status' => $station->status,
             ];
         });
         return response()->json([
@@ -245,6 +247,7 @@ class LocationController extends Controller
             'pickup' => 'required|in:0,1',
             'dropoff' => 'required|in:0,1',
             'basic_station' => 'required|in:0,1',
+            'location' => 'required',
         ]);
 
         if($validation->fails()){
@@ -259,6 +262,7 @@ class LocationController extends Controller
             'pickup' => $request->pickup,
             'dropoff' => $request->dropoff,
             'basic_station' => $request->basic_station,
+            'location' => $request->location,
         ]);
         return response()->json(['message'=>'Station Created Successfully'],200);
     }
@@ -274,6 +278,7 @@ class LocationController extends Controller
                 'pickup' => $request->pickup ?? $station->pickup,
                 'dropoff' => $request->dropoff ?? $station->dropoff,
                 'basic_station' => $request->basic_station ?? $station->basic_station,
+                'location' => $request->location ?? $station->location,
             ]);
             return response()->json(['message'=>'Station Updated Successfully'],200);
         }

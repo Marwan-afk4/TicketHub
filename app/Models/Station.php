@@ -14,8 +14,10 @@ class Station extends Model
         'pickup',
         'dropoff',
         'basic_station',
-        'status'
+        'location',
+        'status',
     ];
+    
     protected $hidden = [
         'created_at',
         'updated_at',
