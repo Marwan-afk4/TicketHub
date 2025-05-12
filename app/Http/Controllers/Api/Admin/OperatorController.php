@@ -208,7 +208,7 @@ class OperatorController extends Controller
             ->where('agent_id', $operator->id)
             ->first();
             if (empty($commission)) {
-                $commission->insert([
+                $commission = DB::table('commissions')->insert([
                     'agent_id' => $operator->id,
                     'train' => $request->train_commission ?? null,
                     'bus' => $request->bus_commission ?? null,
