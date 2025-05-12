@@ -84,32 +84,27 @@ class OperatorController extends Controller
             'code' => 'OP' . rand(10000, 99999) . strtolower(Str::random(1)),
             'description' => $request->description
         ]);
-
-        if ($request->commission_type == 'private') {
-            DB::table('commissions')->insert([
-                'agent_id' => $operator->id,
-                'train' => $request->train_commission,
-                'bus' => $request->bus_commission,
-                'hiace' => $request->hiace_commission,
-                'private_request'=> $request->privateRequest_commission,
-                'type' => 'private'
-            ]);
-        } elseif ($request->commission_type == 'defult') {
-            $defaultCommission = DB::table('commissions')->where('type', 'defult')->first();
-
-            if (!$defaultCommission) {
-                return response()->json(['message' => 'Default commission not found'], 400);
-            }
-
-            DB::table('commissions')->insert([
-                'agent_id' => $operator->id,
-                'train' => $defaultCommission->train,
-                'bus' => $defaultCommission->bus,
-                'hiace' => $defaultCommission->hiace,
-                'private_request'=> $defaultCommission->privateRequest_commission,
+        $defaultCommission = DB::table('commissions')->where('type', 'defult')->first();
+        if (empty($defaultCommission)) {
+            $defaultCommission = DB::table('commissions')->insert([
+                'train' => 0,
+                'bus' => 0,
+                'hiace' => 0,
+                'private_request'=> 0,
                 'type'=>'defult'
             ]);
         }
+
+        if ($request->bus_modules || $request->train_modules || $request->hiace_modules || $request->private_modules) {
+            DB::table('commissions')->insert([
+                'agent_id' => $operator->id,
+                'train' => $request->train_commission ?? $defaultCommission->train,
+                'bus' => $request->bus_commission ?? $defaultCommission->bus,
+                'hiace' => $request->hiace_commission ?? $defaultCommission->hiace,
+                'private_request'=> $request->privateRequest_commission ?? $defaultCommission->private_request,
+                'type' => 'private'
+            ]);
+        } 
 
 
         if ($request->bus_modules == 1) {
