@@ -13,7 +13,11 @@ class PaymentController extends Controller
 
 
     public function pendintPayment(){
-        $pendintPayment = Payment::where('status', 'pending')->get();
+        $pendintPayment = Payment::where('status', 'pending')->get()
+        ->map(function($item){
+            $item->receipt_image = url('storage/' . $item->receipt_image);
+            return $item;
+        });
         $data =[
             'pendintPayment' => $pendintPayment
         ];
@@ -21,7 +25,11 @@ class PaymentController extends Controller
     }
 
     public function confirmedPayment(){
-        $confirmedPayment = Payment::where('status', 'confirmed')->get();
+        $confirmedPayment = Payment::where('status', 'confirmed')->get()
+        ->map(function($item){
+            $item->receipt_image = url('storage/' . $item->receipt_image);
+            return $item;
+        });
         $data =[
             'confirmedPayment' => $confirmedPayment
         ];
@@ -29,7 +37,11 @@ class PaymentController extends Controller
     }
 
     public function canceledPayment(){
-        $canceledPayment = Payment::where('status', 'canceled')->get();
+        $canceledPayment = Payment::where('status', 'canceled')->get()
+        ->map(function($item){
+            $item->receipt_image = url('storage/' . $item->receipt_image);
+            return $item;
+        });
         $data =[
             'canceledPayment' => $canceledPayment
         ];
