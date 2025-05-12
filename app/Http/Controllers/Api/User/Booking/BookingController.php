@@ -130,7 +130,8 @@ class BookingController extends Controller
         'id', 'bus_id', 'pickup_station_id', 'dropoff_station_id', 'trip_type',
         'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price',
         'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
-        'cancelation_hours', 'train_id', 'currency_id'
+        'cancelation_hours', 'train_id', 'currency_id', 'to_country_id', 'to_city_id',
+        'city_id', 'country_id',
         )->get();
         
         if ($request->type === 'round_trip') {
@@ -142,7 +143,8 @@ class BookingController extends Controller
             'train' => function($query){
                 $query->select('id', 'name', 'class_id', 'type_id')
                 ->with(['type:id,name', 'class:id,name']);
-            }])
+            }, 'country:id,name', 'to_country:id,name', 
+            'city:id,name', 'to_city:id,name'])
             ->where('avalible_seats', '>', 0)
             ->where('status', 'active');
 
@@ -174,7 +176,8 @@ class BookingController extends Controller
                 'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price',
                 'trip_type',
                 'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
-                'cancelation_hours', 'train_id', 'currency_id'
+                'cancelation_hours', 'train_id', 'currency_id', 'to_country_id', 'to_city_id',
+                'city_id', 'country_id',
             )->get();
             
             $buses_trips = $buses_trips->merge($buses_back_trips);
