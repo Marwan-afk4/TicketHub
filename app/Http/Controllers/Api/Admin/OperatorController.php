@@ -98,10 +98,10 @@ class OperatorController extends Controller
         if ($request->bus_modules || $request->train_modules || $request->hiace_modules || $request->private_modules) {
             DB::table('commissions')->insert([
                 'agent_id' => $operator->id,
-                'train' => $request->train_commission ?? $defaultCommission->train,
-                'bus' => $request->bus_commission ?? $defaultCommission->bus,
-                'hiace' => $request->hiace_commission ?? $defaultCommission->hiace,
-                'private_request'=> $request->privateRequest_commission ?? $defaultCommission->private_request,
+                'train' => $request->train_commission ?? null,
+                'bus' => $request->bus_commission ?? null,
+                'hiace' => $request->hiace_commission ?? null,
+                'private_request'=> $request->privateRequest_commission ?? null,
                 'type' => 'private'
             ]);
         } 
@@ -210,20 +210,20 @@ class OperatorController extends Controller
             if (empty($commission)) {
                 $commission->insert([
                     'agent_id' => $operator->id,
-                    'train' => $request->train_commission ?? $defaultCommission->train,
-                    'bus' => $request->bus_commission ?? $defaultCommission->bus,
-                    'hiace' => $request->hiace_commission ?? $defaultCommission->hiace,
-                    'private_request'=> $request->privateRequest_commission ?? $defaultCommission->private_request,
+                    'train' => $request->train_commission ?? null,
+                    'bus' => $request->bus_commission ?? null,
+                    'hiace' => $request->hiace_commission ?? null,
+                    'private_request'=> $request->privateRequest_commission ?? null,
                     'type' => 'private'
                 ]);
             }
             else{
                 $commission->update([
                     'agent_id' => $operator->id,
-                    'train' => $request->train_commission ?? $defaultCommission->train,
-                    'bus' => $request->bus_commission ?? $defaultCommission->bus,
-                    'hiace' => $request->hiace_commission ?? $defaultCommission->hiace,
-                    'private_request'=> $request->privateRequest_commission ?? $defaultCommission->private_request,
+                    'train' => $request->train_commission ?? null,
+                    'bus' => $request->bus_commission ?? null,
+                    'hiace' => $request->hiace_commission ?? null,
+                    'private_request'=> $request->privateRequest_commission ?? null,
                     'type' => 'private'
                 ]);
             }
