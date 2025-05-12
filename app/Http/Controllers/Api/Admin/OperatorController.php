@@ -253,11 +253,6 @@ class OperatorController extends Controller
         //         ];
         //     }
 
-            if (!$operatorCommission) {
-                Commission::create($commissionData);
-            } else {
-                $operatorCommission->update($commissionData);
-            }
 
         // Handle module updates
         $moduleTypes = ['bus', 'train', 'hiace', 'private'];
