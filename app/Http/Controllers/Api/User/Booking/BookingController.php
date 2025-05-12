@@ -98,7 +98,8 @@ class BookingController extends Controller
         'train' => function($query){
             $query->select('id', 'name', 'class_id', 'type_id')
             ->with(['type:id,name', 'class:id,name']);
-        }])
+        }, 'country:id,name', 'to_country:id,name', 
+        'city:id,name', 'to_city:id,name'])
         ->where('avalible_seats', '>', 0)
         ->where('status', 'active');
 
