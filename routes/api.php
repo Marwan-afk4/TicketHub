@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\Admin\PrivateRequestController;
 use App\Http\Controllers\Api\Admin\PointController;
 use App\Http\Controllers\Api\Admin\CurrencyPointController;
 use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\Admin\UserRequestController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,12 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/user/delete/{id}',[UserController::class,'deleteUser']);
 
     Route::put('/admin/user/update/{id}',[UserController::class,'UpdateUser']);
+
+/////////////////////////////////////// User Request ////////////////////////////////////////////
+
+    Route::get('/admin/user_request',[UserRequestController::class,'view']);
+
+    Route::get('/admin/user_request/status/{id}',[UserRequestController::class,'status']);
 
 /////////////////////////////////////// Point ////////////////////////////////////////////
 

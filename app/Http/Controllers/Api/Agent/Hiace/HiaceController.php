@@ -24,7 +24,7 @@ class HiaceController extends Controller
         $hiaces = $this->buses
         ->where('agent_id', $request->user()->id)
         ->where('type', 'hiace')
-        ->with('busType', 'aminity')
+        ->with( 'aminity')
         ->get();
         $aminities = $this->aminities
         ->get();
@@ -41,7 +41,7 @@ class HiaceController extends Controller
         $hiace = $this->buses
         ->where('agent_id', $request->user()->id)
         ->where('id', $id)
-        ->with('busType', 'aminity')
+        ->with('aminity')
         ->first();
 
         return response()->json([
@@ -55,8 +55,7 @@ class HiaceController extends Controller
         // bus_number, bus_type_id, capacity, status => [active, inactive]
         // bus_image, aminities[]
         $validation = Validator::make(request()->all(),[ 
-            'bus_number' => 'required',
-            'bus_type_id' => 'required|exists:bus_types,id',
+            'bus_number' => 'required', 
             'capacity' => 'required',
             'status' => 'required|in:active,inactive',
         ]);
@@ -93,8 +92,7 @@ class HiaceController extends Controller
         // bus_number, bus_type_id, capacity, status => [active, inactive]
         // bus_image, aminities[]
         $validation = Validator::make(request()->all(),[ 
-            'bus_number' => 'sometimes',
-            'bus_type_id' => 'required|exists:bus_types,id',
+            'bus_number' => 'sometimes', 
             'capacity' => 'required',
             'status' => 'required|in:active,inactive',
         ]);

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\User\Booking\BookingController;
 use App\Http\Controllers\Api\User\Profile\ProfileController;
 use App\Http\Controllers\Api\User\Wallet\WalletController;
 use App\Http\Controllers\Api\User\Points\PointsController;
+use App\Http\Controllers\Api\User\UserRequest\UserRequestController;
 
 Route::middleware(['auth:sanctum','IsUser'])->group(function () {
     Route::controller(BookingController::class)->prefix('/booking')
@@ -21,6 +22,11 @@ Route::middleware(['auth:sanctum','IsUser'])->group(function () {
         Route::post('/private_request_history', 'private_request_history');
         Route::post('/cancel/{id}', 'cancel');
         Route::get('/callback', 'callback')->withoutMiddleware(['auth:sanctum','IsUser']);
+    });
+
+    Route::controller(UserRequestController::class)->prefix('/user_request')
+    ->group(function(){
+        Route::get('/', 'user_request_agent');
     });
 
     Route::controller(ProfileController::class)->prefix('/profile')

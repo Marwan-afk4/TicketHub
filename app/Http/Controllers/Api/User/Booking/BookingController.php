@@ -81,7 +81,12 @@ class BookingController extends Controller
         $validation = Validator::make(request()->all(),[
             'from' => 'nullable|exists:cities,id',
             'to' => 'nullable|exists:cities,id',
-            'date' => 'date|required',
+            'date' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+                'before_or_equal:' . Carbon::now()->addMonths(3)->toDateString(),
+            ],
             'round_date' => 'date|nullable',
             'travelers' => 'numeric|nullable',
             'type' => 'nullable|in:one_way,round_trip',
@@ -313,7 +318,7 @@ class BookingController extends Controller
                 if (now() > $max_book_date) {
                     return response()->json([
                         'errors' => 'Max book date at ' . $max_book_date
-                    ], 404);
+                    ], 403);
                 }
             }
             $paymentRequest = $validation->validated(); 
