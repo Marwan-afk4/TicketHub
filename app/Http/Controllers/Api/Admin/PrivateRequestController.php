@@ -34,7 +34,7 @@ class PrivateRequestController extends Controller
     public function determin_agent(Request $request){
         $validation = Validator::make($request->all(), [
             'agent_id'=>'required|exists:users,id',
-            'private_request_id'=>'required|exists:users,id',
+            'private_request_id'=>'required|exists:private_requests,id',
         ]);
         if($validation->fails()){
             return response()->json($validation->errors());
