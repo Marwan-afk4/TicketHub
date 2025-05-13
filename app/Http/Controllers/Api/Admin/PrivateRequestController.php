@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-use App\Modeles\PrivateRequest;
-use App\Modeles\User;
+use App\Models\PrivateRequest;
+use App\Models\User;
 
 class PrivateRequestController extends Controller
 {
