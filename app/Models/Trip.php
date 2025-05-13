@@ -40,6 +40,7 @@ class Trip extends Model
         'cancelation_hours',
         'train_id',
         'start_date',
+        'request_status',
     ];
 
     protected $hidden = [

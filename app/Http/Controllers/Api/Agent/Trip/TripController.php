@@ -27,6 +27,7 @@ class TripController extends Controller
         // /agent/trip
         $trips = $this->trip
         ->where('agent_id', $request->user()->id)
+        ->where('request_status', '!=', 'rejected')
         ->with(['bus.busType', 'city', 'to_city', 'zone', 'to_zone',
         'pickup_station', 'dropoff_station', 'currency', 'country',
         'to_country', 'train' => function($query){
@@ -70,6 +71,7 @@ class TripController extends Controller
                 'pickup_station' => $item?->pickup_station?->name ?? null,
                 'dropoff_station' => $item?->dropoff_station?->name ?? null,
                 'currency' => $item?->currency?->name ?? null,
+                'request_status' => $item->request_status,
             ];
         });
         $stations = $this->stations
@@ -111,6 +113,7 @@ class TripController extends Controller
         // /agent/trip/item/{id}
         $trips = $this->trip
         ->where('agent_id', $request->user()->id)
+        ->where('request_status', '!=', 'rejected')
         ->where('id', $id)
         ->with(['bus.busType', 'days', 'city', 'to_city', 'zone', 'to_zone',
         'pickup_station', 'dropoff_station', 'currency', 'country', 
@@ -156,6 +159,7 @@ class TripController extends Controller
                 'pickup_station' => $item?->pickup_station?->name ?? null,
                 'dropoff_station' => $item?->dropoff_station?->name ?? null,
                 'currency' => $item?->currency?->name ?? null,
+                'request_status' => $item->request_status,
             ];
         });
         $trip = count($trips) > 0 ? $trips[0] : null;

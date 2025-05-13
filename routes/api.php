@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\Admin\TrainController;
 use App\Http\Controllers\Api\Admin\TrainRouteController;
 use App\Http\Controllers\Api\Admin\TrainTypeController;
 use App\Http\Controllers\Api\Admin\TripController;
+use App\Http\Controllers\Api\Admin\TripRequestController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use Illuminate\Http\Request;
@@ -214,6 +215,12 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::put('/admin/aminity/update/{id}',[AmintyController::class,'updateAminity']);
 
     Route::delete('/admin/aminity/delete/{id}',[AmintyController::class,'deleteAminity']);
+
+///////////////////////////////////////////// Trips //////////////////////////////////////////////
+
+    Route::get('/admin/trip_request',[TripRequestController::class,'view']);
+
+    Route::put('/admin/trip_request/status/{id}',[TripRequestController::class,'status']);
 
 ///////////////////////////////////////////// Trips //////////////////////////////////////////////
 

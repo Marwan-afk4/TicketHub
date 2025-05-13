@@ -23,7 +23,9 @@ class TripController extends Controller
             'pickup_station',
             'dropoff_station',
             'days',
-        ])->get();
+        ])
+        ->where('request_status', 'approved')
+        ->get();
 
         $data = $trips->map(function ($trip) {
             return [

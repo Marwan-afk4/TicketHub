@@ -100,6 +100,7 @@ class BookingController extends Controller
             ->with(['type:id,name', 'class:id,name']);
         }, 'country:id,name', 'to_country:id,name', 
         'city:id,name', 'to_city:id,name'])
+        ->where('request_status', 'approved')
         ->where('avalible_seats', '>', 0)
         ->where('status', 'active');
 
@@ -146,6 +147,7 @@ class BookingController extends Controller
             }, 'country:id,name', 'to_country:id,name', 
             'city:id,name', 'to_city:id,name'])
             ->where('avalible_seats', '>', 0)
+            ->where('request_status', 'approved')
             ->where('status', 'active');
 
             if ($request->filled('from')) {
