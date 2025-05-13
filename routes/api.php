@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\Admin\TrainRouteController;
 use App\Http\Controllers\Api\Admin\TrainTypeController;
 use App\Http\Controllers\Api\Admin\TripController;
 use App\Http\Controllers\Api\Admin\TripRequestController;
+use App\Http\Controllers\Api\Admin\PrivateRequestController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use Illuminate\Http\Request;
@@ -216,13 +217,19 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
     Route::delete('/admin/aminity/delete/{id}',[AmintyController::class,'deleteAminity']);
 
-///////////////////////////////////////////// Trips //////////////////////////////////////////////
+///////////////////////////////////////////// Trips Request //////////////////////////////////////////////
 
     Route::get('/admin/trip_request',[TripRequestController::class,'view']);
 
     Route::put('/admin/trip_request/status/{id}',[TripRequestController::class,'status']);
 
-///////////////////////////////////////////// Trips //////////////////////////////////////////////
+///////////////////////////////////////////// Private Request //////////////////////////////////////////////
+
+    Route::get('/admin/private_request',[PrivateRequestController::class,'view']);
+
+    Route::post('/admin/private_request/determin_agent',[PrivateRequestController::class,'determin_agent']);
+
+    ///////////////////////////////////////////// Trips //////////////////////////////////////////////
 
     Route::get('/admin/trips',[TripController::class,'getTrips']);
 
