@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\Admin\TripController;
 use App\Http\Controllers\Api\Admin\TripRequestController;
 use App\Http\Controllers\Api\Admin\PrivateRequestController;
 use App\Http\Controllers\Api\Admin\PointController;
+use App\Http\Controllers\Api\Admin\CurrencyPointController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use Illuminate\Http\Request;
@@ -67,6 +68,18 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::put('/admin/point/update/{id}',[PointController::class,'modify']);
 
     Route::delete('/admin/point/delete/{id}',[PointController::class,'delete']);
+
+/////////////////////////////////// Currency Point /////////////////////////////////////////
+
+    Route::get('/admin/currency_point',[CurrencyPointController::class,'view']);
+
+    Route::get('/admin/currency_point/item/{id}',[CurrencyPointController::class,'item']);
+
+    Route::post('/admin/currency_point/add',[CurrencyPointController::class,'create']);
+
+    Route::put('/admin/currency_point/update/{id}',[CurrencyPointController::class,'modify']);
+
+    Route::delete('/admin/currency_point/delete/{id}',[CurrencyPointController::class,'delete']);
 
 /////////////////////////////////////// Country ////////////////////////////////////////////
 
