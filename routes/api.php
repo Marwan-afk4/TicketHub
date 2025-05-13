@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\Admin\TrainTypeController;
 use App\Http\Controllers\Api\Admin\TripController;
 use App\Http\Controllers\Api\Admin\TripRequestController;
 use App\Http\Controllers\Api\Admin\PrivateRequestController;
+use App\Http\Controllers\Api\Admin\PointController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use Illuminate\Http\Request;
@@ -54,6 +55,18 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/user/delete/{id}',[UserController::class,'deleteUser']);
 
     Route::put('/admin/user/update/{id}',[UserController::class,'UpdateUser']);
+
+/////////////////////////////////////// Point ////////////////////////////////////////////
+
+    Route::get('/admin/point',[PointController::class,'view']);
+
+    Route::get('/admin/point/item/{id}',[PointController::class,'item']);
+
+    Route::post('/admin/point/add',[PointController::class,'create']);
+
+    Route::put('/admin/point/update/{id}',[PointController::class,'modify']);
+
+    Route::delete('/admin/point/delete/{id}',[PointController::class,'delete']);
 
 /////////////////////////////////////// Country ////////////////////////////////////////////
 
