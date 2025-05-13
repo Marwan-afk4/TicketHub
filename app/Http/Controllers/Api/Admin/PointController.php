@@ -11,7 +11,7 @@ use App\Models\Currency;
 
 class PointController extends Controller
 {
-    public function __construct(private Point $point,
+    public function __construct(private Point $points,
     private Currency $currency){}
 
     public function view(){
