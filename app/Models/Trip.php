@@ -57,6 +57,10 @@ class Trip extends Model
         return null;
     }
 
+    public function agent(){
+        return $this->belongsTo(User::class, 'agent_id');
+    }
+
     public function bus(){
         return $this->belongsTo(Bus::class);
     }

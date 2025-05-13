@@ -14,6 +14,7 @@ class TripRequestController extends Controller
 
     public function view(){
         $pending_trips = $this->trip
+        ->with('agent:id,name')
         ->where('request_status', 'pending')
         ->get();
 
