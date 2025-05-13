@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('gender',['male','female']);
+            $table->enum('gender',['male','female', 'other']);
             $table->foreignId('nationality_id')->nullable()->constrained('nationalities')->onDelete('set null');
         });
     }
