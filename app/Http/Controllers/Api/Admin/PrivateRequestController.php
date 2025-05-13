@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-use App\Modeles\PayoutRequest;
+use App\Modeles\PrivateRequest;
 use App\Modeles\User;
 
 class PrivateRequestController extends Controller
 {
-    public function __construct(private PayoutRequest $private_request,
+    public function __construct(private PrivateRequest $private_request,
     private User $agents){}
 
     public function view(){
