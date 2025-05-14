@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+use App\Models\Currency;
+
 class UserController extends Controller
 {
 
@@ -108,6 +110,18 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'role' => 'user'
         ]);
+        $currancies = Currency::
+        get();
+        $data = [];
+        foreach ($currancies as $item) {
+            $this->wallet
+            ->create([
+                'user_id' => $usercreation->id,
+                'currency_id' => $item->id,
+                'amount' => 0,
+                'total' => 0,
+            ]);
+        }
 
         if ($usercreation) {
             return response()->json(['message' => 'User Created Successfully'], 200);
