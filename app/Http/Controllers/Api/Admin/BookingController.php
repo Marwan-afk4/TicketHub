@@ -7,6 +7,8 @@ use App\Models\Booking;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+use App\Models\Payment;
+
 class BookingController extends Controller
 {
 
@@ -127,6 +129,8 @@ class BookingController extends Controller
         $booking = Booking::find($id);
         $booking->status = 'confirmed';
         $booking->save();
+        Payment->where('booking_id', $id)
+        ->update(['status', 'confirmed']);
         return response()->json(['message' => 'Booking Confirmed']);
     }
 
