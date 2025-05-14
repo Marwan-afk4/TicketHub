@@ -50,7 +50,7 @@ class PointController extends Controller
             return response()->json($validation->errors());
         }
         $pointRequest = $validation->validated();
-        $this->point
+        $this->points
         ->create($pointRequest);
 
         return response()->json([
@@ -68,7 +68,7 @@ class PointController extends Controller
             return response()->json($validation->errors());
         }
         $pointRequest = $validation->validated();
-        $this->point
+        $this->points
         ->where('id', $id)
         ->update($pointRequest);
 
@@ -78,7 +78,7 @@ class PointController extends Controller
     }
 
     public function delete($id){
-        $this->point
+        $this->points
         ->where('id', $id)
         ->delete();
 
