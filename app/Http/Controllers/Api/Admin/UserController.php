@@ -115,8 +115,7 @@ class UserController extends Controller
         get();
         $data = [];
         foreach ($currancies as $item) {
-            Wallet
-            ->create([
+            Wallet::create([
                 'user_id' => $usercreation->id,
                 'currency_id' => $item->id,
                 'amount' => 0,
