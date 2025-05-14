@@ -49,6 +49,13 @@ class Trip extends Model
     ];
     protected $appends = ['image_link'];
 
+    public function gettripTypeAttribute($data){
+        if ($data == 'hiace') {
+            return 'min_van';
+        }
+        return $data;
+    }
+
     public function getImageLinkAttribute(){
         if (isset($this->attributes['image'])) {
             return url('storage/' . $this->attributes['image']);

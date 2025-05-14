@@ -15,9 +15,18 @@ class ChargeWallet extends Model
         'payment_method_id',
         'status',
     ];
+    protected $appends = ['image_link'];
+
+    public function getImageLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
 
     public function currency(){
         return $this->belongsTo(Currency::class, 'currency_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function payment_method(){
