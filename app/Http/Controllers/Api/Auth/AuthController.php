@@ -23,6 +23,7 @@ class AuthController extends Controller
     public function lists(){
         // /api/lists
         $nationality = Nationality::get();
+        
         return response()->json([
             'nationality' => $nationality,
         ]);
