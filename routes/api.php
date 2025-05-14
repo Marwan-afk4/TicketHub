@@ -63,13 +63,13 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
     Route::get('/admin/wallet_request',[WalletController::class,'view']);
 
-    Route::get('/admin/wallet_request/status/{id}',[WalletController::class,'status']);
+    Route::put('/admin/wallet_request/status/{id}',[WalletController::class,'status']);
 
 /////////////////////////////////////// User Request ////////////////////////////////////////////
 
     Route::get('/admin/user_request',[UserRequestController::class,'view']);
 
-    Route::get('/admin/user_request/status/{id}',[UserRequestController::class,'status']);
+    Route::put('/admin/user_request/status/{id}',[UserRequestController::class,'status']);
 
 /////////////////////////////////////// Point ////////////////////////////////////////////
 
