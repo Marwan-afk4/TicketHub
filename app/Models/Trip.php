@@ -51,7 +51,7 @@ class Trip extends Model
 
     public function gettripTypeAttribute($data){
         if ($data == 'hiace') {
-            return 'min_van';
+            return 'mini_van';
         }
         return $data;
     }
