@@ -43,15 +43,14 @@ class CurrancyController extends Controller
         ->get();
         $data = [];
         foreach ($users as $item) {
-            $data[] = [
+            $this->wallet
+            ->create([
                 'user_id' => $item->id,
                 'currency_id' => $currancy->id,
                 'amount' => 0,
                 'total' => 0,
-            ];
+            ]);
         }
-        $this->wallet
-        ->create($data);
 
         return response()->json([
             'message' => 'Currancy added successfully',
