@@ -32,7 +32,7 @@ class TripController extends Controller
                 'id' => $trip->id,
                 'name' => $trip->trip_name ?? 'Unnamed Trip',
                 'status' => $trip->status,
-                'trip_type' => $trip->trip_type == 'hiace' ? 'mini_van': $trip->trip_type ,
+                'trip_type' => $trip->trip_type,
                 'date' => $trip->date,
                 'departure_time' => $trip->deputre_time,
                 'arrival_time' => $trip->arrival_time,
