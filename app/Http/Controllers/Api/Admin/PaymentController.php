@@ -63,6 +63,8 @@ class PaymentController extends Controller
             'destenation_to'=>$payment->trip->dropoff_station_id,
             'train_id'=>$payment->trip->train_id ?? null
         ]);
+        $payment->booking_id = $booking->id;
+        $payment->save();
         $bookingUser = BookingUser::where('payment_id', $payment->id)
         ->update([
             'booking_id' => $booking->id
