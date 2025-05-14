@@ -32,6 +32,7 @@ class TripController extends Controller
                 'id' => $trip->id,
                 'name' => $trip->trip_name ?? 'Unnamed Trip',
                 'status' => $trip->status,
+                'agent' => $trip?->agent?->name,
                 'trip_type' => $trip->trip_type,
                 'date' => $trip->date,
                 'departure_time' => $trip->deputre_time,
