@@ -130,7 +130,7 @@ class BookingController extends Controller
         $booking->status = 'confirmed';
         $booking->save();
         Payment::where('booking_id', $id)
-        ->update(['status', 'confirmed']);
+        ->update(['status' => 'confirmed']);
         return response()->json(['message' => 'Booking Confirmed']);
     }
 
