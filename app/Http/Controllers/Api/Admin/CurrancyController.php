@@ -51,7 +51,7 @@ class CurrancyController extends Controller
             ];
         }
         $this->wallet
-        ->createMany($data);
+        ->create($data);
 
         return response()->json([
             'message' => 'Currancy added successfully',
