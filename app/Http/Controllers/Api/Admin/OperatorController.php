@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
+use App\Models\Currency;
+use App\Models\Wallet;
+
 class OperatorController extends Controller
 {
     use Image;
@@ -84,6 +87,17 @@ class OperatorController extends Controller
             'code' => 'OP' . rand(10000, 99999) . strtolower(Str::random(1)),
             'description' => $request->description
         ]);
+        $currancies = Currency::
+        get();
+        $data = [];
+        foreach ($currancies as $item) {
+            Wallet::create([
+                'user_id' => $operator->id,
+                'currency_id' => $item->id,
+                'amount' => 0,
+                'total' => 0,
+            ]);
+        }
         $defaultCommission = DB::table('commissions')->where('type', 'defult')->first();
         if (empty($defaultCommission)) {
             $defaultCommission = DB::table('commissions')->insert([
