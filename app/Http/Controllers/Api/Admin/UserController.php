@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+use App\Models\Wallet;
 use App\Models\Currency;
 
 class UserController extends Controller
@@ -114,7 +115,7 @@ class UserController extends Controller
         get();
         $data = [];
         foreach ($currancies as $item) {
-            $this->wallet
+            Wallet
             ->create([
                 'user_id' => $usercreation->id,
                 'currency_id' => $item->id,
