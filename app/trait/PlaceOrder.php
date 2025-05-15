@@ -173,7 +173,7 @@ trait PlaceOrder
         if ($trip->trip_type == 'bus') {
             $commission_precentage = $commission->bus;
         }
-        elseif ($trip->trip_type == 'hiace') {
+        elseif ($trip->trip_type == 'hiace' || $trip->trip_type == 'MiniVan') {
             $commission_precentage = $commission->hiace;
         }
         elseif ($trip->trip_type == 'train') {

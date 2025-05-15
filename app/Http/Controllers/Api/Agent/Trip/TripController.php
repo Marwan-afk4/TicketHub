@@ -94,7 +94,7 @@ class TripController extends Controller
         ->where('agent_id', $request->user()->id)
         ->with('busType')
         ->get();
-        $hiaces = $buses->where('type', 'hiace')->values();
+        $hiaces = $buses->where('type', 'MiniVan')->values();
         $buses = $buses->where('type', 'bus')->values();
         return response()->json([
             'trips' => $trips,

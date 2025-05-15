@@ -256,7 +256,7 @@ class BookingController extends Controller
         ->filter()
         ->where('max_book_date', '>=', date('Y-m-d'));
         $buses = $buses_trips->where('trip_type', 'bus')->values();
-        $hiace = $buses_trips->where('trip_type', 'hiace')->values();
+        $hiace = $buses_trips->where('trip_type', 'hiace')->orWhere('trip_type', 'MiniVan')->values();
         $train = $buses_trips->where('trip_type', 'train')->values();
 
         return response()->json([
@@ -336,7 +336,7 @@ class BookingController extends Controller
                 'seats_count' => $request->travelers,
                 'status' => 'pending',
             ];
-            if($trip->trip_type == 'bus' || $trip->trip_type == 'hiace'){
+            if($trip->trip_type == 'bus' || $trip->trip_type == 'hiace' || $trip->trip_type == 'MiniVan'){
                 $booking_arr['status'] = 'confirmed';
             }
             $booking = $this->booking
@@ -362,7 +362,7 @@ class BookingController extends Controller
             if ($trip->trip_type == 'bus') {
                 $commission_precentage = $commission->bus;
             }
-            elseif ($trip->trip_type == 'hiace') {
+            elseif ($trip->trip_type == 'hiace' || $trip->trip_type == 'MiniVan') {
                 $commission_precentage = $commission->hiace;
             }
             elseif ($trip->trip_type == 'train') {
@@ -633,7 +633,7 @@ class BookingController extends Controller
             'seats_count' => $request->travelers,
             'status' => 'pending',
         ];
-        if($trip->trip_type == 'bus' || $trip->trip_type == 'hiace'){
+        if($trip->trip_type == 'bus' || $trip->trip_type == 'hiace' || $trip->trip_type == 'MiniVan'){
             $booking_arr['status'] = 'confirmed';
         }
         $booking = $this->booking
@@ -659,7 +659,7 @@ class BookingController extends Controller
         if ($trip->trip_type == 'bus') {
             $commission_precentage = $commission->bus;
         }
-        elseif ($trip->trip_type == 'hiace') {
+        elseif ($trip->trip_type == 'hiace' || $trip->trip_type == 'MiniVan') {
             $commission_precentage = $commission->hiace;
         }
         elseif ($trip->trip_type == 'train') {
