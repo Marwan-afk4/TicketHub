@@ -57,14 +57,13 @@ class PaymentController extends Controller
             'agent_id'=> $payment->agent_id,
             'status' => 'confirmed',
             'seats_count'=>$payment->travelers,
-            'bus_id'=>$payment->trip->bus_id,
-            'date'=>$payment->trip->date,
+            'bus_id'=>$payment?->trip?->bus_id ?? null,
+            'date'=>$payment->travel_date,
             'destenation_from'=>$payment->trip->pickup_station_id,
             'destenation_to'=>$payment->trip->dropoff_station_id,
             'train_id'=>$payment->trip->train_id ?? null
         ]);
         $payment->booking_id = $booking->id;
-        $payment->save();
         $bookingUser = BookingUser::where('payment_id', $payment->id)
         ->update([
             'booking_id' => $booking->id
