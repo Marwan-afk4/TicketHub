@@ -256,7 +256,9 @@ class BookingController extends Controller
         ->filter()
         ->where('max_book_date', '>=', date('Y-m-d'));
         $buses = $buses_trips->where('trip_type', 'bus')->values();
-        $hiace = $buses_trips->where('trip_type', 'hiace')->orWhere('trip_type', 'MiniVan')->values();
+        $hiace = $buses_trips->filter(function ($trip) {
+            return $trip->trip_type === 'hiace' || $trip->trip_type === 'MiniVan';
+        })->values();
         $train = $buses_trips->where('trip_type', 'train')->values();
 
         return response()->json([
