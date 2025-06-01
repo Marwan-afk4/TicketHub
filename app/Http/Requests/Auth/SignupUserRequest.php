@@ -28,7 +28,7 @@ class SignupUserRequest extends FormRequest
             'name' => ['required', 'string'],
             'email' => ['required','email', 'unique:users,email'],
             'phone' => ['required', 'unique:users,phone'],
-            'gender' => ['required', 'in:male,female,other'],
+            'gender' => ['in:male,female,other'],
             'password' => ['required','min:8'],
         ];
     }
