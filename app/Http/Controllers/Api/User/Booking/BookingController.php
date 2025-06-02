@@ -267,16 +267,16 @@ class BookingController extends Controller
             for ($i=1; $i <= 7; $i++) { 
                 $new_date = Carbon::now()->addDays($i);
                 $day = Carbon::parse($new_date)->format('l');
-                $buses_trips = $buses_trips->map(function ($trip) use($request, $day) {
+                $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $new_date) {
                     $trip_days = $trip->days->pluck('day');
                     if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
-                        $trip->date = $request->date;
-                        $trip->max_book_date = Carbon::parse($request->date)->subDays($trip->max_book_date)->format('Y-m-d');
+                        $trip->date = $new_date;
+                        $trip->max_book_date = Carbon::parse($new_date)->subDays($trip->max_book_date)->format('Y-m-d');
                         return $trip;
                     }
                     if (empty($trip->days) || count($trip->days) == 0 ) {
-                        $trip->date = $request->date;
-                        $trip->max_book_date = Carbon::parse($request->date)->subDays($trip->max_book_date)->format('Y-m-d');
+                        $trip->date = $new_date;
+                        $trip->max_book_date = Carbon::parse($new_date)->subDays($trip->max_book_date)->format('Y-m-d');
                         return $trip;
                     }
                     return null;
