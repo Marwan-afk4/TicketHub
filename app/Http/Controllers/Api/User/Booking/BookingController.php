@@ -281,7 +281,7 @@ class BookingController extends Controller
                     }
                     return null;
                 })->filter();
-                $trips->push($buses_trips);
+                $trips->merge($buses_trips);
             }
             $buses_trips = $trips;
         }
