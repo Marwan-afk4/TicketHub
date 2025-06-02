@@ -82,7 +82,6 @@ class BookingController extends Controller
             'from' => 'nullable|exists:cities,id',
             'to' => 'nullable|exists:cities,id',
             'date' => [
-                'required',
                 'date',
                 'after_or_equal:today',
                 'before_or_equal:' . Carbon::now()->addMonths(3)->toDateString(),
@@ -255,6 +254,38 @@ class BookingController extends Controller
         })
         ->filter()
         ->where('max_book_date', '>=', date('Y-m-d'));
+        if ($request->date) {
+            $buses_trips = $buses_trips->values()
+            ->map(function($item) use($request){
+                $item->date = $request->date;
+                return $item;
+            });
+        } 
+        else {
+            $buses_trips = $buses_trips->values();
+            $trips = collect([]);
+            for ($i=1; $i <= 7; $i++) { 
+                $new_date = Carbon::now()->addDays($i);
+                $day = Carbon::parse($new_date)->format('l');
+                $buses_trips = $buses_trips->map(function ($trip) use($request, $day) {
+                    $trip_days = $trip->days->pluck('day');
+                    if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
+                        $trip->date = $request->date;
+                        $trip->max_book_date = Carbon::parse($request->date)->subDays($trip->max_book_date)->format('Y-m-d');
+                        return $trip;
+                    }
+                    if (empty($trip->days) || count($trip->days) == 0 ) {
+                        $trip->date = $request->date;
+                        $trip->max_book_date = Carbon::parse($request->date)->subDays($trip->max_book_date)->format('Y-m-d');
+                        return $trip;
+                    }
+                    return null;
+                })->filter();
+                $trips->push($buses_trips);
+            }
+            $buses_trips = $trips;
+        }
+        
         $buses = $buses_trips->where('trip_type', 'bus')->values();
         $hiace = $buses_trips->filter(function ($trip) {
             return $trip->trip_type === 'hiace' || $trip->trip_type === 'MiniVan';
@@ -262,7 +293,7 @@ class BookingController extends Controller
         $train = $buses_trips->where('trip_type', 'train')->values();
 
         return response()->json([
-            'all_trips' => $buses_trips->values(),
+            'all_trips' => $buses_trips,
             'bus_trips' => $buses,
             'hiace_trips' => $hiace,
             'train_trips' => $train,
