@@ -197,19 +197,19 @@ class BookingController extends Controller
                 $trip_days = $trip->days->pluck('day');
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
                     $trip->date = $request->date;
-                    $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->arrival_time)
+                    $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->deputre_time)
                     ->subHours($trip->max_book_date);
                     return $trip;
                 }
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($round_date)) {
                     $trip->date = $request->round_date;
-                    $trip->max_book_date = Carbon::parse($request->round_date . ' ' . $trip->arrival_time)
+                    $trip->max_book_date = Carbon::parse($request->round_date . ' ' . $trip->deputre_time)
                     ->subHours($trip->max_book_date);
                     return $trip;
                 } 
                 if (empty($trip->days) || count($trip->days) == 0 ) {
                     $trip->date = $request->date;
-                    $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->arrival_time)
+                    $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->deputre_time)
                     ->subHours($trip->max_book_date);
                     return $trip;
                 }
@@ -222,13 +222,13 @@ class BookingController extends Controller
                 $trip_days = $trip->days->pluck('day');
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
                     $trip->date = $request->date;
-                    $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->arrival_time)
+                    $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->deputre_time)
                     ->subHours($trip->max_book_date);
                     return $trip;
                 }
                 if (empty($trip->days) || count($trip->days) == 0 ) {
                     $trip->date = $request->date;
-                    $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->arrival_time)
+                    $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->deputre_time)
                     ->subHours($trip->max_book_date);
                     return $trip;
                 }
@@ -269,27 +269,29 @@ class BookingController extends Controller
         } 
         else {
             $buses_trips = $buses_trips->values();
-            $trips = collect([]);
-            for ($i=1; $i <= 7; $i++) { 
-                $new_date = Carbon::now()->addDays($i)->format('Y-m-d');
+            $new_trips = collect([]);
+            for ($i=0; $i <= 7; $i++) { 
+                $new_date = Carbon::now()->addDays($i)->format('Y-m-d'); 
                 $day = Carbon::parse($new_date)->format('l');
                 $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $new_date) {
-                    $trip_days = $trip->days->pluck('day');
-                    if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
-                        $trip->date = $new_date; 
-                        return $trip;
-                    }
-                    if (empty($trip->days) || count($trip->days) == 0 ) {
-                        $trip->date = $new_date; 
-                        return $trip;
-                    }
-                    return null;
+					$trip_days = $trip->days->pluck('day');
+					$has_days = $trip->days && count($trip->days) > 0;
+
+					if ((!$has_days || $trip_days->contains($day))) {
+						$new_trip = clone $trip; // clone to avoid mutating original
+						$new_trip->date = $new_date;
+						$new_trip->max_book_date = Carbon::parse($new_date . ' ' . $trip->deputre_time);
+						return $new_trip;
+					}
                 })->filter();
 				$buses_trips = $buses_trips->values();
-                $trips->push($buses_trips);
+                $new_trips->push($buses_trips);
             }  
-            $buses_trips = $trips->flatten(1);
-        }
+            $buses_trips = $new_trips;
+            $buses_trips = $new_trips->flatten(1);
+            $buses_trips->where('max_book_date', '>=', now());
+            $buses_trips = $buses_trips->values();
+        } 
         
         $buses = $buses_trips->where('trip_type', 'bus')->values();
         $hiace = $buses_trips->filter(function ($trip) {
