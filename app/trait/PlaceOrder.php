@@ -142,12 +142,14 @@ trait PlaceOrder
             ];
         }
         if (!empty($trip->max_book_date)) {
-            $max_book_date = Carbon::parse($request->travel_date)->subHours($trip->max_book_date);
-            if (now() > $max_book_date) {
-                return [
-                    'errors' => 'Max book date at ' . $max_book_date
-                ];
-            }
+                $travel_date = $request->travel_date . ' ' . $trip->deputre_time;
+                $max_book_date = Carbon::parse($travel_date)
+                ->toDateTimeString()->subHours($trip->max_book_date);
+                if (now() > $max_book_date) {
+                    return response()->json([
+                        'errors' => 'Max book date at ' . $max_book_date
+                    ]);
+                } 
         } 
         $paymentRequest['total'] = $total;
         $paymentRequest['agent_id'] = $trip->agent_id;
