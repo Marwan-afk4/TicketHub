@@ -521,11 +521,13 @@ class BookingController extends Controller
                 ], 403);
             }
             if (!empty($trip->max_book_date)) {
-                $max_book_date = Carbon::parse($request->travel_date)->subHours($trip->max_book_date)->format('Y-m-d');
-                if (date('Y-m-d') > $max_book_date) {
+                $travel_date = $request->travel_date . ' ' . $trip->deputre_time;
+                $max_book_date = Carbon::parse($travel_date)
+                ->toDateTimeString()->subHours($trip->max_book_date);
+                if (now() > $max_book_date) {
                     return response()->json([
                         'errors' => 'Max book date at ' . $max_book_date
-                    ], 404);
+                    ], 403);
                 }
             }
             $paymentRequest = $validation->validated(); 
