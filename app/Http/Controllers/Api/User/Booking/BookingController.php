@@ -198,18 +198,21 @@ class BookingController extends Controller
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
                     $trip->date = $request->date;
                     $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->deputre_time)
+                    ->toDateTimeString()
                     ->subHours($trip->max_book_date);
                     return $trip;
                 }
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($round_date)) {
                     $trip->date = $request->round_date;
                     $trip->max_book_date = Carbon::parse($request->round_date . ' ' . $trip->deputre_time)
+                    ->toDateTimeString()
                     ->subHours($trip->max_book_date);
                     return $trip;
                 } 
                 if (empty($trip->days) || count($trip->days) == 0 ) {
                     $trip->date = $request->date;
                     $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->deputre_time)
+                    ->toDateTimeString()
                     ->subHours($trip->max_book_date);
                     return $trip;
                 }
@@ -223,12 +226,14 @@ class BookingController extends Controller
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
                     $trip->date = $request->date;
                     $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->deputre_time)
+                    ->toDateTimeString()
                     ->subHours($trip->max_book_date);
                     return $trip;
                 }
                 if (empty($trip->days) || count($trip->days) == 0 ) {
                     $trip->date = $request->date;
                     $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->deputre_time)
+                    ->toDateTimeString()
                     ->subHours($trip->max_book_date);
                     return $trip;
                 }
@@ -280,7 +285,8 @@ class BookingController extends Controller
 					if ((!$has_days || $trip_days->contains($day))) {
 						$new_trip = clone $trip; // clone to avoid mutating original
 						$new_trip->date = $new_date;
-						$new_trip->max_book_date = Carbon::parse($new_date . ' ' . $trip->deputre_time);
+						$new_trip->max_book_date = Carbon::parse($new_date . ' ' . $trip->deputre_time)
+                        ->toDateTimeString();
 						return $new_trip;
 					}
                 })->filter();
@@ -354,7 +360,8 @@ class BookingController extends Controller
             }
             if (!empty($trip->max_book_date)) {
                 $travel_date = $request->travel_date . ' ' . $trip->deputre_time;
-                $max_book_date = Carbon::parse($travel_date)->subHours($trip->max_book_date);
+                $max_book_date = Carbon::parse($travel_date)
+                ->toDateTimeString()->subHours($trip->max_book_date);
                 if (now() > $max_book_date) {
                     return response()->json([
                         'errors' => 'Max book date at ' . $max_book_date
@@ -514,7 +521,7 @@ class BookingController extends Controller
                 ], 403);
             }
             if (!empty($trip->max_book_date)) {
-                $max_book_date = Carbon::parse($request->travel_date)->subDays($trip->max_book_date)->format('Y-m-d');
+                $max_book_date = Carbon::parse($request->travel_date)->subHours($trip->max_book_date)->format('Y-m-d');
                 if (date('Y-m-d') > $max_book_date) {
                     return response()->json([
                         'errors' => 'Max book date at ' . $max_book_date
