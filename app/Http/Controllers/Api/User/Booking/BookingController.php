@@ -980,7 +980,7 @@ class BookingController extends Controller
                     'status' => 'confirmed',
                     'seats_count'=>$payment->travelers,
                     'bus_id'=>$payment->trip->bus_id,
-                    'date'=>$payment->trip->date,
+                    'date'=>$payment->travel_date,
                     'destenation_from'=>$payment->trip->pickup_station_id,
                     'destenation_to'=>$payment->trip->dropoff_station_id,
                     'train_id'=>$payment->trip->train_id ?? null
