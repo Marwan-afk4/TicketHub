@@ -135,7 +135,7 @@ class BookingController extends Controller
         'trip_name', 'deputre_time', 'arrival_time', 'date', 'avalible_seats', 'price',
         'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
         'cancelation_hours', 'train_id', 'currency_id', 'to_country_id', 'to_city_id',
-        'city_id', 'country_id',
+        'city_id', 'country_id', 'max_days_to_book',
         )->get();
         
         if ($request->type === 'round_trip') {
@@ -182,7 +182,7 @@ class BookingController extends Controller
                 'trip_type',
                 'cancellation_policy', 'cancelation_pay_amount', 'cancelation_pay_value',
                 'cancelation_hours', 'train_id', 'currency_id', 'to_country_id', 'to_city_id',
-                'city_id', 'country_id',
+                'city_id', 'country_id', 'max_days_to_book',
             )->get();
             
             $buses_trips = $buses_trips->merge($buses_back_trips);
