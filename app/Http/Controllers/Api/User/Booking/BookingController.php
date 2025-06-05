@@ -193,8 +193,9 @@ class BookingController extends Controller
             $day = Carbon::parse($request->date)->format('l');
             $round_day = Carbon::parse($request->round_date)->format('l');
             $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $round_day) {
+			    $new_trip = clone $trip; // clone to avoid mutating original
                 $trip_days = $trip->days->pluck('day');
-                $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
+                $max_date = Carbon::now()->addDays($new_trip->max_days_to_book)->format('Y-m-d');
                 $request_date = Carbon::parse($request->date);
                 if ($request_date >= $max_date) {
                     return null;
@@ -226,8 +227,9 @@ class BookingController extends Controller
         elseif ($request->date) {
             $day = Carbon::parse($request->date)->format('l');
             $buses_trips = $buses_trips->map(function ($trip) use($request, $day) {
+			    $new_trip = clone $trip; // clone to avoid mutating original
                 $trip_days = $trip->days->pluck('day'); 
-                $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
+                $max_date = Carbon::now()->addDays($new_trip->max_days_to_book)->format('Y-m-d');
                 $request_date = Carbon::parse($request->date);
                 if ($request_date >= $max_date) {
                     return null;
@@ -251,7 +253,8 @@ class BookingController extends Controller
         }
 
         $buses_trips = $buses_trips->map(function ($trip) use($request, $service_fees) {
-            $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
+			$new_trip = clone $trip; // clone to avoid mutating original
+            $max_date = Carbon::now()->addDays($new_trip->max_days_to_book)->format('Y-m-d');
             $request_date = Carbon::parse($request->date);
             if ($request_date >= $max_date) {
                 return null;
@@ -293,7 +296,8 @@ class BookingController extends Controller
                 $new_date = Carbon::now()->addDays($i)->format('Y-m-d'); 
                 $day = Carbon::parse($new_date)->format('l');
                 $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $new_date) {
-                    $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
+					$new_trip = clone $trip; // clone to avoid mutating original
+                    $max_date = Carbon::now()->addDays($new_trip->max_days_to_book)->format('Y-m-d');
                     $request_date = Carbon::parse($request->date);
                     if ($request_date >= $max_date) {
                         return null;
@@ -302,7 +306,6 @@ class BookingController extends Controller
 					$has_days = $trip->days && count($trip->days) > 0;
 
 					if ((!$has_days || $trip_days->contains($day))) {
-						$new_trip = clone $trip; // clone to avoid mutating original
 						$new_trip->date = $new_date;
 						$new_trip->max_book_date = Carbon::parse($new_date . ' ' . $trip->deputre_time)
                         ;
