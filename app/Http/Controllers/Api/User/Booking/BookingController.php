@@ -194,7 +194,7 @@ class BookingController extends Controller
             $round_day = Carbon::parse($request->round_date)->format('l');
             $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $round_day) {
                 $trip_days = $trip->days->pluck('day');
-                $max_date = Carbon::now()->addDays($trip->max_days_to_book);
+                $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
                 $request_date = $request->date;
                 if ($request_date > $max_date) {
                     return null;
@@ -227,7 +227,7 @@ class BookingController extends Controller
             $day = Carbon::parse($request->date)->format('l');
             $buses_trips = $buses_trips->map(function ($trip) use($request, $day) {
                 $trip_days = $trip->days->pluck('day'); 
-                $max_date = Carbon::now()->addDays($trip->max_days_to_book);
+                $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
                 $request_date = $request->date;
                 if ($request_date > $max_date) {
                     return null;
@@ -251,7 +251,7 @@ class BookingController extends Controller
         }
 
         $buses_trips = $buses_trips->map(function ($trip) use($request, $service_fees) {
-            $max_date = Carbon::now()->addDays($trip->max_days_to_book);
+            $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
             $request_date = $request->date;
             if ($request_date > $max_date) {
                 return null;
@@ -293,7 +293,7 @@ class BookingController extends Controller
                 $new_date = Carbon::now()->addDays($i)->format('Y-m-d'); 
                 $day = Carbon::parse($new_date)->format('l');
                 $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $new_date) {
-                    $max_date = Carbon::now()->addDays($trip->max_days_to_book);
+                    $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
                     $request_date = $request->date;
                     if ($request_date > $max_date) {
                         return null;
