@@ -40,9 +40,10 @@ class PrivateRequestController extends Controller
             return response()->json($validation->errors());
         }
 
-        $this->private_request
+        $private_request = $this->private_request
         ->where('id', $request->private_request_id)
-        ->update([
+        ->first();
+        $private_request->update([
             'agent_id' => $request->agent_id
         ]);
 

@@ -142,7 +142,7 @@ class BookingController extends Controller
         $trip['deputre_time'] = $booking?->trip?->deputre_time ?? null;
         $trip['arrival_time'] = $booking?->trip?->arrival_time ?? null;
         $trip['traveller_number'] = $booking?->seats_count?? null;
-        Mail::to('ahmedahmadahmid73@gmail.com')->send(new BookingEmail($trip));
+        Mail::to($booking?->agent?->email)->send(new BookingEmail($trip));
         return response()->json(['message' => 'Booking Confirmed']);
     }
 
