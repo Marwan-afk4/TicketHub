@@ -133,6 +133,7 @@ class BookingController extends Controller
         $booking->save();
         Payment::where('booking_id', $id)
         ->update(['status' => 'confirmed']);
+        $trip = collect([]);
         $trip->user_name = $booking?->user?->name ?? null;
         $trip->trip_name = $booking?->trip?->trip_name ?? null;
         $trip->pickup = $booking?->trip?->pickup_station?->name ?? null;
