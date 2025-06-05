@@ -195,7 +195,7 @@ class BookingController extends Controller
             $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $round_day) {
 			    $new_trip = clone $trip; // clone to avoid mutating original
                 $trip_days = $trip->days->pluck('day');
-                $max_date = Carbon::now()->addDays($new_trip->max_days_to_book)->format('Y-m-d');
+                $max_date = Carbon::parse($request->date)->addDays($new_trip->max_days_to_book)->format('Y-m-d');
                 $trip->max_date = $max_date;
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
                     $trip->date = $request->date;
@@ -226,7 +226,7 @@ class BookingController extends Controller
             $buses_trips = $buses_trips->map(function ($trip) use($request, $day) {
 			    $new_trip = clone $trip; // clone to avoid mutating original
                 $trip_days = $trip->days->pluck('day'); 
-                $max_date = Carbon::now()->addDays($new_trip->max_days_to_book)->format('Y-m-d');
+                $max_date = Carbon::parse($request->date)->addDays($new_trip->max_days_to_book)->format('Y-m-d');
                 $trip->max_date = $max_date;
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
                     $trip->date = $request->date;
@@ -248,7 +248,7 @@ class BookingController extends Controller
 
         $buses_trips = $buses_trips->map(function ($trip) use($request, $service_fees) {
 			$new_trip = clone $trip; // clone to avoid mutating original
-            $max_date = Carbon::now()->addDays($new_trip->max_days_to_book)->format('Y-m-d');
+            $max_date = Carbon::parse($request->date)->addDays($new_trip->max_days_to_book)->format('Y-m-d');
             $trip->max_date = $max_date;
             $bus = $trip->bus;
             if (!empty($bus)) { 
@@ -288,7 +288,7 @@ class BookingController extends Controller
                 $day = Carbon::parse($new_date)->format('l');
                 $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $new_date) {
 					$new_trip = clone $trip; // clone to avoid mutating original
-                    $max_date = Carbon::now()->addDays($new_trip->max_days_to_book)->format('Y-m-d');
+                    $max_date = Carbon::parse($new_date)->addDays($new_trip->max_days_to_book)->format('Y-m-d');
 					$new_trip->max_date = $max_date;
 					$trip_days = $trip->days->pluck('day');
 					$has_days = $trip->days && count($trip->days) > 0;
