@@ -112,6 +112,7 @@ class TripRequest extends FormRequest
                 'trip_type' => 'required|in:bus,hiace,train',
                 'currency_id' => 'required|exists:currencies,id',
                 'cancelation_hours' => 'required|numeric',
+                'max_days_to_book' => 'integer',
             ];
         }
     }

@@ -42,6 +42,7 @@ class Trip extends Model
         'train_id',
         'start_date',
         'request_status',
+        'max_days_to_book',
     ];
 
     protected $hidden = [

@@ -46,6 +46,7 @@ class TripController extends Controller
                 'currency_name' => $trip?->currency?->name,
                 'currency_sympol' => $trip?->currency?->symbol,
                 'available_seats' => $trip->avalible_seats,
+                'max_days_to_book' => $trip->max_days_to_book,
                 'type' => $trip->type,
                 'days' => $trip->days->pluck('day'),
                 'cancellation_policy' => [

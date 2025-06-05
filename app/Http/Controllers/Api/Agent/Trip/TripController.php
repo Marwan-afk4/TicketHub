@@ -179,7 +179,7 @@ class TripController extends Controller
         // cancelation_pay_amount => [fixed, percentage], cancelation_pay_value, 
         // min_cost, trip_type => [hiace, bus, train], currency_id, cancelation_hours,
         // start_date, days['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-        // train_id
+        // train_id, max_days_to_book
         $tripRequest = $request->validated();
         $tripRequest['agent_id'] = $request->user()->id;
         $trip = $this->trip->create($tripRequest);
@@ -208,7 +208,7 @@ class TripController extends Controller
         // max_book_date, type, fixed_date, cancellation_policy, cancelation_pay_amount, 
         // cancelation_pay_value, min_cost, trip_type, currency_id, cancelation_hours,
         // start_date, days['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-        // train_id
+        // train_id, max_days_to_book
         $trip = $this->trip->find($id);
 
         if (!$trip) {

@@ -83,8 +83,7 @@ class BookingController extends Controller
             'to' => 'nullable|exists:cities,id',
             'date' => [
                 'date',
-                'after_or_equal:today',
-                'before_or_equal:' . Carbon::now()->addMonths(3)->toDateString(),
+                'after_or_equal:today', 
             ],
             'round_date' => 'date|nullable',
             'travelers' => 'numeric|nullable',
@@ -195,6 +194,10 @@ class BookingController extends Controller
             $round_day = Carbon::parse($request->round_date)->format('l');
             $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $round_day) {
                 $trip_days = $trip->days->pluck('day');
+                $max_date = Carbon::now()->addDays($trip->max_days_to_book);
+                if ($request->date > $max_date) {
+                    return null;
+                }
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
                     $trip->date = $request->date;
                     $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->deputre_time)
@@ -222,7 +225,11 @@ class BookingController extends Controller
         elseif ($request->date) {
             $day = Carbon::parse($request->date)->format('l');
             $buses_trips = $buses_trips->map(function ($trip) use($request, $day) {
-                $trip_days = $trip->days->pluck('day');
+                $trip_days = $trip->days->pluck('day'); 
+                $max_date = Carbon::now()->addDays($trip->max_days_to_book);
+                if ($request->date > $max_date) {
+                    return null;
+                }
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
                     $trip->date = $request->date;
                     $trip->max_book_date = Carbon::parse($request->date . ' ' . $trip->deputre_time)
@@ -241,7 +248,11 @@ class BookingController extends Controller
             })->filter();
         }
 
-        $buses_trips = $buses_trips->map(function ($trip) use($service_fees) {
+        $buses_trips = $buses_trips->map(function ($trip) use($request, $service_fees) {
+            $max_date = Carbon::now()->addDays($trip->max_days_to_book);
+            if ($request->date > $max_date) {
+                return null;
+            }
             $bus = $trip->bus;
             if (!empty($bus)) { 
                 $areas = collect($bus->areas)->pluck('area'); 
@@ -279,6 +290,10 @@ class BookingController extends Controller
                 $new_date = Carbon::now()->addDays($i)->format('Y-m-d'); 
                 $day = Carbon::parse($new_date)->format('l');
                 $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $new_date) {
+                    $max_date = Carbon::now()->addDays($trip->max_days_to_book);
+                    if ($request->date > $max_date) {
+                        return null;
+                    }
 					$trip_days = $trip->days->pluck('day');
 					$has_days = $trip->days && count($trip->days) > 0;
 
@@ -297,7 +312,8 @@ class BookingController extends Controller
             $buses_trips = $new_trips->flatten(1);
             $buses_trips->where('max_book_date', '>=', now());
             $buses_trips = $buses_trips->values();
-        } 
+        }
+        
         
         $buses = $buses_trips->where('trip_type', 'bus')->values();
         $hiace = $buses_trips->filter(function ($trip) {

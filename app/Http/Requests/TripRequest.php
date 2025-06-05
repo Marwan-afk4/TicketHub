@@ -91,6 +91,7 @@ class TripRequest extends FormRequest
             'day' => 'nullable|array',
             'day.*' => 'nullable|string|in:Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
             'start_date' => 'nullable|date',
+            'max_days_to_book' => 'integer',
         ];
     }
 
