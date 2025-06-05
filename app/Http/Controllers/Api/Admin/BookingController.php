@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Mail\BookingEmail;
+use Illuminate\Support\Facades\Mail;
 
 use App\Models\Payment;
 
@@ -131,6 +133,15 @@ class BookingController extends Controller
         $booking->save();
         Payment::where('booking_id', $id)
         ->update(['status' => 'confirmed']);
+        $trip->user_name = $booking?->user?->name ?? null;
+        $trip->trip_name = $booking?->trip?->trip_name ?? null;
+        $trip->pickup = $booking?->trip?->pickup_station?->name ?? null;
+        $trip->dropoff = $booking?->trip?->dropoff_station?->name ?? null;
+        $trip->date = $booking?->date ?? null;
+        $trip->deputre_time = $booking?->trip?->deputre_time ?? null;
+        $trip->arrival_time = $booking?->trip?->arrival_time ?? null;
+        $trip->traveller_number = $booking?->seats_count?? null;
+        Mail::to('ahmedahmadahmid73@gmail.com')->send(new BookingEmail($trip));
         return response()->json(['message' => 'Booking Confirmed']);
     }
 

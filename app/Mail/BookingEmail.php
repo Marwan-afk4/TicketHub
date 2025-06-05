@@ -13,13 +13,13 @@ class BookingEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $data;
+    public $trip;
     /**
      * Create a new message instance.
      */
-    public function __construct($data)
+    public function __construct($trip)
     {
-        $this->data = $data;
+        $this->trip = $trip;
     }
 
     /**
