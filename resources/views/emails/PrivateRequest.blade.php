@@ -24,7 +24,7 @@
                   <td><strong>From</strong></td>
                   <td>{{ $private_request_data['from'] }}</td>
                 </tr>
-                <tr style="background-color: #f0f0f0;">
+                <tr>
                   <td><strong>To </strong></td>
                   <td>{{ $private_request_data['to'] }}</td>
                 </tr>

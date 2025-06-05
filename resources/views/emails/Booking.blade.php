@@ -24,7 +24,7 @@
                   <td><strong>Trip</strong></td>
                   <td>{{ $trip['trip_name'] }}</td>
                 </tr>
-                <tr style="background-color: #f0f0f0;">
+                <tr>
                   <td><strong>Pickup Station </strong></td>
                   <td>{{ $trip['pickup'] }}</td>
                 </tr>
@@ -36,16 +36,17 @@
                   <td><strong>Date</strong></td>
                   <td>{{ $trip['date'] }}</td>
                 </tr>
-                <tr>
+                <tr style="background-color: #f0f0f0;"">
                   <td><strong>Departure Time</strong></td>
                   <td>{{ $trip['deputre_time'] }}</td>
                 </tr>
-                <tr style="background-color: #f0f0f0;">
+                <tr>
                   <td><strong>Return Date</strong></td>
                   <td>{{ $trip['arrival_time'] }}</td>
                 </tr>
                 <tr>
-                  <td><strong>Number of Travelers</strong></td>
+                  <td style="background-color: #f0f0f0;">
+                    <strong>Number of Travelers</strong></td>
                   <td>{{ $trip['traveller_number'] }}</td>
                 </tr>
               </table>

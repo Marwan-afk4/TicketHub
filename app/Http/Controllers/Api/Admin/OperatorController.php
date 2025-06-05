@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Mail\AgentEmail;
+use Illuminate\Support\Facades\Mail;
 
 use App\Models\Currency;
 use App\Models\Wallet;
@@ -148,6 +150,8 @@ class OperatorController extends Controller
                 'module' => 'private',
             ]);
         }
+        $agent['name'] = $request->name;
+        Mail::to($request->email)->send(new AgentEmail($agent));
 
         return response()->json(['message' => 'Operator added successfully and commission handled correctly']);
     }
