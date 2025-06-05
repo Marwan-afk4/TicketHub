@@ -195,7 +195,8 @@ class BookingController extends Controller
             $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $round_day) {
                 $trip_days = $trip->days->pluck('day');
                 $max_date = Carbon::now()->addDays($trip->max_days_to_book);
-                if ($request->date > $max_date) {
+                $request_date = $request->date;
+                if ($request_date > $max_date) {
                     return null;
                 }
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
@@ -227,7 +228,8 @@ class BookingController extends Controller
             $buses_trips = $buses_trips->map(function ($trip) use($request, $day) {
                 $trip_days = $trip->days->pluck('day'); 
                 $max_date = Carbon::now()->addDays($trip->max_days_to_book);
-                if ($request->date > $max_date) {
+                $request_date = $request->date;
+                if ($request_date > $max_date) {
                     return null;
                 }
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
@@ -250,7 +252,8 @@ class BookingController extends Controller
 
         $buses_trips = $buses_trips->map(function ($trip) use($request, $service_fees) {
             $max_date = Carbon::now()->addDays($trip->max_days_to_book);
-            if ($request->date > $max_date) {
+            $request_date = $request->date;
+            if ($request_date > $max_date) {
                 return null;
             }
             $bus = $trip->bus;
@@ -291,7 +294,8 @@ class BookingController extends Controller
                 $day = Carbon::parse($new_date)->format('l');
                 $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $new_date) {
                     $max_date = Carbon::now()->addDays($trip->max_days_to_book);
-                    if ($request->date > $max_date) {
+                    $request_date = $request->date;
+                    if ($request_date > $max_date) {
                         return null;
                     }
 					$trip_days = $trip->days->pluck('day');
