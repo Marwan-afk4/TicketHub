@@ -54,7 +54,7 @@ class PrivateRequestController extends Controller
         $private_request_data['from'] = $private_request->from_address;
         $private_request_data['to'] = $private_request->address; 
         $private_request_data['travelers'] = $private_request->traveler; 
-        Mail::to($private_request_data?->agent?->email)->send(new PrivateRequestEmail($private_request_data));
+        Mail::to($private_request?->agent?->email)->send(new PrivateRequestEmail($private_request_data));
 
         return response()->json([
             'success' => 'You determine agent success'
