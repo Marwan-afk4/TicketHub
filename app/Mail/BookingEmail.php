@@ -38,7 +38,7 @@ class BookingEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.emails.Booking',
+            view: 'emails.Booking',
         );
     }
 
