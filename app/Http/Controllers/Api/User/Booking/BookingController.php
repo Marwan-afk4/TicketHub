@@ -288,15 +288,15 @@ class BookingController extends Controller
                 $day = Carbon::parse($new_date)->format('l');
                 $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $new_date) {
 					$new_trip = clone $trip; // clone to avoid mutating original
+                    $max_date = Carbon::parse($new_date)->addDays($new_trip->max_days_to_book)->format('Y-m-d');
+					$new_trip->max_date = $max_date;
 					$trip_days = $trip->days->pluck('day');
 					$has_days = $trip->days && count($trip->days) > 0;
 
 					if ((!$has_days || $trip_days->contains($day))) {
 						$new_trip->date = $new_date;
 						$new_trip->max_book_date = Carbon::parse($new_date . ' ' . $trip->deputre_time)
-                        ;   
-                        $max_date = Carbon::parse($new_date)->addDays($new_trip->max_days_to_book)->format('Y-m-d');
-					    $new_trip->max_date = $max_date;
+                        ;
 						return $new_trip;
 					}
                 })->filter();
@@ -305,10 +305,12 @@ class BookingController extends Controller
             }  
             $buses_trips = $new_trips;
             $buses_trips = $new_trips->flatten(1);
-            $buses_trips->where('max_book_date', '>=', now());
+            $buses_trips = $buses_trips->where('max_book_date', '>=', now());
             $buses_trips = $buses_trips->values();
         }
-        
+        $buses_trips = $buses_trips
+        ->where('max_date', '>=', date('Y-m-d'));
+        $buses_trips = $buses_trips->values();
         
         $buses = $buses_trips->where('trip_type', 'bus')->values();
         $hiace = $buses_trips->filter(function ($trip) {
