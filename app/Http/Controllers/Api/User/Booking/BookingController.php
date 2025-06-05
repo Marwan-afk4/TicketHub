@@ -309,7 +309,7 @@ class BookingController extends Controller
             $buses_trips = $buses_trips->values();
         }
         $buses_trips = $buses_trips
-        ->where('max_date', '>=', date('Y-m-d'));
+        ->where('max_date', '>', date('Y-m-d'));
         $buses_trips = $buses_trips->values();
         
         $buses = $buses_trips->where('trip_type', 'bus')->values();
