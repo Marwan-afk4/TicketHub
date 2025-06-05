@@ -196,7 +196,7 @@ class BookingController extends Controller
                 $trip_days = $trip->days->pluck('day');
                 $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
                 $request_date = Carbon::parse($request->date);
-                if ($request_date > $max_date) {
+                if ($request_date >= $max_date) {
                     return null;
                 }
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
@@ -229,7 +229,7 @@ class BookingController extends Controller
                 $trip_days = $trip->days->pluck('day'); 
                 $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
                 $request_date = Carbon::parse($request->date);
-                if ($request_date > $max_date) {
+                if ($request_date >= $max_date) {
                     return null;
                 }
                 if (!empty($trip->days) && count($trip->days) > 0 && $trip_days->contains($day)) {
@@ -253,7 +253,7 @@ class BookingController extends Controller
         $buses_trips = $buses_trips->map(function ($trip) use($request, $service_fees) {
             $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
             $request_date = Carbon::parse($request->date);
-            if ($request_date > $max_date) {
+            if ($request_date >= $max_date) {
                 return null;
             }
             $bus = $trip->bus;
@@ -295,7 +295,7 @@ class BookingController extends Controller
                 $buses_trips = $buses_trips->map(function ($trip) use($request, $day, $new_date) {
                     $max_date = Carbon::now()->addDays($trip->max_days_to_book)->format('Y-m-d');
                     $request_date = Carbon::parse($request->date);
-                    if ($request_date > $max_date) {
+                    if ($request_date >= $max_date) {
                         return null;
                     }
 					$trip_days = $trip->days->pluck('day');
