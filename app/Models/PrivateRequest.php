@@ -28,6 +28,10 @@ class PrivateRequest extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function agent(){
+        return $this->belongsTo(User::class, 'agent_id');
+    }
+
     public function from_country(){
         return $this->belongsTo(Country::class, 'from_country_id');
     }
