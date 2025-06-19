@@ -279,28 +279,26 @@ class AuthController extends Controller
 
     public function sign_up_google(Request $request){
         $validation = Validator::make($request->all(),[
-            'access_token' => 'required',
+            'id_token' => 'required',
+            'client_id' => 'required',
         ]);
         if($validation->fails()){
             return response()->json(['message'=>$validation->errors()],400);
         }
 
-        $googleUser = Http::get('https://www.googleapis.com/oauth2/v3/userinfo', [
-            'access_token' => $request->access_token,
-        ]);
-
-        if (!$googleUser->ok()) {
+        $client = new \Google_Client(['client_id' => $request->client_id]); // ضع Google Client ID الخاص بتطبيقك
+        $payload = $client->verifyIdToken($request->id_token);
+    
+        if (!$payload) {
             return response()->json(['error' => 'Invalid Google token'], 400);
         }
 
-        $data = $googleUser->json();
-
         $user = User::updateOrCreate(
-            ['email' => $data['email']],
+            ['email' => $payload['email']],
             [
-                'name' => $data['name'],
-                'google_id' => $data['sub'], // unique ID from Google
-                'image' => $data['picture'] ?? null,
+                'name' => $payload['name'],
+                'google_id' => $payload['sub'], // unique ID from Google
+                'image' => $payload['picture'] ?? null,
             ]
         );
  
