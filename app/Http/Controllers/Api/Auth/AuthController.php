@@ -120,8 +120,10 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)
         ->where('role', 'user')
+        ->whereNotNull('password')
         ->orWhere('phone', $request->email)
         ->where('role', 'user') 
+        ->whereNotNull('password')
         ->first();
         if(!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['errors' => 'The provided credentials are incorrect'], 401);
@@ -271,6 +273,72 @@ class AuthController extends Controller
         
         return response()->json([
             'success' => 'You delete data success'
+        ]);
+    }
+
+    public function sign_up_google(Request $request){
+        $validation = Validator::make($request->all(),[
+            'access_token' => 'required',
+        ]);
+        if($validation->fails()){
+            return response()->json(['message'=>$validation->errors()],400);
+        }
+
+        $googleUser = Http::get('https://www.googleapis.com/oauth2/v3/userinfo', [
+            'access_token' => $request->access_token,
+        ]);
+
+        if (!$googleUser->ok()) {
+            return response()->json(['error' => 'Invalid Google token'], 400);
+        }
+
+        $data = $googleUser->json();
+
+        $user = User::updateOrCreate(
+            ['email' => $data['email']],
+            [
+                'name' => $data['name'],
+                'google_id' => $data['sub'], // unique ID from Google
+                'image' => $data['picture'] ?? null,
+            ]
+        );
+ 
+        $token = $user->createToken('user_google')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ]);
+    }
+
+    public function login_google(Request $request){
+        $validation = Validator::make($request->all(),[
+            'access_token' => 'required',
+        ]);
+        if($validation->fails()){
+            return response()->json(['message'=>$validation->errors()],400);
+        }
+        $googleUser = Http::get('https://www.googleapis.com/oauth2/v3/userinfo', [
+            'access_token' => $request->access_token,
+        ]);
+
+        if (!$googleUser->ok()) {
+            return response()->json(['error' => 'Invalid Google token'], 401);
+        }
+
+        $data = $googleUser->json();
+
+        $user = User::where('email', $data['email'])->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not registered'], 400);
+        }
+
+        $token = $user->createToken('user_google')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
         ]);
     }
 }

@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('city_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('zone_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
+            $table->string('email')->unique()->nullable();
+            $table->string('password')->nullable();
             $table->string('phone')->unique();
             $table->enum('role',['user','admin','agent']);
             $table->timestamps();

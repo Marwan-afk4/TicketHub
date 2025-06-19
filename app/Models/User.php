@@ -22,7 +22,8 @@ class User extends Model
         'nationality_id',
         'code',
         'image',
-        'description'
+        'description',
+        'google_id',
     ];
     protected $appends = ['image_link'];
 

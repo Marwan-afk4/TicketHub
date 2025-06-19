@@ -36,6 +36,8 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+Route::post('/sign_up_google',[AuthController::class,'sign_up_google']);
+Route::post('/login_google',[AuthController::class,'login_google']);
 
 Route::get('/lists',[AuthController::class,'lists']);
 Route::post('/register',[AuthController::class,'Register']);
