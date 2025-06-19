@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ForgetPasswordMail;
 use App\Mail\VerificationEmail;
 
+use Google_Client;
+
 class AuthController extends Controller
 {
     public function __construct(private Currency $currency, private Wallet $wallet){}
@@ -286,7 +288,7 @@ class AuthController extends Controller
             return response()->json(['message'=>$validation->errors()],400);
         }
 
-        $client = new \Google_Client(['client_id' => $request->client_id]); // ضع Google Client ID الخاص بتطبيقك
+        $client = new Google_Client(['client_id' => $request->client_id]); // ضع Google Client ID الخاص بتطبيقك
         $payload = $client->verifyIdToken($request->id_token);
     
         if (!$payload) {
@@ -311,18 +313,19 @@ class AuthController extends Controller
     }
 
     public function login_google(Request $request){
-        $validation = Validator::make($request->all(),[
-            'access_token' => 'required',
+       $validation = Validator::make($request->all(),[
+            'id_token' => 'required',
+            'client_id' => 'required',
         ]);
         if($validation->fails()){
             return response()->json(['message'=>$validation->errors()],400);
         }
-        $googleUser = Http::get('https://www.googleapis.com/oauth2/v3/userinfo', [
-            'access_token' => $request->access_token,
-        ]);
 
-        if (!$googleUser->ok()) {
-            return response()->json(['error' => 'Invalid Google token'], 401);
+        $client = new Google_Client(['client_id' => $request->client_id]); // ضع Google Client ID الخاص بتطبيقك
+        $payload = $client->verifyIdToken($request->id_token);
+    
+        if (!$payload) {
+            return response()->json(['error' => 'Invalid Google token'], 400);
         }
 
         $data = $googleUser->json();
