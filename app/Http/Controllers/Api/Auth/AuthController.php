@@ -328,7 +328,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Invalid Google token'], 400);
         }
 
-        $user = User::where('email', $data['email'])->first();
+        $user = User::where('email', $payload['email'])->first();
 
         if (!$user) {
             return response()->json(['error' => 'User not registered'], 400);
