@@ -328,8 +328,6 @@ class AuthController extends Controller
             return response()->json(['error' => 'Invalid Google token'], 400);
         }
 
-        $data = $googleUser->json();
-
         $user = User::where('email', $data['email'])->first();
 
         if (!$user) {
