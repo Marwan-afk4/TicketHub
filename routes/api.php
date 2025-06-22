@@ -74,7 +74,7 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
     Route::delete('/admin/admin_role/delete/{id}',[AdminRoleController::class,'delete']);
 
-    Route::post('/admin/admin_role/update/{id}',[AdminRoleController::class,'update']);
+    Route::post('/admin/admin_role/update/{id}',[AdminRoleController::class,'modify']);
 
 /////////////////////////////////////// Admin ////////////////////////////////////////////
     Route::get('/admin/admin',[AdminController::class,'view']);
