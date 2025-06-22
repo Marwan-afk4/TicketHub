@@ -17,8 +17,8 @@ class AdminController extends Controller
     use Image;
     public function view()
     {
-        $users = User::where('role', 'user')
-            ->with(['country', 'city', 'zone', 'bookings.bus', 'bookings.trip', 'bookings.bookingUsers'])
+        $users = User::where('role', 'admin')
+            ->with(['position.roles'])
             ->get();
 
         $data = $users->map(function ($user) {
@@ -27,6 +27,7 @@ class AdminController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
+                'position' => $user->position, 
             ];
         });
 

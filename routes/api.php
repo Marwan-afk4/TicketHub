@@ -81,9 +81,9 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
     Route::post('/admin/admin/add',[AdminController::class,'create']);
 
-    Route::delete('/admin/admin/delete/{id}',[AdminController::class,'delete']);
-
     Route::put('/admin/admin/update/{id}',[AdminController::class,'update']);
+
+    Route::delete('/admin/admin/delete/{id}',[AdminController::class,'delete']);
 
 /////////////////////////////////////// Wallet ////////////////////////////////////////////
 

@@ -39,14 +39,22 @@ class User extends Model
         }
         return null;
     }
+
     public function country()
     {
         return $this->belongsTo(Country::class);
     }
+
+    public function position()
+    {
+        return $this->belongsTo(AdminPosition::class, 'admin_role_id');
+    }
+
     public function city()
     {
         return $this->belongsTo(City::class);
     }
+
     public function zone()
     {
         return $this->belongsTo(Zone::class);
