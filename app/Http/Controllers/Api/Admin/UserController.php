@@ -13,8 +13,6 @@ use App\Models\Currency;
 
 class UserController extends Controller
 {
-
-
     public function getUsers()
     {
         $users = User::where('role', 'user')

@@ -24,6 +24,7 @@ class User extends Model
         'image',
         'description',
         'google_id',
+        'admin_role_id',
     ];
     protected $appends = ['image_link'];
 

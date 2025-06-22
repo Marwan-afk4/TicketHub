@@ -31,6 +31,10 @@ use App\Http\Controllers\Api\Admin\PointController;
 use App\Http\Controllers\Api\Admin\CurrencyPointController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\UserRequestController;
+
+use App\Http\Controllers\Api\Admin\AdminController;
+use App\Http\Controllers\Api\Admin\AdminRoleController;
+
 use App\Http\Controllers\Api\Admin\WalletController; 
 use App\Http\Controllers\Api\Auth\AuthController;
 use Illuminate\Http\Request;
@@ -62,7 +66,26 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
     Route::put('/admin/user/update/{id}',[UserController::class,'UpdateUser']);
 
-/////////////////////////////////////// User Request ////////////////////////////////////////////
+/////////////////////////////////////// Admin Role ////////////////////////////////////////////
+
+    Route::get('/admin/admin_role',[AdminRoleController::class,'view']);
+
+    Route::post('/admin/admin_role/add',[AdminRoleController::class,'create']);
+
+    Route::delete('/admin/admin_role/delete/{id}',[AdminRoleController::class,'delete']);
+
+    Route::put('/admin/admin_role/update/{id}',[AdminRoleController::class,'update']);
+
+/////////////////////////////////////// Admin ////////////////////////////////////////////
+    Route::get('/admin/admin',[AdminController::class,'view']);
+
+    Route::post('/admin/admin/add',[AdminController::class,'create']);
+
+    Route::delete('/admin/admin/delete/{id}',[AdminController::class,'delete']);
+
+    Route::put('/admin/admin/update/{id}',[AdminController::class,'update']);
+
+/////////////////////////////////////// Wallet ////////////////////////////////////////////
 
     Route::get('/admin/wallet_request',[WalletController::class,'view']);
 
