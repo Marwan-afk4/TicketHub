@@ -18,9 +18,21 @@ class AdminRoleController extends Controller
         $admin_position = $this->admin_position
         ->with('roles')
         ->get();
+        $modules = [
+            'Test'
+        ];
+        $actions = [
+            'view',
+            'status',
+            'add',
+            'edit',
+            'delete',
+        ];
 
         return response()->json([
-            'admin_position' => $admin_position
+            'admin_position' => $admin_position,
+            'modules' => $modules,
+            'actions' => $actions,
         ]);
     }
 
