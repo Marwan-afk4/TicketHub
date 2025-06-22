@@ -40,8 +40,8 @@ class AdminRoleController extends Controller
         $validation = Validator::make(request()->all(), [
             'name' => 'required|string',
             'roles' => 'array|required',
-            'roles.*.action.*' => 'required',
-            'roles.*.module.*' => 'required',
+            'roles.*.action' => 'required',
+            'roles.*.module' => 'required',
         ]);
 
         if ($validation->fails()) {
