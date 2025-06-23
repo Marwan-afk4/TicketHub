@@ -48,7 +48,7 @@ class AdminController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|unique:users,phone',
             'password' => 'required|min:6',
-            'admin_role_id' => 'required',
+            'admin_position_id' => 'required',
         ]);
 
         if ($validation->fails()) {
@@ -61,7 +61,7 @@ class AdminController extends Controller
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'role' => 'admin',
-            'admin_role_id' => $request->admin_role_id,
+            'admin_position_id' => $request->admin_position_id,
         ];
         if ($request->image) {
             $image_path = $this->upload_image($request, 'image', 'admin/images');
@@ -80,14 +80,14 @@ class AdminController extends Controller
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|unique:users,phone',
-            'admin_role_id' => 'required',
+            'admin_position_id' => 'required',
         ]);
         $admin = User::find($id);
         $adminRequest = [ 
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'admin_role_id' => $request->admin_role_id
+            'admin_position_id' => $request->admin_position_id
         ];
         if ($admin) {
             if (!empty($request->password)) {
