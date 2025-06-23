@@ -42,8 +42,9 @@ class AdminRoleController extends Controller
         $validation = Validator::make(request()->all(), [
             'name' => 'required|string',
             'roles' => 'array|required',
-            'roles.*.action' => 'required',
             'roles.*.module' => 'required',
+            'roles.*.action' => 'required|array',
+            'roles.*.action.*' => 'required',
         ]);
 
         if ($validation->fails()) {
@@ -55,12 +56,14 @@ class AdminRoleController extends Controller
             'name' => $request->name
         ]); 
         foreach ($request->roles as $role) {
-            $this->admin_role
-            ->create([
-                'admin_position_id' => $admin_position->id,
-                'module' => $role['module'],
-                'action' => $role['action'],
-            ]);
+            foreach ($role['action'] as $action) {
+                $this->admin_role
+                ->create([
+                    'admin_position_id' => $admin_position->id,
+                    'module' => $role['module'],
+                    'action' => $action,
+                ]);
+            }
         }
 
         return response()->json([
@@ -74,6 +77,8 @@ class AdminRoleController extends Controller
             'roles' => 'array|required',
             'roles.*.action.*' => 'required',
             'roles.*.module.*' => 'required',
+            'roles.*.action' => 'required|array',
+            'roles.*.action.*' => 'required',
         ]);
 
         if ($validation->fails()) {
@@ -95,12 +100,14 @@ class AdminRoleController extends Controller
         ->where('admin_position_id', $id)
         ->delete();
         foreach ($request->roles as $role) {
-            $this->admin_role
-            ->create([
-                'admin_position_id' => $id,
-                'module' => $role['module'],
-                'action' => $role['action'],
-            ]);
+            foreach ($role['action'] as $action) {
+                $this->admin_role
+                ->create([
+                    'admin_position_id' => $admin_position->id,
+                    'module' => $role['module'],
+                    'action' => $action,
+                ]);
+            }
         }
 
         return response()->json([
