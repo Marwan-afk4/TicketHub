@@ -48,7 +48,7 @@ class AdminController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|unique:users,phone',
             'password' => 'required|min:6',
-            'admin_position_id' => 'required',
+            'admin_position_id' => 'required|exists:admin_positions,id',
         ]);
 
         if ($validation->fails()) {
@@ -80,7 +80,7 @@ class AdminController extends Controller
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|unique:users,phone',
-            'admin_position_id' => 'required',
+            'admin_position_id' => 'required|exists:admin_positions,id',
         ]);
         $admin = User::find($id);
         $adminRequest = [ 
