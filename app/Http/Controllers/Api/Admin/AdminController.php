@@ -99,7 +99,7 @@ class AdminController extends Controller
                 $this->deleteImage($admin->image);
                 $adminRequest['image'] = $image_path;
             }
-            $admin->update($data);
+            $admin->update($adminRequest);
             return response()->json(['message' => 'Admin Updated Successfully'], 200);
         }
 
