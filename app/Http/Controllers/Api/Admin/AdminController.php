@@ -66,7 +66,7 @@ class AdminController extends Controller
         ];
         if ($request->image) {
             $image_path = $this->storeBase64Image($request->image, 'admin/images');
-            $adminRequest['image_path'] = $image_path;
+            $adminRequest['image'] = $image_path;
         }
         $usercreation = User::create($adminRequest);
 
@@ -97,7 +97,7 @@ class AdminController extends Controller
             if (!empty($request->image) && !is_string($request->image)) {
                 $image_path = $this->storeBase64Image($request->image, 'admin/images');
                 $this->deleteImage($admin->image);
-                $adminRequest['image_path'] = $image_path;
+                $adminRequest['image'] = $image_path;
             }
             $admin->update($data);
             return response()->json(['message' => 'Admin Updated Successfully'], 200);
