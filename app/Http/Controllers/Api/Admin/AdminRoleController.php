@@ -19,7 +19,9 @@ class AdminRoleController extends Controller
         ->with('roles')
         ->get();
         $modules = [
-            'Test'
+            'Test',
+            'Test2',
+            'Test3',
         ];
         $actions = [
             'view',
