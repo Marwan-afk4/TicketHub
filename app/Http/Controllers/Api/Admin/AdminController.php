@@ -29,6 +29,7 @@ class AdminController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
+                'image' => $user->image_link,
                 'position' => $user->position, 
             ];
         });
