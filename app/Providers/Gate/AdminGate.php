@@ -286,11 +286,6 @@ class AdminGates
             }
             return false;
         });
-        // , , , , , hiaces, bus_types, payment_methods,
-        // complaints, complaint_subjects, currencies, nationalities, operators, booking
-        // pending_payments, aminites, trip_request, private_request, trips, car_categories,
-        // car_brands, car_models, cars, trainTypes, trainclasses, trainRoutes, trains,
-        // Commission, operator_payment_methods, payoutRequest, fees, 
         // ____________________ zones ___________________________________________________
         Gate::define('admin_zones_view', function ($user) {
             if ($user->position && !empty($user->position->roles->where('module', 'zones')->whereIn('action', ['all', 'view'])->first())) {
@@ -353,64 +348,69 @@ class AdminGates
             }
             return false;
         });
-        // ____________________ admin_role ___________________________________________________
-        Gate::define('admin_admin_role_view', function ($user) {
-            if ($user->position && !empty($user->position->roles->where('module', 'admin_role')->whereIn('action', ['all', 'view'])->first())) {
+        // ____________________ hiaces ___________________________________________________
+        Gate::define('admin_hiaces_view', function ($user) {
+            if ($user->position && !empty($user->position->roles->where('module', 'hiaces')->whereIn('action', ['all', 'view'])->first())) {
                 return true;
             }
             return false;
         });
-        Gate::define('admin_admin_role_status', function ($user) {
-            if ($user->position && !empty($user->position->roles->where('module', 'admin_role')->whereIn('action', ['all', 'status'])->first())) {
+        Gate::define('admin_hiaces_status', function ($user) {
+            if ($user->position && !empty($user->position->roles->where('module', 'hiaces')->whereIn('action', ['all', 'status'])->first())) {
                 return true;
             }
             return false;
         });
-        Gate::define('admin_admin_role_add', function ($user) {
-            if ($user->position && !empty($user->position->roles->where('module', 'admin_role')->whereIn('action', ['all', 'add'])->first())) {
+        Gate::define('admin_hiaces_add', function ($user) {
+            if ($user->position && !empty($user->position->roles->where('module', 'hiaces')->whereIn('action', ['all', 'add'])->first())) {
                 return true;
             }
             return false;
         });
-        Gate::define('admin_admin_role_edit', function ($user) {
-            if ($user->position && !empty($user->position->roles->where('module', 'admin_role')->whereIn('action', ['all', 'edit'])->first())) {
+        Gate::define('admin_hiaces_edit', function ($user) {
+            if ($user->position && !empty($user->position->roles->where('module', 'hiaces')->whereIn('action', ['all', 'edit'])->first())) {
                 return true;
             }
             return false;
         });
-        Gate::define('admin_admin_role_delete', function ($user) {
-            if ($user->position && !empty($user->position->roles->where('module', 'admin_role')->whereIn('action', ['all', 'delete'])->first())) {
+        Gate::define('admin_hiaces_delete', function ($user) {
+            if ($user->position && !empty($user->position->roles->where('module', 'hiaces')->whereIn('action', ['all', 'delete'])->first())) {
                 return true;
             }
             return false;
         });
-        // ____________________ admin_role ___________________________________________________
-        Gate::define('admin_admin_role_view', function ($user) {
-            if ($user->position && !empty($user->position->roles->where('module', 'admin_role')->whereIn('action', ['all', 'view'])->first())) {
+        // , , , , , , , payment_methods,
+        // complaints, complaint_subjects, currencies, nationalities, operators, booking
+        // pending_payments, aminites, trip_request, private_request, trips, car_categories,
+        // car_brands, car_models, cars, trainTypes, trainclasses, trainRoutes, trains,
+        // Commission, operator_payment_methods, payoutRequest, fees, 
+        // ____________________ bus_types ___________________________________________________
+        Gate::define('admin_bus_types_view', function ($user) {
+            if ($user->position && !empty($user->position->roles->where('module', 'bus_types')->whereIn('action', ['all', 'view'])->first())) {
                 return true;
             }
             return false;
         });
-        Gate::define('admin_admin_role_status', function ($user) {
-            if ($user->position && !empty($user->position->roles->where('module', 'admin_role')->whereIn('action', ['all', 'status'])->first())) {
+        Gate::define('admin_bus_types_status', function ($user) {
+            if ($user->position && !empty($user->position->roles->where('module', 'bus_types')->whereIn('action', ['all', 'status'])->first())) {
                 return true;
             }
             return false;
         });
-        Gate::define('admin_admin_role_add', function ($user) {
-            if ($user->position && !empty($user->position->roles->where('module', 'admin_role')->whereIn('action', ['all', 'add'])->first())) {
+        Gate::define('admin_bus_types_add', function ($user) {
+            if ($user->position && !empty($user->position->roles->where('module', 'bus_types')->whereIn('action', ['all', 'add'])->first())) {
                 return true;
             }
             return false;
         });
-        Gate::define('admin_admin_role_edit', function ($user) {
-            if ($user->position && !empty($user->position->roles->where('module', 'admin_role')->whereIn('action', ['all', 'edit'])->first())) {
+        Gate::define('admin_bus_types_edit', function ($user) {
+            if ($user->position && !empty($user->position->roles->where('module', 'bus_types')->whereIn('action', ['all', 'edit'])->first())) {
                 return true;
             }
             return false;
         });
-        Gate::define('admin_admin_role_delete', function ($user) {
-            if ($user->position && !empty($user->position->roles->where('module', 'admin_role')->whereIn('action', ['all', 'delete'])->first())) {
+        Gate::define('admin_bus_types_delete', function ($user) {
+            if ($user->position && !empty($user->position->roles->where('module', 'bus_types')->whereIn('action', ['all', 'delete'])->first())) {
                 return true;
             }
             return false;

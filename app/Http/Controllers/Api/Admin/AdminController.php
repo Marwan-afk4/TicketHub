@@ -65,7 +65,7 @@ class AdminController extends Controller
             'admin_position_id' => $request->admin_position_id,
         ];
         if ($request->image) {
-            $image_path = $this->upload_image($request, 'image', 'admin/images');
+            $image_path = $this->storeBase64Image($request->image, 'admin/images');
             $adminRequest['image_path'] = $image_path;
         }
         $usercreation = User::create($adminRequest);
@@ -95,7 +95,8 @@ class AdminController extends Controller
                 $adminRequest['password'] = Hash::make($request->password);
             }
             if (!empty($request->image) && !is_string($request->image)) {
-                $image_path = $this->update_image($request, $admin->image, 'image', 'admin/images');
+                $image_path = $this->storeBase64Image($request->image, 'admin/images');
+                $this->deleteImage($admin->image);
                 $adminRequest['image_path'] = $image_path;
             }
             $admin->update($data);
@@ -109,6 +110,7 @@ class AdminController extends Controller
     {
         $admin = User::find($id);
         if ($admin) {
+            $this->deleteImage($admin->image);
             $admin->delete();
             return response()->json(['message' => 'Admin Deleted Successfully'], 200);
         }
