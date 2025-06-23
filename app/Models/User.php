@@ -47,7 +47,7 @@ class User extends Model
 
     public function position()
     {
-        return $this->belongsTo(AdminPosition::class, 'admin_role_id');
+        return $this->belongsTo(AdminPosition::class, 'admin_position_id');
     }
 
     public function city()
