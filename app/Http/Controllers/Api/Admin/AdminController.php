@@ -11,6 +11,8 @@ use App\Image;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Currency;
+use App\Models\AdminRole;
+use App\Models\AdminPosition;
 
 class AdminController extends Controller
 {
@@ -30,8 +32,12 @@ class AdminController extends Controller
                 'position' => $user->position, 
             ];
         });
+        $roles = AdminPosition::get();
 
-        return response()->json(['data' => $data]);
+        return response()->json([
+            'data' => $data,
+            'roles' => $roles
+        ]);
     }
 
 
