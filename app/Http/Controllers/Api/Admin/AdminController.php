@@ -94,7 +94,7 @@ class AdminController extends Controller
             if (!empty($request->password)) {
                 $adminRequest['password'] = Hash::make($request->password);
             }
-            if (!empty($request->image) && !is_string($request->image)) {
+            if (!empty($request->image)) {
                 $image_path = $this->storeBase64Image($request->image, 'admin/images');
                 $this->deleteImage($admin->image);
                 $adminRequest['image'] = $image_path;
