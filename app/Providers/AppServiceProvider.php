@@ -4,7 +4,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
-use App\Providers\Gate\AdminGate;
+use App\Providers\gates\AdminGate;
 
 use App\Models\User;
 
