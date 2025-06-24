@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Gate;
      {
         $modules =  ['payment_methods', 'admin', 'admin_role', 'wallet_request', 'user_request', 
         'redeem_point', 'point', 'countries', 'cities', 'zones', 'stations', 'hiaces',
-        'complaints, complaint_subject', 'complaint_subjects', 'currencies', 'nationalities', 'operators', 'booking',
+        'complaints', 'complaint_subject', 'complaint_subjects', 'currencies', 'nationalities', 'operators', 'booking',
         'payment', 'aminites', 'trip_request', 'private_request', 'trips', 'car_categories',
         'car_brands', 'car_models', 'cars', 'trainTypes', 'trainclasses', 'trainRoutes', 'trains',
         'Commission', 'operator_payment_methods', 'payoutRequest', 'fees', 'user', 'bus', 'bus_types'];
@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Gate;
         ];
         foreach ($modules as $module) {
             foreach ($actions as $action) {
-                Gate::define('admin_' . $module . '_' . $action, function ($user) {
+                Gate::define('admin_' . $module . '_' . $action, function ($user) use($module, $action) {
                     if ($user->position && !empty($user->position->roles->where('module', $module)->whereIn('action', ['all', $action])->first())) {
                         return true;
                     }
