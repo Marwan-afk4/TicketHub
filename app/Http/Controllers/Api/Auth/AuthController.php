@@ -96,7 +96,7 @@ class AuthController extends Controller
         ->where('role', 'admin')
         ->orWhere('phone', $request->email)
         ->where('role', 'admin')
-        ->with('modules')
+        ->with('modules', 'position.roles')
         ->first();
         if(!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['errors' => 'The provided credentials are incorrect'], 401);
