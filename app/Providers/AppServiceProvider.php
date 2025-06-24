@@ -4,6 +4,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
+use App\Providers\Gate\AdminGate;
+
 use App\Models\User;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        AdminGate::defineGates();
         // if roles have Bus module
         Gate::define('isBus', function (User $user) {
             if($user->modules && $user->modules->pluck('module')->contains('bus')){
