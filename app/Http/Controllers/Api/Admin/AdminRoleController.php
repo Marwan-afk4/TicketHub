@@ -21,7 +21,7 @@ class AdminRoleController extends Controller
         $modules = [
             'payment_methods', 'admin', 'admin_role', 'wallet_request', 'user_request', 
             'redeem_point', 'point', 'countries', 'cities', 'zones', 'stations', 'hiaces',
-            'complaints, complaint_subject', 'complaint_subjects', 'currencies', 'nationalities', 
+            'complaints', 'complaint_subject', 'complaint_subjects', 'currencies', 'nationalities', 
             'operators', 'booking', 'bus', 'bus_types',
             'payment', 'aminites', 'trip_request', 'private_request', 'trips', 'car_categories',
             'car_brands', 'car_models', 'cars', 'trainTypes', 'trainclasses', 'trainRoutes', 'trains',

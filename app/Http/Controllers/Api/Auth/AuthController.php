@@ -287,7 +287,6 @@ class AuthController extends Controller
         if($validation->fails()){
             return response()->json(['message'=>$validation->errors()],400);
         }
-
         $client = new Google_Client(['client_id' => $request->client_id]); // ضع Google Client ID الخاص بتطبيقك
         $payload = $client->verifyIdToken($request->id_token);
     
