@@ -58,6 +58,8 @@ Route::get('/delete_account',[AuthController::class,'delete_account'])->middlewa
 
 Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
+    Route::get('/admin2/users',[UserController::class,'getUsers']);
+
     Route::get('/admin/users',[UserController::class,'getUsers'])->middleware(['can:admin_user_view']);
 
     Route::post('/admin/user/add',[UserController::class,'addUser'])->middleware(['can:admin_user_add']);
@@ -77,6 +79,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::post('/admin/admin_role/update/{id}',[AdminRoleController::class,'modify'])->middleware(['can:admin_admin_role_edit']);
 
 /////////////////////////////////////// Admin ////////////////////////////////////////////
+    Route::get('/admin2/admin',[AdminController::class,'view']);
+
     Route::get('/admin/admin',[AdminController::class,'view'])->middleware(['can:admin_admin_view']);
 
     Route::post('/admin/admin/add',[AdminController::class,'create'])->middleware(['can:admin_admin_add']);
@@ -99,6 +103,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
 /////////////////////////////////////// Point ////////////////////////////////////////////
 
+    Route::get('/admin2/point',[PointController::class,'view']);
+
     Route::get('/admin/point',[PointController::class,'view'])->middleware(['can:admin_redeem_point_view']);
 
     Route::get('/admin/point/item/{id}',[PointController::class,'item'])->middleware(['can:admin_redeem_point_view']);
@@ -110,6 +116,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/point/delete/{id}',[PointController::class,'delete'])->middleware(['can:admin_redeem_point_delete']);
 
 /////////////////////////////////// Currency Point /////////////////////////////////////////
+
+    Route::get('/admin2/currency_point',[CurrencyPointController::class,'view']);
 
     Route::get('/admin/currency_point',[CurrencyPointController::class,'view'])->middleware(['can:admin_point_view']);
 
@@ -123,6 +131,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
 /////////////////////////////////////// Country ////////////////////////////////////////////
 
+    Route::get('/admin2/countries',[LocationController::class,'getCountries']);
+
     Route::get('/admin/countries',[LocationController::class,'getCountries'])->middleware(['can:admin_countries_view']);
 
     Route::post('/admin/country/add',[LocationController::class,'addCountry'])->middleware(['can:admin_countries_add']);
@@ -132,6 +142,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/country/delete/{id}',[LocationController::class,'deleteCountry'])->middleware(['can:admin_countries_delete']);
 
 /////////////////////////////////////// City ////////////////////////////////////////////
+
+    Route::get('/admin2/cities',[LocationController::class,'getCities']);
 
     Route::get('/admin/cities',[LocationController::class,'getCities'])->middleware(['can:admin_cities_view']);
 
@@ -143,6 +155,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
 /////////////////////////////////////// Zone ////////////////////////////////////////////
 
+    Route::get('/admin2/zones',[LocationController::class,'getZones']);
+
     Route::get('/admin/zones',[LocationController::class,'getZones'])->middleware(['can:admin_zones_view']);
 
     Route::post('/admin/zone/add',[LocationController::class,'addZone'])->middleware(['can:admin_zones_add']);
@@ -152,6 +166,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/zone/delete/{id}',[LocationController::class,'deleteZone'])->middleware(['can:admin_zones_delete']);
 
 /////////////////////////////////////// Station ////////////////////////////////////////////
+
+    Route::get('/admin2/stations',[LocationController::class,'getStation']);
 
     Route::get('/admin/stations',[LocationController::class,'getStation'])->middleware(['can:admin_stations_view']);
 
@@ -163,6 +179,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
 /////////////////////////////////////// Busses ////////////////////////////////////////////
 
+    Route::get('/admin2/hiaces',[BusController::class,'getHiace']);
+
     Route::get('/admin/hiaces',[BusController::class,'getHiace'])->middleware(['can:admin_hiaces_view']);
     
     Route::post('/admin/hiaces/add',[BusController::class,'addBus'])->middleware(['can:admin_hiaces_add']);
@@ -170,6 +188,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::put('/admin/hiaces/update/{id}',[BusController::class,'updateBus'])->middleware(['can:admin_hiaces_edit']);
     
     Route::delete('/admin/hiaces/delete/{id}',[BusController::class,'deleteBus'])->middleware(['can:admin_hiaces_delete']);
+
+    Route::get('/admin2/busses',[BusController::class,'getBus']);
 
     Route::get('/admin/busses',[BusController::class,'getBus'])->middleware(['can:admin_bus_view']);
 
@@ -182,6 +202,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::get('/admin/agents',[BusController::class,'getAgents']);
 
 //////////////////////////////////////// Bus Type ////////////////////////////////////////////
+
+    Route::get('/admin2/bus_types',[BusTypeController::class,'getBusType']);
 
     Route::get('/admin/bus_types',[BusTypeController::class,'getBusType'])->middleware(['can:admin_bus_types_view']);
 
@@ -227,6 +249,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
 /////////////////////////////////////////////// Currency ////////////////////////////////////////////
 
+    Route::get('/admin2/currencies',[CurrancyController::class,'getCurrincies']);
+
     Route::get('/admin/currencies',[CurrancyController::class,'getCurrincies'])->middleware(['can:admin_currencies_view']);
 
     Route::post('/admin/currency/add',[CurrancyController::class,'addCurrancy'])->middleware(['can:admin_currencies_add']);
@@ -246,6 +270,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/nationality/delete/{id}',[NationailtyController::class,'deleteNationality'])->middleware(['can:admin_nationalities_delete']);
 
 ////////////////////////////////////////////////// Operators ////////////////////////////////////////////
+
+    Route::get('/admin2/operators',[OperatorController::class,'getOperators']);
 
     Route::get('/admin/operators',[OperatorController::class,'getOperators'])->middleware(['can:admin_operators_view']);
 
@@ -313,6 +339,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
 /////////////////////////////////////////////// Car Categories ////////////////////////////////////////////
 
+    Route::get('/admin2/car_categories',[CarCategoryController::class,'getCategories']);
+
     Route::get('/admin/car_categories',[CarCategoryController::class,'getCategories'])->middleware(['can:admin_car_categories_view']);
 
     Route::post('/admin/car_category/add',[CarCategoryController::class,'addCarCategories'])->middleware(['can:admin_car_categories_add']);
@@ -323,6 +351,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
 ///////////////////////////////////////////// Car Brands /////////////////////////////////////////////////////
 
+    Route::get('/admin2/car_brands',[CarBrandController::class,'getBrands']);
+
     Route::get('/admin/car_brands',[CarBrandController::class,'getBrands'])->middleware(['can:admin_car_brands_view']);
 
     Route::post('/admin/car_brand/add',[CarBrandController::class,'addBrands'])->middleware(['can:admin_car_brands_add']);
@@ -332,6 +362,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/car_brand/delete/{id}',[CarBrandController::class,'deleteBrands'])->middleware(['can:admin_car_brands_delete']);
 
 //////////////////////////////////////////// Car Models /////////////////////////////////////////////////////
+
+    Route::get('/admin2/car_models',[CarModelController::class,'getModels']);
 
     Route::get('/admin/car_models',[CarModelController::class,'getModels'])->middleware(['can:admin_car_models_view']);
 
@@ -355,6 +387,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
 /////////////////////////////////////////// Train Type //////////////////////////////////////////////
 
+    Route::get('/admin2/trainTypes',[TrainTypeController::class,'getTypes']);
+
     Route::get('/admin/trainTypes',[TrainTypeController::class,'getTypes'])->middleware(['can:admin_trainTypes_view']);
 
     Route::post('/admin/trainType/add',[TrainTypeController::class,'addType'])->middleware(['can:admin_trainTypes_add']);
@@ -364,6 +398,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/trainType/delete/{id}',[TrainTypeController::class,'deleteType'])->middleware(['can:admin_trainTypes_delete']);
 
 ////////////////////////////////////////// Train Class //////////////////////////////////////////////
+
+    Route::get('/admin/trainclasses',[TrainClassController::class,'getClasses']);
 
     Route::get('/admin/trainclasses',[TrainClassController::class,'getClasses'])->middleware(['can:admin_trainclasses_view']);
 
@@ -375,6 +411,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
 
 ////////////////////////////////////////// Train Route //////////////////////////////////////////////
 
+    Route::get('/admin2/trainRoutes',[TrainRouteController::class,'getRoutes']);
+
     Route::get('/admin/trainRoutes',[TrainRouteController::class,'getRoutes'])->middleware(['can:admin_trainRoutes_view']);
 
     Route::post('/admin/trainRoute/add',[TrainRouteController::class,'addRoute'])->middleware(['can:admin_trainRoutes_add']);
@@ -384,6 +422,8 @@ Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
     Route::delete('/admin/trainRoute/delete/{id}',[TrainRouteController::class,'deleteRoute'])->middleware(['can:admin_trainRoutes_delete']);
 
 ////////////////////////////////////////////// Train //////////////////////////////////////////////
+
+    Route::get('/admin2/trains',[TrainController::class,'getTrains']);
 
     Route::get('/admin/trains',[TrainController::class,'getTrains'])->middleware(['can:admin_trains_view']);
 
